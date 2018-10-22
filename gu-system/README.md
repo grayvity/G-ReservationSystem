@@ -1,4 +1,4 @@
-# gr-system
+# gu-system
 
 ## Project setup
 ```
