@@ -52,8 +52,6 @@ typings/
 *.tgz
 
 # Yarn Integrity file
-.DS_Store
-
 .yarn-integrity
 
 # dotenv environment variables file
