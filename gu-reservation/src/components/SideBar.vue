@@ -81,7 +81,7 @@
 			<li><router-link to="/reserve"><em class="fa fa-calendar">&nbsp;</em>Захиалга</router-link></li>
 			<li><a href="elements"><em class="fa fa-toggle-off">&nbsp;</em>Гэр&amp;өрөө</a></li>
 			<li><a href="panels"><em class="fa fa-clone">&nbsp;</em>Үйлчилгээ</a></li>
-			<li><a href="login"><em class="fa fa-power-off">&nbsp;</em>Гарах</a></li>
+			<li v-on:click='logOut'><a href="javascript:;"><em class="fa fa-power-off">&nbsp;</em>Гарах</a></li>
 		</ul>
 	</div>
 		
@@ -92,6 +92,12 @@
 
 <script>
 export default {
-  name: 'SideBar'
+  name: 'SideBar',
+  methods:{
+	logOut() {
+		this.$store.dispatch('set_login_status', 0);
+		this.$router.replace('/')
+	}
+  }
 }
 </script>
