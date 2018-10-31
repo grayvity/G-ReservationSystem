@@ -18,10 +18,7 @@
 								</label>
 							</div>
 							<button type="submit" class="btn btn-primary">Нэвтрэх</button></fieldset>
-							
 					</form>
-					<button v-on:click="logOut" class="btn btn-primary">Гарах</button>
-					<h1>{{get_is_logged}}</h1>
 				</div>
 			</div>
 		</div>
