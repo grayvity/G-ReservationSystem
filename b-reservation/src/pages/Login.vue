@@ -5,11 +5,11 @@
             <div class="row w-100">
             <div class="col-lg-4 mx-auto">
                 <div class="auto-form-wrapper">
-                <form action="#">
+                <form role="form" v-on:submit.prevent="login">
                     <div class="form-group">
                     <label class="label">Username</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Username">
+                        <input type="text" class="form-control" v-model="username" placeholder="Username">
                         <div class="input-group-append">
                         <span class="input-group-text">
                             <i class="mdi mdi-check-circle-outline"></i>
@@ -20,7 +20,7 @@
                     <div class="form-group">
                     <label class="label">Password</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" placeholder="*********">
+                        <input type="password" class="form-control" v-model="password" placeholder="*********">
                         <div class="input-group-append">
                         <span class="input-group-text">
                             <i class="mdi mdi-check-circle-outline"></i>
@@ -72,5 +72,39 @@
 <script>
 export default {
   name: 'Login', 
+  data(){
+		return {
+			username: '',
+			password: ''
+		}
+    },
+    methods: {
+        async login(){
+			console.log('start login', this.username, this.password)
+			const res = await fetch("/api/login", {
+				method: "POST",
+				body: JSON.stringify({ username: this.username, password: this.password }),
+				headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json"
+				}
+			});
+			
+			const resJson = await res.json();
+			console.log('Response: ', resJson.is_success)
+
+			if(resJson.is_success){
+				this.$store.dispatch('set_login_status', 1)
+				this.$router.push('/dashboard')
+			}
+
+			if (resJson.error) {
+				throw new Error(resJson.error);
+			}
+			if (res.error) {
+				throw new Error(res.error);
+     		 }
+        }
+    }
 }
 </script>

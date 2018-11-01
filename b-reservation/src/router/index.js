@@ -4,12 +4,10 @@ import Router from "vue-router";
 // Pages
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
+import Controller from "@/pages/PageController";
 
 // component
 import Container from "@/components/Container";
-import Navbar from "@/components/Navbar";
-import SideBar from "@/components/SideBar";
-import Footer from "@/components/Footer";
 
 Vue.use(Router);
 
@@ -18,7 +16,7 @@ export default new Router({
     {
       path: "/",
       name: "admin",
-      component: Container,
+      component: Controller,
       children: [
         {
           path: "dashboard",

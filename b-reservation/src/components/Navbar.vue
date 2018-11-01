@@ -156,16 +156,16 @@
                 </div>
               </a>
               <a class="dropdown-item mt-2">
-                Manage Accounts
+                Миний мэдээлэл
               </a>
               <a class="dropdown-item">
-                Change Password
+                Нууц үг солих
               </a>
               <a class="dropdown-item">
-                Check Inbox
+                Тохиргоо
               </a>
-              <a class="dropdown-item">
-                Sign Out
+              <a v-on:click='logOut' href="javascript:;" class="dropdown-item">
+                Гарах
               </a>
             </div>
           </li>
@@ -181,5 +181,12 @@
 <script>
 export default {
   name: 'Navbar', 
+  methods:{
+    logOut() {
+      console.log('logout...')
+      this.$store.dispatch('set_login_status', 0);
+      this.$router.replace('/login')
+    }
+  }
 }
 </script>
