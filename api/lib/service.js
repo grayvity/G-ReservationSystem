@@ -4,7 +4,7 @@ const { runQuery, createConnection } = require("./storage");
 async function check_login(username, password) {
   const connection = await createConnection();
 
-  let query = `select username, password from Users a where username = ? and password = ?;`;
+  let query = `select name, password from Users a where name = ? and password = ?;`;
   const found = await runQuery({
     connection,
     query,
@@ -18,12 +18,22 @@ async function check_login(username, password) {
   return false;
 }
 
-// check_login("admin", "41").then(response => {
-//   if (response) {
-//     console.log("login success");
-//   } else {
-//     console.log("Username or password incorrect!");
-//   }
-// });
+// orders.vue
+async function get_order_list(begindate, enddate) {
+  const connection = await createConnection();
+
+  let query = `select name, password from order a  where name = ? and password = ?;`;
+  const found = await runQuery({
+    connection,
+    query,
+    params: [begindate, enddate]
+  });
+
+  if (found.length > 0) {
+    return true;
+  }
+
+  return false;
+}
 
 module.exports = { check_login };
