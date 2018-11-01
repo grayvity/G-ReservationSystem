@@ -2,8 +2,7 @@
     <div class="container-scroller">
         <Navbar/>
         <div class="container-fluid page-body-wrapper">
-            <SideBar/>
-        
+            <SideBar/> 
             <div class="main-panel">
                 <router-view></router-view>
                 <Footer/>
