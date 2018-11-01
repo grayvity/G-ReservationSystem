@@ -2,18 +2,17 @@
   <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
-          
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <router-link class="nav-link" v-bind:to="{ name: 'dashboard'}">
               <i class="menu-icon mdi mdi-television"></i>
               <span class="menu-title">Хяналт</span>
-            </a>
+            </router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="pages/forms/basic_elements.html">
+            <router-link class="nav-link" v-bind:to="{ name: 'orders'}">
               <i class="menu-icon mdi mdi-backup-restore"></i>
               <span class="menu-title">Захиалга</span>
-            </a>
+            </router-link>
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
@@ -24,10 +23,12 @@
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item">
-                  <a class="nav-link" href="pages/ui-features/buttons.html">Гэр&өрөө</a>
+                  <router-link class="nav-link" v-bind:to="{ name: 'rooms'}">Гэр / байшин
+</router-link>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="pages/ui-features/typography.html">Үйлчилгээ</a>
+                  <router-link class="nav-link" v-bind:to="{ name: 'services'}">Үйлчилгээ</router-link>
+                  <!-- <a class="nav-link" href="java">Үйлчилгээ</a> -->
                 </li>
               </ul>
             </div>
