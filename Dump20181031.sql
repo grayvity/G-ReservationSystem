@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: gu_system
 -- ------------------------------------------------------
--- Server version	8.0.12
+-- Server version	8.0.13
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,41 +14,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `order`
---
-
-DROP TABLE IF EXISTS `order`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `order` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `start_date` date DEFAULT NULL,
-  `end_date` date DEFAULT NULL,
-  `cus_name` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cus_type` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cus_country` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cus_phone` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cus_email` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `price` double DEFAULT NULL,
-  `cash_amount` double DEFAULT NULL,
-  `card_amount` double DEFAULT NULL,
-  `total_amount` double DEFAULT NULL,
-  `note` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `order__orderroom` FOREIGN KEY (`id`) REFERENCES `order_room` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `order`
---
-
-LOCK TABLES `order` WRITE;
-/*!40000 ALTER TABLE `order` DISABLE KEYS */;
-/*!40000 ALTER TABLE `order` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `order_room`
@@ -68,13 +33,7 @@ CREATE TABLE `order_room` (
   `end_date` date DEFAULT NULL,
   `price` double DEFAULT NULL,
   `note` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `order__orderroom_idx` (`order_id`),
-  KEY `category_idx` (`room_category_id`),
-  KEY `room_idx` (`room_id`),
-  CONSTRAINT `category` FOREIGN KEY (`room_category_id`) REFERENCES `room_category` (`id`),
-  CONSTRAINT `order` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`),
-  CONSTRAINT `room` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -114,6 +73,42 @@ LOCK TABLES `order_service` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `order_date` datetime DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `cus_name` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cus_type` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cus_country` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cus_phone` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cus_email` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `cash_amount` double DEFAULT NULL,
+  `card_amount` double DEFAULT NULL,
+  `total_amount` double DEFAULT NULL,
+  `note` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `room`
 --
 
@@ -126,6 +121,7 @@ CREATE TABLE `room` (
   `category_id` int(11) DEFAULT NULL,
   `per_limit` int(11) DEFAULT NULL,
   `price` double DEFAULT NULL,
+  `is_active` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `note` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -150,6 +146,7 @@ DROP TABLE IF EXISTS `room_category`;
 CREATE TABLE `room_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -175,6 +172,7 @@ CREATE TABLE `service` (
   `type` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
   `name` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `price` double DEFAULT NULL,
+  `is_active` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `note` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -224,7 +222,7 @@ CREATE TABLE `users` (
   `password` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `role` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,6 +231,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'admin','123','admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -245,4 +244,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-31 19:38:09
+-- Dump completed on 2018-11-01 23:27:36
