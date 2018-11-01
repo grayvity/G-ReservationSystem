@@ -5,13 +5,13 @@ import Router from "vue-router";
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
 import Controller from "@/pages/PageController";
-
-// component
-import Container from "@/components/Container";
+import Services from "@/pages/Services";
+import Rooms from "@/pages/Rooms";
 
 Vue.use(Router);
 
 export default new Router({
+  mode: "history",
   routes: [
     {
       path: "/",
@@ -20,8 +20,18 @@ export default new Router({
       children: [
         {
           path: "dashboard",
-          name: "Dashboard",
+          name: "dashboard",
           component: Dashboard
+        },
+        {
+          path: "services",
+          name: "services",
+          component: Services
+        },
+        {
+          path: "rooms",
+          name: "rooms",
+          component: Rooms
         }
       ]
     },
