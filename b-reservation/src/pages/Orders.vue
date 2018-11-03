@@ -1,6 +1,17 @@
 <template>  
   <div class="content-wrapper">
     <div class="row">
+      <div class="col-md-6">
+        <h4 class="card-title">Захиалга жагсаалт</h4>
+      </div>
+      <div class="col-md-6" style="text-align:right;">
+        <button type="button" class="btn btn-primary btn-fw" data-toggle="modal" data-target="#orderEntryModal">
+          <i class="fa fa-plus"></i>нэмэх
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      
        <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
@@ -26,6 +37,7 @@
                         </tr>
                       </tbody>
                     </table>
+                    <OrderEntry/>
                   </div>
                 </div>
               </div>
@@ -34,10 +46,11 @@
   </div>
   <!-- content-wrapper ends -->
 </template>
-
 <script>
+import OrderEntry from "@/entry/OrderEntry.vue";
 export default {
   name: 'Orders',
+  components: {OrderEntry},
   data(){
     return { 
       orderList: [

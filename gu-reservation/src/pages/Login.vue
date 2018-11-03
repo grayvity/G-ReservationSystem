@@ -1,5 +1,6 @@
 <template>
 	<div class="row">
+		<Loader/>
 		<div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4">
 			<div class="login-panel panel panel-default">
 				<div class="panel-heading">Нэвтрэх</div>
@@ -28,10 +29,12 @@
 <script>
 
 // const request = require("request-promise-native");
-
+import Loader from "@/components/Loader.vue";
 
 export default {
+	
 	name: 'Login',
+	components: {Loader},
 	data(){
 		return {
 			username: '',
@@ -48,30 +51,34 @@ export default {
 	},
 	methods: {
 		async login(){
-			console.log('start login', this.username, this.password)
-			const res = await fetch("/api/login", {
-				method: "POST",
-				body: JSON.stringify({ username: this.username, password: this.password }),
-				headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json"
-				}
-			});
+			console.log('start login aa', this.username, this.password)
+			this.$store.dispatch('set_loading_status', true)
+			return
 			
-			const resJson = await res.json();
-			console.log('Response: ', resJson.is_success)
+			// const res = await fetch("/api/login", {
+			// 	method: "POST",
+			// 	body: JSON.stringify({ username: this.username, password: this.password }),
+			// 	headers: {
+			// 	Accept: "application/json",
+			// 	"Content-Type": "application/json"
+			// 	}
+			// });
+			
+			// const resJson = await res.json();
+			// // this.$store.dispatch('set_loading_status', false)
+			// console.log('Response: ', resJson.is_success)
 
-			if(resJson.is_success){
-				this.$store.dispatch('set_login_status', 1)
-				this.$router.push('/home')
-			}
+			// if(resJson.is_success){
+			// 	this.$store.dispatch('set_login_status', 1)
+			// 	this.$router.push('/home')
+			// }
 
-			if (resJson.error) {
-				throw new Error(resJson.error);
-			}
-			if (res.error) {
-				throw new Error(res.error);
-     		 }
+			// if (resJson.error) {
+			// 	throw new Error(resJson.error);
+			// }
+			// if (res.error) {
+			// 	throw new Error(res.error);
+     		//  }
 		},
 		logOut(){
 			this.$store.dispatch('set_login_status', 0)
