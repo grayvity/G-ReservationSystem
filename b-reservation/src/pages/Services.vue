@@ -39,22 +39,23 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr v-for="info in services" v-bind:key="info.id">
                     <td class="font-weight-medium">
                       1
                     </td>
                     <td>
-                      төрөл
+                      {{info.type}}
                     </td>
-                    <td>нэр</td>
+                    <td>{{info.name}}</td>
                     <td>
-                      тайлбар
+                      {{info.description}}
                     </td>
                     <td>
-                        9,000
+                        {{info.price}}
                     </td>
                     <td class="min">
-                      <i class="fa fa-check-circle-o" style="color:green"></i>
+                      <i v-if="info.is_active" class="fa fa-check-circle-o" style="color:green"></i>
+                      <i v-else class="fa fa-eye-slash" style="color:yellow"></i>
                     </td>
                     <td class="min">
                       <a href="javascript:;" data-toggle="modal" data-target="#exampleModalCenter">
@@ -62,12 +63,15 @@
                       </a>
                     </td>
                     <td class="min">
-                      <i class="fa fa-trash-o"></i>
+                      <a href="javascript:;" data-toggle="modal" data-target="#askmodal">
+                        <i class="fa fa-trash-o" style="color:red"></i>
+                      </a>
                     </td>
                   </tr>
                 </tbody>
               </table>
               <Entry/>
+              <AskModal/>
             </div>
           </div>
         </div>
@@ -81,24 +85,26 @@
 <script>
 
 import Entry from "@/entry/ServiceEntry.vue";
+import AskModal from "@/components/AskModal.vue";
 
 export default {
   name: 'Services',
-  components: {Entry},
+  components: {Entry, AskModal},
   data(){
     return{
       services: []
     }
   },
   created(){
-    getServiceList();
+    this.getServiceList();
   },
   methods: {
     async getServiceList(){
-      const res = await fetch("/api/v1/get-service-list", {
+      const res = await fetch("/api/get-service-list", {
         method: "GET"
       });
       const resJson = await res.json();
+      console.log(resJson)
 
       this.services = resJson.services;
     }

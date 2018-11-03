@@ -8,7 +8,7 @@
                 <div class="auto-form-wrapper">
                 <form role="form" v-on:submit.prevent="login">
                     <div class="form-group">
-                    <label class="label">Username</label>
+                    <label class="label">Хэрэглэгчийн нэр</label>
                     <div class="input-group">
                         <input type="text" class="form-control" v-model="username" placeholder="Username">
                         <div class="input-group-append">
@@ -19,7 +19,7 @@
                     </div>
                     </div>
                     <div class="form-group">
-                    <label class="label">Password</label>
+                    <label class="label">Нууц үг</label>
                     <div class="input-group">
                         <input type="password" class="form-control" v-model="password" placeholder="*********">
                         <div class="input-group-append">
@@ -30,21 +30,21 @@
                     </div>
                     </div>
                     <div class="form-group">
-                    <button class="btn btn-primary submit-btn btn-block">Login</button>
+                    <button class="btn btn-primary submit-btn btn-block">Нэвтрэх</button>
                     </div>
                     <div class="form-group d-flex justify-content-between">
                     <div class="form-check form-check-flat mt-0">
                         <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" checked> Keep me signed in
+                        <input type="checkbox" class="form-check-input" checked>Намайг сана
                         </label>
                     </div>
-                    <a href="#" class="text-small forgot-password text-black">Forgot Password</a>
+                    <a href="#" class="text-small forgot-password text-black">Нууц үгээ мартсан</a>
                     </div>
                     <div class="form-group">
                     </div>
                     <div class="text-block text-center my-3">
-                    <span class="text-small font-weight-semibold">Not a member ?</span>
-                    <a href="register.html" class="text-black text-small">Create new account</a>
+                    <span class="text-small font-weight-semibold">Хэрэв бүртгэлгүй бол</span>
+                    <a href="register.html" class="text-black text-small">шинээр бүртгүүлэх</a>
                     </div>
                 </form>
                 </div>

@@ -4,13 +4,13 @@
         <ul class="nav">
           <li class="nav-item">
             <router-link class="nav-link" v-bind:to="{ name: 'dashboard'}">
-              <i class="menu-icon mdi mdi-television"></i>
+              <i class="menu-icon fa fa-tachometer"></i>
               <span class="menu-title">Хяналт</span>
             </router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" v-bind:to="{ name: 'orders'}">
-              <i class="menu-icon mdi mdi-backup-restore"></i>
+              <i class="menu-icon mdi mdi-table"></i>
               <span class="menu-title">Захиалга</span>
             </router-link>
           </li>
@@ -23,60 +23,26 @@
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item">
-                  <router-link class="nav-link" v-bind:to="{ name: 'rooms'}">Гэр / байшин
-</router-link>
+                  <router-link class="nav-link" v-bind:to="{ name: 'rooms'}">
+                    <i class="menu-icon fa fa-home"></i>
+                    <span class="menu-title">Гэр / байшин</span>
+                  </router-link>
                 </li>
                 <li class="nav-item">
-                  <router-link class="nav-link" v-bind:to="{ name: 'services'}">Үйлчилгээ</router-link>
+                  <router-link class="nav-link" v-bind:to="{ name: 'services'}">
+                    <i class="menu-icon fa fa-money"></i>
+                    <span class="menu-title">Үйлчилгээ</span>
+                  </router-link>
                   <!-- <a class="nav-link" href="java">Үйлчилгээ</a> -->
                 </li>
               </ul>
             </div>
           </li>
-          
           <li class="nav-item">
-            <a class="nav-link" href="pages/charts/chartjs.html">
-              <i class="menu-icon mdi mdi-chart-line"></i>
-              <span class="menu-title">Charts</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="pages/tables/basic-table.html">
-              <i class="menu-icon mdi mdi-table"></i>
-              <span class="menu-title">Tables</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="pages/icons/font-awesome.html">
-              <i class="menu-icon mdi mdi-sticker"></i>
-              <span class="menu-title">Icons</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-              <i class="menu-icon mdi mdi-restart"></i>
-              <span class="menu-title">User Pages</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="auth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/samples/login.html"> Login </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/samples/register.html"> Register </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/samples/error-404.html"> 404 </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/samples/error-500.html"> 500 </a>
-                </li>
-              </ul>
-            </div>
+            <router-link class="nav-link" v-bind:to="{ name: 'orders'}">
+              <i class="menu-icon fa fa-bar-chart-o"></i>
+              <span class="menu-title">Тайлан</span>
+            </router-link>
           </li>
         </ul>
       </nav>
