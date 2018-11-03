@@ -9,7 +9,7 @@
                   <h4 class="card-title">Үйлчилгээний жагсаалт</h4>
                 </div>
                 <div class="col-md-6" style="text-align:right;">
-                  <button type="button" class="btn btn-primary btn-fw" data-toggle="modal" data-target="#exampleModalCenter">
+                  <button type="button" class="btn btn-primary btn-fw" data-toggle="modal" data-target="#entryModal">
                     <i class="fa fa-plus"></i>нэмэх
                   </button>
                 </div>
@@ -58,20 +58,20 @@
                       <i v-else class="fa fa-eye-slash" style="color:yellow"></i>
                     </td>
                     <td class="min">
-                      <a href="javascript:;" data-toggle="modal" data-target="#exampleModalCenter">
+                      <a href="javascript:;" v-on:click="setCurrent(info)" data-toggle="modal" data-target="#entryModal">
                         <i class="fa fa-edit"></i>
                       </a>
                     </td>
                     <td class="min">
-                      <a href="javascript:;" data-toggle="modal" data-target="#askmodal">
+                      <a href="javascript:;" v-on:click="setCurrent(info)" data-toggle="modal" data-target="#askmodal">
                         <i class="fa fa-trash-o" style="color:red"></i>
                       </a>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <Entry/>
-              <AskModal/>
+              <Entry v-bind:info="current_info"/>
+              <AskModal v-bind:dialog_result="dialog_result"/>
             </div>
           </div>
         </div>
@@ -92,11 +92,16 @@ export default {
   components: {Entry, AskModal},
   data(){
     return{
-      services: []
+      services: [],
+      current_info : {},
+      dialog_result : false
+      // info: {is_active : true}
     }
   },
   created(){
     this.getServiceList();
+
+    
   },
   methods: {
     async getServiceList(){
@@ -104,9 +109,16 @@ export default {
         method: "GET"
       });
       const resJson = await res.json();
-      console.log(resJson)
+      // console.log(resJson)
 
       this.services = resJson.services;
+    },
+    setCurrent(info){
+      this.current_info = info;
+    },
+    delete(id){
+      console.log('deleting...', this.dialog_result)
+
     }
   }
 }

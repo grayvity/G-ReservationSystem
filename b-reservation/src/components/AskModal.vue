@@ -9,8 +9,8 @@
                 </button>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-light" data-dismiss="modal">Үгүй</button>
-                <button type="button" class="btn btn-danger mr-2">
+                <button class="btn btn-light" data-dismiss="modal" v-on:click="decline">Үгүй</button>
+                <button type="button" class="btn btn-danger mr-2" v-on:click="accept">
                     Тийм
                 </button>
             </div>
@@ -22,6 +22,15 @@
 
 <script>
 export default {
-  name: 'AskModal'
+  name: 'AskModal',
+  props: ['dialog_result'],
+  methods: {
+      accept(){
+          this.$emit("dialog_result", true) ;
+      },
+      decline(){
+          this.$emit("dialog_result", false) ;
+      }
+  }
 }
 </script>

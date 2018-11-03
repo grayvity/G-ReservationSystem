@@ -1,6 +1,6 @@
 <template>
     <!-- Modal -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
             <div class="modal-header">
@@ -40,7 +40,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" data-dismiss="modal">Болих</button>
-                <button type="button" class="btn btn-success mr-2" v-on:click="save">
+                <button type="button" class="btn btn-success mr-2" data-dismiss="modal" v-on:click="save">
                     <i class="fa fa-save"></i>
                     Хадгалах
                 </button>
@@ -55,12 +55,9 @@
 
 export default {
   name: 'Services',
-  data(){
-    return{
-      info: {is_active: true}
-    }
-  },
-  mounted(){
+  props: ['info'],
+  
+  created(){
        
     console.log('entry created!')
   },

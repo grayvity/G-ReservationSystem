@@ -64,7 +64,8 @@ async function save_service(info) {
     let params = [];
     // update
     if (info.id != null) {
-      query = `update service set type = ?, name = ?, description = ?, price = ?, id_active = ? where id = ?`;
+      console.log(info);
+      query = `update service set type = ?, name = ?, description = ?, price = ?, is_active = ? where id = ?`;
       params = [
         info.type,
         info.name,
