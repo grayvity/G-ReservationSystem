@@ -1,21 +1,21 @@
 <style>
-.loaderBg{
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    position: fixed;
-    opacity: 0.7;
-    background-color: #fff;
-    z-index: 99;
-    text-align: center;
+.loaderBg {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  opacity: 0.7;
+  background-color: #fff;
+  z-index: 9999;
+  text-align: center;
 }
 
 .override {
-    top: 50%;
-    left: 50%;
-    position: fixed;
-    z-index: 1000;
+  top: 50%;
+  left: 50%;
+  position: fixed;
+  z-index: 1000;
 }
 
 .lds-ellipsis {

@@ -3,17 +3,16 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Та устгахдаа итгэлтэй байна уу?</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <p>Та устгахдаа итгэлтэй байна уу?</p>
-            </div>
             <div class="modal-footer">
                 <button class="btn btn-light" data-dismiss="modal">Үгүй</button>
-                <button type="button" class="btn btn-primary mr-2" v-on:click="save">Тийм</button>
+                <button type="button" class="btn btn-danger mr-2">
+                    Тийм
+                </button>
             </div>
             </div>
         </div>
@@ -23,11 +22,6 @@
 
 <script>
 export default {
-  name: 'AskDelete', 
-  computed:{
-      get_is_loading(){
-          return this.$store.getters.get_is_loading;
-      }
-  }
+  name: 'AskModal'
 }
 </script>

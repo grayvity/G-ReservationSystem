@@ -4,13 +4,13 @@ const { runQuery, createConnection } = require("./storage");
 async function check_login(username, password) {
   const connection = await createConnection();
 
-  let query = `select username, password from users a where name = ? and password = ?;`;
+  let query = `select username, password from users where username = ? and password = ?`;
   const found = await runQuery({
     connection,
     query,
     params: [username, password]
   });
-
+  console.log(found);
   if (found.length > 0) {
     return true;
   }
@@ -40,11 +40,11 @@ async function get_service_list(isActive) {
   const connection = await createConnection();
 
   let query = `select * from service`;
-  let params = []
+  let params = [];
 
-  if(isActive){
-    query += ' where is_active = ?'
-    params = [isActive]
+  if (isActive) {
+    query += " where is_active = ?";
+    params = [isActive];
   }
 
   const service_list = await runQuery({
@@ -57,30 +57,41 @@ async function get_service_list(isActive) {
 }
 
 async function save_service(info) {
-  try{
-    console.log('A', )
+  try {
+    console.log("A");
     const connection = await createConnection();
-    let query = ''
-    let params = []
+    let query = "";
+    let params = [];
     // update
-    if(info.id != null){
+    if (info.id != null) {
       query = `update service set type = ?, name = ?, description = ?, price = ?, id_active = ? where id = ?`;
-      params = [info.type, info.name, info.description, info.price, info.is_active ? 'Y' : 'N', info.id]
-    // insert
-    }else{
+      params = [
+        info.type,
+        info.name,
+        info.description,
+        info.price,
+        info.is_active ? "Y" : "N",
+        info.id
+      ];
+      // insert
+    } else {
       query = `insert into service (type, name, description, price, is_active) values(?, ?, ?, ?, ?)`;
-      params = [info.type, info.name, info.description, info.price, info.is_active ? 'Y' : 'N']
-      console.log(query, params)
+      params = [
+        info.type,
+        info.name,
+        info.description,
+        info.price,
+        info.is_active ? "Y" : "N"
+      ];
+      console.log(query, params);
     }
-    
-  
+
     const service_list = await runQuery({
       connection,
       query,
-      params : params
+      params: params
     });
-    
-  }catch(err){
+  } catch (err) {
     throw new Exception(err);
   }
 }

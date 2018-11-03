@@ -39,7 +39,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="info in services">
+                  <tr v-for="info in services" v-bind:key="info.id">
                     <td class="font-weight-medium">
                       1
                     </td>
@@ -63,12 +63,15 @@
                       </a>
                     </td>
                     <td class="min">
-                      <i class="fa fa-trash-o"></i>
+                      <a href="javascript:;" data-toggle="modal" data-target="#askmodal">
+                        <i class="fa fa-trash-o" style="color:red"></i>
+                      </a>
                     </td>
                   </tr>
                 </tbody>
               </table>
               <Entry/>
+              <AskModal/>
             </div>
           </div>
         </div>
@@ -82,10 +85,11 @@
 <script>
 
 import Entry from "@/entry/ServiceEntry.vue";
+import AskModal from "@/components/AskModal.vue";
 
 export default {
   name: 'Services',
-  components: {Entry},
+  components: {Entry, AskModal},
   data(){
     return{
       services: []

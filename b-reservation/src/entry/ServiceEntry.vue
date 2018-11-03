@@ -40,7 +40,10 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" data-dismiss="modal">Болих</button>
-                <button type="button" class="btn btn-success mr-2" v-on:click="save">Хадгалах</button>
+                <button type="button" class="btn btn-success mr-2" v-on:click="save">
+                    <i class="fa fa-save"></i>
+                    Хадгалах
+                </button>
             </div>
             </div>
         </div>
@@ -57,9 +60,9 @@ export default {
       info: {is_active: true}
     }
   },
-  created(){
+  mounted(){
        
-    // getServiceList();
+    console.log('entry created!')
   },
   methods: {
     async save(){
