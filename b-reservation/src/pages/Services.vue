@@ -39,22 +39,23 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr v-for="info in services">
                     <td class="font-weight-medium">
                       1
                     </td>
                     <td>
-                      төрөл
+                      {{info.type}}
                     </td>
-                    <td>нэр</td>
+                    <td>{{info.name}}</td>
                     <td>
-                      тайлбар
+                      {{info.description}}
                     </td>
                     <td>
-                        9,000
+                        {{info.price}}
                     </td>
                     <td class="min">
-                      <i class="fa fa-check-circle-o" style="color:green"></i>
+                      <i v-if="info.is_active" class="fa fa-check-circle-o" style="color:green"></i>
+                      <i v-else class="fa fa-eye-slash" style="color:yellow"></i>
                     </td>
                     <td class="min">
                       <a href="javascript:;" data-toggle="modal" data-target="#exampleModalCenter">
@@ -91,14 +92,15 @@ export default {
     }
   },
   created(){
-    getServiceList();
+    this.getServiceList();
   },
   methods: {
     async getServiceList(){
-      const res = await fetch("/api/v1/get-service-list", {
+      const res = await fetch("/api/get-service-list", {
         method: "GET"
       });
       const resJson = await res.json();
+      console.log(resJson)
 
       this.services = resJson.services;
     }

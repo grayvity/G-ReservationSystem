@@ -13,33 +13,34 @@
                 <form class="forms-sample">
                     <div class="form-group">
                         <label for="type">Төрөл</label>
-                        <input type="text" class="form-control" id="type" placeholder="Төрөл">
+                        <input type="text" class="form-control" id="type" v-model="info.type" placeholder="Төрөл">
                     </div>
                     <div class="form-group">
                         <label for="type">Нэр</label>
-                        <input type="text" class="form-control" id="type" placeholder="Нэр">
+                        <input type="text" class="form-control" id="name" v-model="info.name" placeholder="Нэр">
                     </div>
                     <div class="form-group">
                         <label for="type">Тайлбар</label>
-                        <input type="text" class="form-control" id="type" placeholder="Тайлбар">
+                        <input type="text" class="form-control" id="description" v-model="info.description" placeholder="Тайлбар">
                     </div>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text">₮</span>
                         </div>
-                        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        <input type="number" value="" min="0" step="100" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" v-model="info.price"/>
                     </div>
                     <div class="form-check form-check-flat">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" checked>Идэвхитэй
+                            <input type="checkbox" class="form-check-input" checked v-model="info.is_active">Идэвхитэй
                             <i class="input-helper"></i>
                         </label>
                     </div>
+                    
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" data-dismiss="modal">Болих</button>
-                <button type="submit" class="btn btn-success mr-2">Хадгалах</button>
+                <button type="button" class="btn btn-success mr-2" v-on:click="save">Хадгалах</button>
             </div>
             </div>
         </div>
@@ -48,29 +49,46 @@
 
 <script>
 
+
 export default {
   name: 'Services',
   data(){
     return{
-      info: {}
+      info: {is_active: true}
     }
   },
   created(){
-    getServiceList();
+       
+    // getServiceList();
   },
   methods: {
     async save(){
         try{
-            const res = await fetch("/api/v1/save-service", {
-                method: "POST"
+            console.log('Saving')
+            this.$store.dispatch('set_loading_status', true)
+
+            const res = await fetch("/api/save-service", {
+                method: "POST",
+                body: JSON.stringify(this.info),
+                    headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                }
             });
             const resJson = await res.json();
+            console.log(resJson)
+
+            if (!resJson.success) {
+                console.log(resJson.error)
+            }
+            if (res.error) {
+                console.log(res.error)
+            }
         }catch(err){
-
+            this.$store.dispatch('set_loading_status', false)
+        }finally{
+            this.$store.dispatch('set_loading_status', false)
         }
-     
-
-      
     }
   }
 }
