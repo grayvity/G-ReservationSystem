@@ -1,5 +1,6 @@
 <template>
     <div class="container-scroller">
+        <Loader/>
         <div class="container-fluid page-body-wrapper full-page-wrapper auth-page">
         <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
             <div class="row w-100">
@@ -70,8 +71,10 @@
 
 
 <script>
+import Loader from "@/components/Loader.vue";
 export default {
   name: 'Login', 
+  components: {Loader},
   data(){
 		return {
 			username: '',
@@ -80,30 +83,36 @@ export default {
     },
     methods: {
         async login(){
-			console.log('start login', this.username, this.password)
-			const res = await fetch("/api/login", {
-				method: "POST",
-				body: JSON.stringify({ username: this.username, password: this.password }),
-				headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json"
-				}
-			});
-			
-			const resJson = await res.json();
-			console.log('Response: ', resJson.is_success)
+            this.$store.dispatch('set_loading_status', true)
+            try{
+                const res = await fetch("/api/login", {
+                    method: "POST",
+                    body: JSON.stringify({ username: this.username, password: this.password }),
+                    headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                    }
+                });
+                
+                const resJson = await res.json();
+                console.log('Response: ', resJson.is_success)
 
-			if(resJson.is_success){
-				this.$store.dispatch('set_login_status', 1)
-				this.$router.push('/dashboard')
-			}
+                if(resJson.is_success){
+                    this.$store.dispatch('set_login_status', 1)
+                    this.$router.push('/dashboard')
+                }
 
-			if (resJson.error) {
-				throw new Error(resJson.error);
-			}
-			if (res.error) {
-				throw new Error(res.error);
-     		 }
+                if (resJson.error) {
+                    throw new Error(resJson.error);
+                }
+                if (res.error) {
+                    throw new Error(res.error);
+                }
+            }catch (ex){
+                
+            }finally{
+                this.$store.dispatch('set_loading_status', false)
+            }
         }
     }
 }

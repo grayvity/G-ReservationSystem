@@ -7,6 +7,7 @@ import Login from "@/pages/Login";
 import Controller from "@/pages/PageController";
 import Services from "@/pages/Services";
 import Rooms from "@/pages/Rooms";
+import Orders from "@/pages/Orders";
 
 Vue.use(Router);
 
@@ -32,6 +33,11 @@ export default new Router({
           path: "rooms",
           name: "rooms",
           component: Rooms
+        },
+        {
+          path: "orders",
+          name: "orders",
+          component: Orders
         }
       ]
     },
