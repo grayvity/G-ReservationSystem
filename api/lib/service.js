@@ -4,7 +4,7 @@ const { runQuery, createConnection } = require("./storage");
 async function check_login(username, password) {
   const connection = await createConnection();
 
-  let query = `select name, password from Users a where name = ? and password = ?;`;
+  let query = `select username, password from users a where name = ? and password = ?;`;
   const found = await runQuery({
     connection,
     query,
@@ -22,7 +22,7 @@ async function check_login(username, password) {
 async function get_order_list(begindate, enddate) {
   const connection = await createConnection();
 
-  let query = `select name, password from order a  where name = ? and password = ?;`;
+  let query = `select username, password from order a  where username = ? and password = ?;`;
   const found = await runQuery({
     connection,
     query,
@@ -36,4 +36,18 @@ async function get_order_list(begindate, enddate) {
   return false;
 }
 
-module.exports = { check_login };
+async function get_service_list(isActive) {
+  const connection = await createConnection();
+
+  let query = `select * from service where is_active = ?`;
+
+  const service_list = await runQuery({
+    connection,
+    query,
+    params: [isActive]
+  });
+
+  return service_list;
+}
+
+module.exports = { check_login, get_service_list };

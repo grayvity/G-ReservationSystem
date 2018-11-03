@@ -4,7 +4,16 @@
       <div class="col-lg-12 grid-margin">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Orders</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <h4 class="card-title">Үйлчилгээний жагсаалт</h4>
+                </div>
+                <div class="col-md-6" style="text-align:right;">
+                  <button type="button" class="btn btn-primary btn-fw" data-toggle="modal" data-target="#exampleModalCenter">
+                    <i class="fa fa-plus"></i>нэмэх
+                  </button>
+                </div>
+              </div>
             <div class="table-responsive">
               <table class="table table-bordered">
                 <thead>
@@ -13,20 +22,20 @@
                       #
                     </th>
                     <th>
-                      First name
+                      Төрөл
                     </th>
                     <th>
-                      Progress
+                      Нэр
                     </th>
                     <th>
-                      Amount
+                      Тайлбар
                     </th>
                     <th>
-                      Sales
+                      Үнэ
                     </th>
-                    <th>
-                      Deadline
-                    </th>
+                    <th/>
+                    <th/>
+                    <th/>
                   </tr>
                 </thead>
                 <tbody>
@@ -35,141 +44,30 @@
                       1
                     </td>
                     <td>
-                      Herman Beck
+                      төрөл
+                    </td>
+                    <td>нэр</td>
+                    <td>
+                      тайлбар
                     </td>
                     <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
+                        9,000
                     </td>
-                    <td>
-                      $ 77.99
+                    <td class="min">
+                      <i class="fa fa-check-circle-o" style="color:green"></i>
                     </td>
-                    <td class="text-danger"> 53.64%
-                      <i class="mdi mdi-arrow-down"></i>
+                    <td class="min">
+                      <a href="javascript:;" data-toggle="modal" data-target="#exampleModalCenter">
+                        <i class="fa fa-edit"></i>
+                      </a>
                     </td>
-                    <td>
-                      May 15, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      2
-                    </td>
-                    <td>
-                      Messsy Adam
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $245.30
-                    </td>
-                    <td class="text-success"> 24.56%
-                      <i class="mdi mdi-arrow-up"></i>
-                    </td>
-                    <td>
-                      July 1, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      3
-                    </td>
-                    <td>
-                      John Richards
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $138.00
-                    </td>
-                    <td class="text-danger"> 28.76%
-                      <i class="mdi mdi-arrow-down"></i>
-                    </td>
-                    <td>
-                      Apr 12, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      4
-                    </td>
-                    <td>
-                      Peter Meggik
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-primary progress-bar-striped" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $ 77.99
-                    </td>
-                    <td class="text-danger"> 53.45%
-                      <i class="mdi mdi-arrow-down"></i>
-                    </td>
-                    <td>
-                      May 15, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      5
-                    </td>
-                    <td>
-                      Edward
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $ 160.25
-                    </td>
-                    <td class="text-success"> 18.32%
-                      <i class="mdi mdi-arrow-up"></i>
-                    </td>
-                    <td>
-                      May 03, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      6
-                    </td>
-                    <td>
-                      Henry Tom
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $ 150.00
-                    </td>
-                    <td class="text-danger"> 24.67%
-                      <i class="mdi mdi-arrow-down"></i>
-                    </td>
-                    <td>
-                      June 16, 2015
+                    <td class="min">
+                      <i class="fa fa-trash-o"></i>
                     </td>
                   </tr>
                 </tbody>
               </table>
+              <Entry/>
             </div>
           </div>
         </div>
@@ -181,7 +79,29 @@
 </template>
 
 <script>
+
+import Entry from "@/entry/ServiceEntry.vue";
+
 export default {
   name: 'Services',
+  components: {Entry},
+  data(){
+    return{
+      services: []
+    }
+  },
+  created(){
+    getServiceList();
+  },
+  methods: {
+    async getServiceList(){
+      const res = await fetch("/api/v1/get-service-list", {
+        method: "GET"
+      });
+      const resJson = await res.json();
+
+      this.services = resJson.services;
+    }
+  }
 }
 </script>

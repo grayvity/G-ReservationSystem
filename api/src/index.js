@@ -32,3 +32,14 @@ app.post("/api/login", async (req, res) => {
     res.json({ is_success: false, error: err });
   }
 });
+
+app.post("/api/get_service_list", async (req, res) => {
+  try {
+    const { is_active } = req.query;
+
+    let services = await get_service_list(is_active);
+    res.json({ services });
+  } catch (err) {
+    res.json({ services: [], error: err });
+  }
+});
