@@ -23,13 +23,12 @@
 <script>
 export default {
   name: 'AskModal',
-  props: ['dialog_result'],
   methods: {
       accept(){
-          this.$emit("dialog_result", true) ;
+          this.$emit("onChanged", true) ;
       },
       decline(){
-          this.$emit("dialog_result", false) ;
+          this.$emit("onChanged", false) ;
       }
   }
 }

@@ -9,7 +9,7 @@
                   <h4 class="card-title">Үйлчилгээний жагсаалт</h4>
                 </div>
                 <div class="col-md-6" style="text-align:right;">
-                  <button type="button" class="btn btn-primary btn-fw" data-toggle="modal" data-target="#entryModal">
+                  <button type="button" class="btn btn-primary btn-fw" v-on:click="createNew" data-toggle="modal" data-target="#entryModal">
                     <i class="fa fa-plus"></i>нэмэх
                   </button>
                 </div>
@@ -71,7 +71,7 @@
                 </tbody>
               </table>
               <Entry v-bind:info="current_info"/>
-              <AskModal v-bind:dialog_result="dialog_result"/>
+              <AskModal @onChanged="modal_value_changed"/>
             </div>
           </div>
         </div>
@@ -100,18 +100,25 @@ export default {
   },
   created(){
     this.getServiceList();
-
-    
   },
   methods: {
     async getServiceList(){
-      const res = await fetch("/api/get-service-list", {
-        method: "GET"
-      });
-      const resJson = await res.json();
-      // console.log(resJson)
+      try{
+        this.$store.dispatch('set_loading_status', true)
+        const res = await fetch("/api/get-service-list", {
+          method: "GET"
+        });
+        const resJson = await res.json();
 
-      this.services = resJson.services;
+        // console.log(resJson)
+
+        this.services = resJson.services;
+
+        this.$store.dispatch('set_loading_status', false)
+      }catch(err){
+        this.$store.dispatch('set_loading_status', false)
+        console.log(err)
+      }
     },
     setCurrent(info){
       this.current_info = info;
@@ -119,6 +126,15 @@ export default {
     delete(id){
       console.log('deleting...', this.dialog_result)
 
+    },
+    createNew(){
+      this.current_info = {}
+    },
+    modal_value_changed(value){
+      if(value){
+        
+      }
+      console.log('hi',value)
     }
   }
 }

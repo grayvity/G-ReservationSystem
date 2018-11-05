@@ -16,10 +16,7 @@ export default {
 	},
   created(){
       
-    if(this.$store.getters.get_is_logged == 1){
-        this.$router.push('/dashboard')
-    }
-    else{
+    if(this.$store.getters.get_is_logged != 1){
         this.$router.push('/login')
     }
   }

@@ -164,7 +164,7 @@ export default {
     }
   },
   created(){
-    getServiceList();
+    // getServiceList();
   },
   methods: {
     async save(){
