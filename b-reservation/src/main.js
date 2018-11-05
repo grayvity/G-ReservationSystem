@@ -4,9 +4,11 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import { store } from "./store/store";
+import Notifications from "vue-notification";
 
 Vue.config.productionTip = false;
 
+Vue.use(Notifications);
 Vue.component("my-currency-input", {
   props: ["value"],
   template: `

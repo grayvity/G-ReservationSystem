@@ -21,6 +21,7 @@
     "simple-line-icons": "2.4.1",
     "vue": "^2.5.2",
     "vue-loaders": "^2.0.0",
+    "vue-notification": "^1.3.13",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

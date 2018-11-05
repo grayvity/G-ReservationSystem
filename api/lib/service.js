@@ -97,4 +97,31 @@ async function save_service(info) {
   }
 }
 
-module.exports = { check_login, get_service_list, save_service };
+async function delete_service(id) {
+  try {
+    console.log("Deleting service");
+    const connection = await createConnection();
+    let query = "";
+
+    // delete
+    if (id != null) {
+      query = `delete from service where id = ?`;
+      await runQuery({
+        connection,
+        query,
+        params: [id]
+      });
+      return true;
+    }
+    return false;
+  } catch (err) {
+    throw new Exception(err);
+  }
+}
+
+module.exports = {
+  check_login,
+  get_service_list,
+  save_service,
+  delete_service
+};

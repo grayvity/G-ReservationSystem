@@ -62,9 +62,40 @@ export default {
     console.log('entry created!')
   },
   methods: {
+      async checkControl(){
+        if (!this.info.type || this.info.type.length == 0){
+            this.$notify({
+                title: 'Анхаар',
+                text: 'Талбар бүрэн бөглөнө үү.',
+                type: 'warn'
+            });    
+            return false;
+        }
+        else if (!this.info.name || this.info.name.length == 0){
+            this.$notify({
+                title: 'Анхаар',
+                text: 'Талбар бүрэн бөглөнө үү.',
+                type: 'warn'
+            });    
+            return false;
+        }
+        else if (!this.info.price || this.info.price.length == 0 || this.info.price <= 0){
+            this.$notify({
+                title: 'Анхаар',
+                text: 'Талбар бүрэн бөглөнө үү.',
+                type: 'warn'
+            });    
+            return false;
+        }
+        return true;
+    },
     async save(){
         try{
-            console.log('Saving')
+            console.log('Saving');
+            let isValidate = await this.checkControl();
+            console.log('isValid: ', isValidate)
+            
+            if(!isValidate){ return; }
             this.$store.dispatch('set_loading_status', true)
 
             const res = await fetch("/api/save-service", {
@@ -77,19 +108,41 @@ export default {
             });
             const resJson = await res.json();
             console.log(resJson)
+            this.$notify({
+                title: 'Амжилттай',
+                text: 'Амжилттай хадгалагдлаа',
+                type: 'success'
+            });
+            this.$emit("onCompleted")
+            
 
             if (!resJson.success) {
                 console.log(resJson.error)
+                this.$notify({
+                    title: 'Алдаа 0',
+                    text: resJson.error,
+                    type: 'error'
+                });
             }
             if (res.error) {
                 console.log(res.error)
+                this.$notify({
+                    title: 'Алдаа 1',
+                    text: res.error,
+                    type: 'error'
+                });
             }
         }catch(err){
-            this.$store.dispatch('set_loading_status', false)
+            this.$notify({
+                    title: 'Алдаа 2',
+                    text: err,
+                    type: 'error'
+                });
         }finally{
             this.$store.dispatch('set_loading_status', false)
         }
     }
+    
   }
 }
 

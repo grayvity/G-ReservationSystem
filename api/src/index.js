@@ -4,7 +4,12 @@ var bodyParser = require("body-parser");
 var path = require("path");
 require("dotenv").config();
 
-const { check_login, get_service_list, save_service } = require("../lib/service");
+const {
+  check_login,
+  get_service_list,
+  save_service,
+  delete_service
+} = require("../lib/service");
 
 const app = express();
 const http = httpLib.createServer(app);
@@ -44,13 +49,23 @@ app.get("/api/get-service-list", async (req, res) => {
   }
 });
 
-
 app.post("/api/save-service", async (req, res) => {
   try {
     await save_service(req.body);
     res.json({ success: true });
   } catch (err) {
-    console.log(err)
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+app.post("/api/delete-service", async (req, res) => {
+  try {
+    console.log("deleting: ", req.body, req.body.id);
+    await delete_service(req.body.id);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
     res.json({ success: false, error: err });
   }
 });

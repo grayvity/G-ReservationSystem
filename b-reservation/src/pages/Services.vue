@@ -54,7 +54,7 @@
                         {{info.price}}
                     </td>
                     <td class="min">
-                      <i v-if="info.is_active" class="fa fa-check-circle-o" style="color:green"></i>
+                      <i v-if="info.is_active === 'Y'" class="fa fa-check-circle-o" style="color:green"></i>
                       <i v-else class="fa fa-eye-slash" style="color:yellow"></i>
                     </td>
                     <td class="min">
@@ -70,7 +70,7 @@
                   </tr>
                 </tbody>
               </table>
-              <Entry v-bind:info="current_info"/>
+              <Entry v-bind:info="current_info" @onCompleted = "modal_completed"/>
               <AskModal @onChanged="modal_value_changed"/>
             </div>
           </div>
@@ -93,9 +93,7 @@ export default {
   data(){
     return{
       services: [],
-      current_info : {},
-      dialog_result : false
-      // info: {is_active : true}
+      current_info : {}
     }
   },
   created(){
@@ -110,31 +108,84 @@ export default {
         });
         const resJson = await res.json();
 
-        // console.log(resJson)
+        // console.log(resJson.services)
 
         this.services = resJson.services;
 
-        this.$store.dispatch('set_loading_status', false)
+        
       }catch(err){
-        this.$store.dispatch('set_loading_status', false)
+        this.$notify({
+          title: 'Алдаа',
+          text: err,
+          type: 'error'
+        });
         console.log(err)
+      }finally{
+        this.$store.dispatch('set_loading_status', false)
       }
     },
     setCurrent(info){
       this.current_info = info;
     },
-    delete(id){
-      console.log('deleting...', this.dialog_result)
+    async delete(){
+      try{
+        console.log('deleting...')
+        this.$store.dispatch('set_loading_status', true)
 
+        const res = await fetch("/api/delete-service", {
+            method: "POST",
+            body: JSON.stringify({id: this.current_info.id}),
+            headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+            }
+        });
+        const resJson = await res.json();
+        
+        this.$notify({
+          title: 'Амжилттай',
+          text: 'Амжилттай устгагдлаа',
+          type: 'success'
+        });
+        this.getServiceList();
+
+        if (!resJson.success) {
+            console.log(resJson.error)
+            this.$notify({
+              title: 'Алдаа',
+              text: resJson.error,
+              type: 'error'
+            });
+        }
+        if (res.error) {
+            console.log(res.error)
+            this.$notify({
+              title: 'Алдаа',
+              text: res.error,
+              type: 'error'
+            });
+        }
+      }catch(err){
+        this.$notify({
+          title: 'Алдаа',
+          text: err,
+          type: 'error'
+        });
+      }finally{
+          this.$store.dispatch('set_loading_status', false);
+      }
     },
     createNew(){
-      this.current_info = {}
+      this.current_info = {is_active : true}
     },
     modal_value_changed(value){
       if(value){
-        
+        this.delete();
       }
-      console.log('hi',value)
+    },
+    modal_completed(){
+      console.log('refreshing...')
+      this.getServiceList();
     }
   }
 }
