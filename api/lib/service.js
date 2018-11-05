@@ -58,7 +58,6 @@ async function get_service_list(isActive) {
 
 async function save_service(info) {
   try {
-    console.log("A");
     const connection = await createConnection();
     let query = "";
     let params = [];
@@ -87,13 +86,13 @@ async function save_service(info) {
       console.log(query, params);
     }
 
-    const service_list = await runQuery({
+    await runQuery({
       connection,
       query,
       params: params
     });
   } catch (err) {
-    throw new Exception(err);
+    throw err;
   }
 }
 
@@ -115,7 +114,76 @@ async function delete_service(id) {
     }
     return false;
   } catch (err) {
-    throw new Exception(err);
+    throw err;
+  }
+}
+
+async function get_room_gategories(isActive) {
+  const connection = await createConnection();
+
+  let query = `select * from room_category`;
+  let params = [];
+
+  if (isActive) {
+    query += " where is_active = ?";
+    params = [isActive];
+  }
+
+  const service_list = await runQuery({
+    connection,
+    query,
+    params
+  });
+
+  return service_list;
+}
+
+async function save_room_gategory(info) {
+  try {
+    const connection = await createConnection();
+    let query = "";
+    let params = [];
+    // update
+    if (info.id != null) {
+      console.log(info);
+      query = `update room_category set name = ?, is_active = ? where id = ?`;
+      params = [info.name, info.is_active ? "Y" : "N", info.id];
+      // insert
+    } else {
+      query = `insert into room_category (name, is_active) values(?, ?)`;
+      params = [info.name, info.is_active ? "Y" : "N"];
+      console.log(query, params);
+    }
+
+    await runQuery({
+      connection,
+      query,
+      params: params
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function delete_room_gategory(id) {
+  try {
+    console.log("Deleting room_category");
+    const connection = await createConnection();
+    let query = "";
+
+    // delete
+    if (id != null) {
+      query = `delete from room_category where id = ?`;
+      await runQuery({
+        connection,
+        query,
+        params: [id]
+      });
+      return true;
+    }
+    return false;
+  } catch (err) {
+    throw err;
   }
 }
 
@@ -123,5 +191,8 @@ module.exports = {
   check_login,
   get_service_list,
   save_service,
-  delete_service
+  delete_service,
+  get_room_gategories,
+  save_room_gategory,
+  delete_room_gategory
 };

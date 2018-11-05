@@ -29,6 +29,12 @@
                   </router-link>
                 </li>
                 <li class="nav-item">
+                  <router-link class="nav-link" v-bind:to="{ name: 'room_gategories'}">
+                    <i class="menu-icon fa fa-home"></i>
+                    <span class="menu-title">Гэр бүлэг</span>
+                  </router-link>
+                </li>
+                <li class="nav-item">
                   <router-link class="nav-link" v-bind:to="{ name: 'services'}">
                     <i class="menu-icon fa fa-money"></i>
                     <span class="menu-title">Үйлчилгээ</span>

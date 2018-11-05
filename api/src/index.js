@@ -8,7 +8,10 @@ const {
   check_login,
   get_service_list,
   save_service,
-  delete_service
+  delete_service,
+  save_room_gategory,
+  delete_room_gategory,
+  get_room_gategories
 } = require("../lib/service");
 
 const app = express();
@@ -63,6 +66,38 @@ app.post("/api/delete-service", async (req, res) => {
   try {
     console.log("deleting: ", req.body, req.body.id);
     await delete_service(req.body.id);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+app.get("/api/get-room-gategories", async (req, res) => {
+  try {
+    const { is_active } = req.query;
+
+    let datas = await get_room_gategories(is_active);
+    res.json({ datas });
+  } catch (err) {
+    res.json({ datas: [], error: err });
+  }
+});
+
+app.post("/api/save-room-gategory", async (req, res) => {
+  try {
+    await save_room_gategory(req.body);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+app.post("/api/delete-room-gategory", async (req, res) => {
+  try {
+    console.log("deleting: ", req.body, req.body.id);
+    await delete_room_gategory(req.body.id);
     res.json({ success: true });
   } catch (err) {
     console.log(err);
