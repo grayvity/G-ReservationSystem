@@ -4,7 +4,16 @@
       <div class="col-lg-12 grid-margin">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Гэр/байшин жагсаалт</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <h4 class="card-title">Өрөөний жагсаалт</h4>
+                </div>
+                <div class="col-md-6" style="text-align:right;">
+                  <button type="button" class="btn btn-primary btn-fw" v-on:click="createNew" data-toggle="modal" data-target="#entryModal">
+                    <i class="fa fa-plus"></i>нэмэх
+                  </button>
+                </div>
+              </div>
             <div class="table-responsive">
               <table class="table table-bordered">
                 <thead>
@@ -13,163 +22,66 @@
                       #
                     </th>
                     <th>
-                      First name
+                      Нэр
                     </th>
                     <th>
-                      Progress
+                      Бүлэг
                     </th>
                     <th>
-                      Amount
+                      Хүний багтаамж
                     </th>
                     <th>
-                      Sales
+                      Үнэ
                     </th>
                     <th>
-                      Deadline
+                      Тэмдэглэл
                     </th>
+                    <th>
+                      Идэвхитэй
+                    </th>
+                    <th/>
+                    <th/>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr v-for="info in services" v-bind:key="info.id">
                     <td class="font-weight-medium">
-                      1
+                      {{info.id}}
                     </td>
                     <td>
-                      Herman Beck
+                      {{info.name}}
                     </td>
                     <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
+                      {{info.category_name}}
                     </td>
                     <td>
-                      $ 77.99
-                    </td>
-                    <td class="text-danger"> 53.64%
-                      <i class="mdi mdi-arrow-down"></i>
+                      {{info.person_limit}}
                     </td>
                     <td>
-                      May 15, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      2
+                      {{info.price}}
                     </td>
                     <td>
-                      Messsy Adam
+                      {{info.note}}
                     </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
+                    <td class="min">
+                      <i v-if="info.is_active === 'Y'" class="fa fa-check-circle-o" style="color:green"></i>
+                      <i v-else class="fa fa-eye-slash" style="color:yellow"></i>
                     </td>
-                    <td>
-                      $245.30
+                    <td class="min">
+                      <a href="javascript:;" v-on:click="setCurrent(info)" data-toggle="modal" data-target="#entryModal">
+                        <i class="fa fa-edit"></i>
+                      </a>
                     </td>
-                    <td class="text-success"> 24.56%
-                      <i class="mdi mdi-arrow-up"></i>
-                    </td>
-                    <td>
-                      July 1, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      3
-                    </td>
-                    <td>
-                      John Richards
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $138.00
-                    </td>
-                    <td class="text-danger"> 28.76%
-                      <i class="mdi mdi-arrow-down"></i>
-                    </td>
-                    <td>
-                      Apr 12, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      4
-                    </td>
-                    <td>
-                      Peter Meggik
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-primary progress-bar-striped" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $ 77.99
-                    </td>
-                    <td class="text-danger"> 53.45%
-                      <i class="mdi mdi-arrow-down"></i>
-                    </td>
-                    <td>
-                      May 15, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      5
-                    </td>
-                    <td>
-                      Edward
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $ 160.25
-                    </td>
-                    <td class="text-success"> 18.32%
-                      <i class="mdi mdi-arrow-up"></i>
-                    </td>
-                    <td>
-                      May 03, 2015
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-medium">
-                      6
-                    </td>
-                    <td>
-                      Henry Tom
-                    </td>
-                    <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0"
-                          aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                    <td>
-                      $ 150.00
-                    </td>
-                    <td class="text-danger"> 24.67%
-                      <i class="mdi mdi-arrow-down"></i>
-                    </td>
-                    <td>
-                      June 16, 2015
+                    <td class="min">
+                      <a href="javascript:;" v-on:click="setCurrent(info)" data-toggle="modal" data-target="#askmodal">
+                        <i class="fa fa-trash-o" style="color:red"></i>
+                      </a>
                     </td>
                   </tr>
                 </tbody>
               </table>
+              <Entry v-bind:info="current_info" @onCompleted = "modal_completed"/>
+              <AskModal @onChanged="modal_value_changed"/>
             </div>
           </div>
         </div>
@@ -181,7 +93,110 @@
 </template>
 
 <script>
+
+import Entry from "@/entry/RoomEntry.vue";
+import AskModal from "@/components/AskModal.vue";
+
 export default {
-  name: 'Rooms',
+  name: 'RoomGategories',
+  components: {Entry, AskModal},
+  data(){
+    return{
+      services: [],
+      current_info : {}
+    }
+  },
+  created(){
+    this.getData();
+  },
+  methods: {
+    async getData(){
+      try{
+        this.$store.dispatch('set_loading_status', true)
+        const res = await fetch("/api/get-rooms", {
+          method: "GET"
+        });
+        const resJson = await res.json();
+
+        // console.log(resJson.services)
+
+        this.services = resJson.datas;
+
+        
+      }catch(err){
+        this.$notify({
+          title: 'Алдаа',
+          text: err,
+          type: 'error'
+        });
+        console.log(err)
+      }finally{
+        this.$store.dispatch('set_loading_status', false)
+      }
+    },
+    setCurrent(info){
+      this.current_info = info;
+    },
+    async delete(){
+      try{
+        console.log('deleting...')
+        this.$store.dispatch('set_loading_status', true)
+
+        const res = await fetch("/api/delete-room", {
+            method: "POST",
+            body: JSON.stringify({id: this.current_info.id}),
+            headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+            }
+        });
+        const resJson = await res.json();
+        
+        this.$notify({
+          title: 'Амжилттай',
+          text: 'Амжилттай устгагдлаа',
+          type: 'success'
+        });
+        this.getData();
+
+        if (!resJson.success) {
+            console.log(resJson.error)
+            this.$notify({
+              title: 'Алдаа',
+              text: resJson.error,
+              type: 'error'
+            });
+        }
+        if (res.error) {
+            console.log(res.error)
+            this.$notify({
+              title: 'Алдаа',
+              text: res.error,
+              type: 'error'
+            });
+        }
+      }catch(err){
+        this.$notify({
+          title: 'Алдаа',
+          text: err,
+          type: 'error'
+        });
+      }finally{
+          this.$store.dispatch('set_loading_status', false);
+      }
+    },
+    createNew(){
+      this.current_info = {is_active : true}
+    },
+    modal_value_changed(value){
+      if(value){
+        this.delete();
+      }
+    },
+    modal_completed(){
+      console.log('refreshing...')
+      this.getData();
+    }
+  }
 }
 </script>

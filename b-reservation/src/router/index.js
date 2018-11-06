@@ -8,7 +8,7 @@ import Controller from "@/pages/PageController";
 import Services from "@/pages/Services";
 import Rooms from "@/pages/Rooms";
 import Orders from "@/pages/Orders";
-import RoomGategories from "@/pages/RoomGategories";
+import RoomCategories from "@/pages/RoomCategories";
 
 Vue.use(Router);
 
@@ -36,9 +36,9 @@ export default new Router({
           component: Rooms
         },
         {
-          path: "room_gategories",
-          name: "room_gategories",
-          component: RoomGategories
+          path: "room_categories",
+          name: "room_categories",
+          component: RoomCategories
         },
         {
           path: "orders",

@@ -1,6 +1,6 @@
 <template>
     <!-- Modal -->
-    <div class="modal fade" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" ref="entryModal" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
             <div class="modal-header">
@@ -13,7 +13,27 @@
                 <form class="forms-sample">
                     <div class="form-group">
                         <label for="type">Нэр</label>
-                        <input type="text" class="form-control" id="name" v-model="info.name" placeholder="Нэр">
+                        <input type="text" class="form-control" id="type" v-model="info.name" placeholder="Төрөл">
+                    </div>
+                    <div class="form-group">
+                        <label for="cmbType">Бүлэг</label>
+                        <select class="form-control form-control-sm"  id="cmbType" v-model="info.category_id">
+                            <option v-for="cat in roomCategories" v-bind:key="cat.id" :value="cat.id">{{cat.name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="person_limit">Хүний багтаамж</label>
+                        <input type="number" value="" min="0" step="100" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" v-model="info.person_limit"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Тэмдэглэл</label>
+                        <input type="text" class="form-control" id="description" v-model="info.note" placeholder="Тэмдэглэл">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">₮</span>
+                        </div>
+                        <input type="number" value="" min="0" step="100" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" v-model="info.price"/>
                     </div>
                     <div class="form-check form-check-flat">
                         <label class="form-check-label">
@@ -40,16 +60,59 @@
 
 
 export default {
-  name: 'RoomGategoryEntry',
+  name: 'RoomEntry',
   props: ['info'],
-  
+  data(){
+      return {
+          roomCategories : []
+      }
+  },
   created(){
-       
-    console.log('entry created!')
+    console.log('entry created!');
+    this.getData();
   },
   methods: {
+      async getData(){
+      try{
+        this.$store.dispatch('set_loading_status', true)
+        const res = await fetch("/api/get-room-categories", {
+          method: "GET"
+        });
+        const resJson = await res.json();
+
+        this.roomCategories = resJson.datas;
+        console.log("categories: ", resJson.datas)
+
+        
+      }catch(err){
+        this.$notify({
+          title: 'Алдаа',
+          text: err,
+          type: 'error'
+        });
+        console.log(err)
+      }finally{
+        this.$store.dispatch('set_loading_status', false)
+      }
+    },
       async checkControl(){
-        if (!this.info.name || this.info.name.length == 0){
+        if (!this.info.category_id || this.info.category_id.length == 0){
+            this.$notify({
+                title: 'Анхаар',
+                text: 'Талбар бүрэн бөглөнө үү.',
+                type: 'warn'
+            });    
+            return false;
+        }
+        else if (!this.info.name || this.info.name.length == 0){
+            this.$notify({
+                title: 'Анхаар',
+                text: 'Талбар бүрэн бөглөнө үү.',
+                type: 'warn'
+            });    
+            return false;
+        }
+        else if (!this.info.price || this.info.price.length == 0 || this.info.price <= 0){
             this.$notify({
                 title: 'Анхаар',
                 text: 'Талбар бүрэн бөглөнө үү.',
@@ -68,7 +131,7 @@ export default {
             if(!isValidate){ return; }
             this.$store.dispatch('set_loading_status', true)
 
-            const res = await fetch("/api/save-room-gategory", {
+            const res = await fetch("/api/save-room", {
                 method: "POST",
                 body: JSON.stringify(this.info),
                     headers: {

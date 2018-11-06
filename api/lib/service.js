@@ -118,7 +118,11 @@ async function delete_service(id) {
   }
 }
 
-async function get_room_gategories(isActive) {
+/**
+ * ROOM GATEGORY
+ */
+
+async function get_room_categories(isActive) {
   const connection = await createConnection();
 
   let query = `select * from room_category`;
@@ -138,7 +142,7 @@ async function get_room_gategories(isActive) {
   return service_list;
 }
 
-async function save_room_gategory(info) {
+async function save_room_category(info) {
   try {
     const connection = await createConnection();
     let query = "";
@@ -165,7 +169,7 @@ async function save_room_gategory(info) {
   }
 }
 
-async function delete_room_gategory(id) {
+async function delete_room_category(id) {
   try {
     console.log("Deleting room_category");
     const connection = await createConnection();
@@ -187,12 +191,104 @@ async function delete_room_gategory(id) {
   }
 }
 
+/**
+ * ROOM
+ */
+async function get_rooms(isActive) {
+  const connection = await createConnection();
+
+  let query = `select a.*, b.name as category_name from room a
+    left join room_category b on a.category_id = b.id `;
+  let params = [];
+
+  if (isActive) {
+    query += " where is_active = ?";
+    params = [isActive];
+  }
+
+  const service_list = await runQuery({
+    connection,
+    query,
+    params
+  });
+
+  return service_list;
+}
+
+async function save_room(info) {
+  try {
+    console.log("saving room...", info);
+    const connection = await createConnection();
+    let query = "";
+    let params = [];
+    // update
+    if (info.id != null) {
+      console.log(info);
+      query = `update room set name = ?, category_id = ?, person_limit = ?, price = ?, is_active = ?, note = ? where id = ?`;
+      params = [
+        info.name,
+        info.category_id,
+        info.person_limit,
+        info.price,
+        info.is_active ? "Y" : "N",
+        info.note,
+        info.id
+      ];
+      // insert
+    } else {
+      query = `insert into room (name, category_id, person_limit, price, is_active, note) values(?, ?, ?, ?, ?, ?)`;
+      params = [
+        info.name,
+        info.category_id,
+        info.person_limit,
+        info.price,
+        info.is_active ? "Y" : "N",
+        info.note
+      ];
+      console.log(query, params);
+    }
+
+    await runQuery({
+      connection,
+      query,
+      params: params
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function delete_room(id) {
+  try {
+    console.log("Deleting room");
+    const connection = await createConnection();
+    let query = "";
+
+    // delete
+    if (id != null) {
+      query = `delete from room where id = ?`;
+      await runQuery({
+        connection,
+        query,
+        params: [id]
+      });
+      return true;
+    }
+    return false;
+  } catch (err) {
+    throw err;
+  }
+}
+
 module.exports = {
   check_login,
   get_service_list,
   save_service,
   delete_service,
-  get_room_gategories,
-  save_room_gategory,
-  delete_room_gategory
+  get_room_categories,
+  save_room_category,
+  delete_room_category,
+  get_rooms,
+  save_room,
+  delete_room
 };

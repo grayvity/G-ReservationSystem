@@ -70,11 +70,11 @@
 
 <script>
 
-import Entry from "@/entry/RoomGategoryEntry.vue";
+import Entry from "@/entry/RoomCategoryEntry.vue";
 import AskModal from "@/components/AskModal.vue";
 
 export default {
-  name: 'RoomGategories',
+  name: 'RoomCategories',
   components: {Entry, AskModal},
   data(){
     return{
@@ -89,7 +89,7 @@ export default {
     async getData(){
       try{
         this.$store.dispatch('set_loading_status', true)
-        const res = await fetch("/api/get-room-gategories", {
+        const res = await fetch("/api/get-room-categories", {
           method: "GET"
         });
         const resJson = await res.json();
@@ -118,7 +118,7 @@ export default {
         console.log('deleting...')
         this.$store.dispatch('set_loading_status', true)
 
-        const res = await fetch("/api/delete-room-gategory", {
+        const res = await fetch("/api/delete-room-category", {
             method: "POST",
             body: JSON.stringify({id: this.current_info.id}),
             headers: {

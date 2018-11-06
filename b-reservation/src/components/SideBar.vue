@@ -29,7 +29,7 @@
                   </router-link>
                 </li>
                 <li class="nav-item">
-                  <router-link class="nav-link" v-bind:to="{ name: 'room_gategories'}">
+                  <router-link class="nav-link" v-bind:to="{ name: 'room_categories'}">
                     <i class="menu-icon fa fa-home"></i>
                     <span class="menu-title">Гэр бүлэг</span>
                   </router-link>

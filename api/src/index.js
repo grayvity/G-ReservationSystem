@@ -9,9 +9,12 @@ const {
   get_service_list,
   save_service,
   delete_service,
-  save_room_gategory,
-  delete_room_gategory,
-  get_room_gategories
+  save_room_category,
+  delete_room_category,
+  get_room_categories,
+  save_room,
+  delete_room,
+  get_rooms
 } = require("../lib/service");
 
 const app = express();
@@ -73,20 +76,24 @@ app.post("/api/delete-service", async (req, res) => {
   }
 });
 
-app.get("/api/get-room-gategories", async (req, res) => {
+/**
+ * CATEGORY
+ */
+
+app.get("/api/get-room-categories", async (req, res) => {
   try {
     const { is_active } = req.query;
 
-    let datas = await get_room_gategories(is_active);
+    let datas = await get_room_categories(is_active);
     res.json({ datas });
   } catch (err) {
     res.json({ datas: [], error: err });
   }
 });
 
-app.post("/api/save-room-gategory", async (req, res) => {
+app.post("/api/save-room-category", async (req, res) => {
   try {
-    await save_room_gategory(req.body);
+    await save_room_category(req.body);
     res.json({ success: true });
   } catch (err) {
     console.log(err);
@@ -94,10 +101,45 @@ app.post("/api/save-room-gategory", async (req, res) => {
   }
 });
 
-app.post("/api/delete-room-gategory", async (req, res) => {
+app.post("/api/delete-room-category", async (req, res) => {
   try {
     console.log("deleting: ", req.body, req.body.id);
-    await delete_room_gategory(req.body.id);
+    await delete_room_category(req.body.id);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+/**
+ * ROOMS
+ */
+app.get("/api/get-rooms", async (req, res) => {
+  try {
+    const { is_active } = req.query;
+
+    let datas = await get_rooms(is_active);
+    res.json({ datas });
+  } catch (err) {
+    res.json({ datas: [], error: err });
+  }
+});
+
+app.post("/api/save-room", async (req, res) => {
+  try {
+    await save_room(req.body);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+app.post("/api/delete-room", async (req, res) => {
+  try {
+    console.log("deleting: ", req.body, req.body.id);
+    await delete_room(req.body.id);
     res.json({ success: true });
   } catch (err) {
     console.log(err);

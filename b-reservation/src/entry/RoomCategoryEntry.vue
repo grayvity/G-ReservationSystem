@@ -12,22 +12,8 @@
             <div class="modal-body">
                 <form class="forms-sample">
                     <div class="form-group">
-                        <label for="type">Төрөл</label>
-                        <input type="text" class="form-control" id="type" v-model="info.type" placeholder="Төрөл">
-                    </div>
-                    <div class="form-group">
                         <label for="type">Нэр</label>
                         <input type="text" class="form-control" id="name" v-model="info.name" placeholder="Нэр">
-                    </div>
-                    <div class="form-group">
-                        <label for="type">Тайлбар</label>
-                        <input type="text" class="form-control" id="description" v-model="info.description" placeholder="Тайлбар">
-                    </div>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">₮</span>
-                        </div>
-                        <input type="number" value="" min="0" step="100" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" v-model="info.price"/>
                     </div>
                     <div class="form-check form-check-flat">
                         <label class="form-check-label">
@@ -54,7 +40,7 @@
 
 
 export default {
-  name: 'ServiceEntry',
+  name: 'RoomCategoryEntry',
   props: ['info'],
   
   created(){
@@ -63,23 +49,7 @@ export default {
   },
   methods: {
       async checkControl(){
-        if (!this.info.type || this.info.type.length == 0){
-            this.$notify({
-                title: 'Анхаар',
-                text: 'Талбар бүрэн бөглөнө үү.',
-                type: 'warn'
-            });    
-            return false;
-        }
-        else if (!this.info.name || this.info.name.length == 0){
-            this.$notify({
-                title: 'Анхаар',
-                text: 'Талбар бүрэн бөглөнө үү.',
-                type: 'warn'
-            });    
-            return false;
-        }
-        else if (!this.info.price || this.info.price.length == 0 || this.info.price <= 0){
+        if (!this.info.name || this.info.name.length == 0){
             this.$notify({
                 title: 'Анхаар',
                 text: 'Талбар бүрэн бөглөнө үү.',
@@ -98,7 +68,7 @@ export default {
             if(!isValidate){ return; }
             this.$store.dispatch('set_loading_status', true)
 
-            const res = await fetch("/api/save-service", {
+            const res = await fetch("/api/save-room-category", {
                 method: "POST",
                 body: JSON.stringify(this.info),
                     headers: {
