@@ -23,11 +23,11 @@ app.use(bodyParser.json());
 
 app.use(
   "/static",
-  express.static(path.join(__dirname, "../../gu-reservation/dist/static"))
+  express.static(path.join(__dirname, "../../b-reservation/dist/static"))
 );
 
 app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "../../gu-reservation/dist/index.html"))
+  res.sendFile(path.join(__dirname, "../../b-reservation/dist/index.html"))
 );
 
 http.listen(process.env.PORT, () =>
