@@ -19,8 +19,8 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>Өрөө&гэр</th>
-                          <th v-for="day in orderDays" v-bind:key="day.day">
+                          <th class="text-center">Өрөө&гэр</th>
+                          <th class="text-center" v-for="day in orderDays" v-bind:key="day.day">
                             {{ day.day }}
                             {{ day.week_day }}
                           </th>
@@ -32,7 +32,7 @@
                             {{order.name}}
                           </td>
                           <td v-for="cell in order.cols" v-bind:key="cell.date" v-bind:colspan="cell.orderday" class="py-1">
-                            <button type="button" v-bind:class="{'btn-inverse-success w-100' : cell.status == 2,'btn-inverse-warning w-100' : cell.status == 1,'btn-inverse-secondary w-50' : cell.status == 0,}" class="btn btn-rounded">{{ cell.note }}</button>
+                            <button type="button" v-bind:class="{'btn-inverse-success w-100' : cell.status == 2,'btn-inverse-warning w-100' : cell.status == 1,'btn-inverse-secondary w-100' : cell.status == 0,}" class="btn btn-rounded">{{ cell.note }}</button>
                           </td>
                         </tr>
                       </tbody>
