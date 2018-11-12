@@ -44,7 +44,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="info in services" v-bind:key="info.id">
+                  <tr v-for="info in rooms" v-bind:key="info.id">
                     <td class="font-weight-medium">
                       {{info.id}}
                     </td>
@@ -102,7 +102,7 @@ export default {
   components: {Entry, AskModal},
   data(){
     return{
-      services: [],
+      rooms: [],
       current_info : {}
     }
   },
@@ -117,12 +117,7 @@ export default {
           method: "GET"
         });
         const resJson = await res.json();
-
-        // console.log(resJson.services)
-
-        this.services = resJson.datas;
-
-        
+        this.rooms = resJson.datas;
       }catch(err){
         this.$notify({
           title: 'Алдаа',

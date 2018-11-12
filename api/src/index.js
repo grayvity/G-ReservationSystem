@@ -14,7 +14,8 @@ const {
   get_room_categories,
   save_room,
   delete_room,
-  get_rooms
+  get_rooms,
+  save_order
 } = require("../lib/service");
 
 const app = express();
@@ -140,6 +141,30 @@ app.post("/api/delete-room", async (req, res) => {
   try {
     console.log("deleting: ", req.body, req.body.id);
     await delete_room(req.body.id);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+// get rooms and services
+app.get("/api/get-room-and-service", async (req, res) => {
+  try {
+    let rooms = await get_rooms("Y");
+    let services = await get_service_list("Y");
+    console.log(rooms);
+    console.log(services);
+    res.json({ rooms, services });
+  } catch (err) {
+    console.log(err);
+    res.json({ rooms: [], services: [], error: err });
+  }
+});
+
+app.post("/api/save_order", async (req, res) => {
+  try {
+    await save_order(req.body);
     res.json({ success: true });
   } catch (err) {
     console.log(err);

@@ -195,24 +195,27 @@ async function delete_room_category(id) {
  * ROOM
  */
 async function get_rooms(isActive) {
-  const connection = await createConnection();
+  try {
+    const connection = await createConnection();
 
-  let query = `select a.*, b.name as category_name from room a
-    left join room_category b on a.category_id = b.id `;
-  let params = [];
+    let query = `select a.*, b.name as category_name from room a
+      left join room_category b on a.category_id = b.id `;
+    let params = [];
 
-  if (isActive) {
-    query += " where is_active = ?";
-    params = [isActive];
+    if (isActive) {
+      query += " where a.is_active = ?";
+      params = [isActive];
+    }
+
+    const service_list = await runQuery({
+      connection,
+      query,
+      params
+    });
+    return service_list;
+  } catch (err) {
+    throw err;
   }
-
-  const service_list = await runQuery({
-    connection,
-    query,
-    params
-  });
-
-  return service_list;
 }
 
 async function save_room(info) {
@@ -280,6 +283,49 @@ async function delete_room(id) {
   }
 }
 
+async function save_order(info) {
+  try {
+    console.log("saving order...", info);
+    const connection = await createConnection();
+    let query = "";
+    let params = [];
+    // update
+    if (info.id != null) {
+      console.log(info);
+      query = `update room set name = ?, category_id = ?, person_limit = ?, price = ?, is_active = ?, note = ? where id = ?`;
+      params = [
+        info.name,
+        info.category_id,
+        info.person_limit,
+        info.price,
+        info.is_active ? "Y" : "N",
+        info.note,
+        info.id
+      ];
+      // insert
+    } else {
+      query = `insert into room (name, category_id, person_limit, price, is_active, note) values(?, ?, ?, ?, ?, ?)`;
+      params = [
+        info.name,
+        info.category_id,
+        info.person_limit,
+        info.price,
+        info.is_active ? "Y" : "N",
+        info.note
+      ];
+      console.log(query, params);
+    }
+
+    await runQuery({
+      connection,
+      query,
+      params: params
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
 module.exports = {
   check_login,
   get_service_list,
@@ -290,5 +336,6 @@ module.exports = {
   delete_room_category,
   get_rooms,
   save_room,
-  delete_room
+  delete_room,
+  save_order
 };
