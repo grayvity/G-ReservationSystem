@@ -116,7 +116,7 @@
                     <div class="row">
                       <div class="col-md-12">
                         <div id="roomCollapse" class="table-responsive multi-collapse1 show">
-                          <table class="table table-hover">
+                          <table class="table table-hover sortable">
                             <thead>
                               <tr>
                                 <th class="text-center">Өрөө,гэр #</th>
@@ -233,31 +233,10 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
+                              <tr v-for="serviceInfo in serviceList" v-bind:key="serviceInfo.id">
                                 <td class="pt-3-half" >
-                                  <select class="form-control">
-                                    <option selected>Сонгоно уу</option>
-                                    <option value="1">Гэр #1</option>
-                                    <option value="2">Гэр #2</option>
-                                    <option value="3">Гэр #3</option>
-                                  </select>
-                                </td>
-                                <td class="pt-3-half" >
-                                  <input class="form-control" type="text" placeholder="Оруулна уу">
-                                </td>
-                                <td class="pt-3-half" >
-                                  <input class="form-control" type="number" pattern="(^\d+(\.|\,)\d{2}$)" min=0 placeholder="Оруулна уу">
-                                </td>
-                                <td class="pt-3-half">
-                                  <a href="javascript:;" style="margin-left: 10px;">
-                                    <i class="fa fa-trash-o" style="color:red"></i>
-                                  </a>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td class="pt-3-half" >
-                                  <select class="form-control">
-                                    <option selected>Сонгоно уу</option>
+                                  <select class="form-control" v-model="serviceInfo.id">
+                                    <option value="0" selected>Сонгоно уу</option>
                                     <option value="1">Гэр #1</option>
                                     <option value="2">Гэр #2</option>
                                     <option value="3">Гэр #3</option>
@@ -293,6 +272,11 @@
 <script>
 export default {
   name: 'OrderEntry',
+  data: {
+    orderInfo: null,
+    roomList:[],
+    serviceList:[]
+  }
 }
 
 </script>
