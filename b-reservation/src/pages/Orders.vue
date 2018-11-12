@@ -11,7 +11,26 @@
       </div>
     </div>
     <div class="row">
-      
+      <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="form-group row">
+              <label class="col-sm-1 col-form-label">Огноо</label>
+              <div class="col-sm-2">
+                  <input type="date" v-model="search_info.begindate" date-format="yyyy/mm/dd" max="3000-12-31" min="1000-01-01" class="form-control">
+              </div>
+              <div class="col-sm-2">
+                  <input type="date" v-model="search_info.enddate" date-format="yyyy/mm/dd" max="3000-12-31" min="1000-01-01" class="form-control">
+              </div>
+              <div class="col-sm-2">
+                  <button class="btn btn-success mr-2" v-on:click="get_data">Шүүх</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
        <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
@@ -51,8 +70,52 @@ import OrderEntry from "@/entry/OrderEntry.vue";
 export default {
   name: 'Orders',
   components: {OrderEntry},
+  methods:{
+    async get_data(){
+      try{
+        console.log('get-data...')
+        this.$store.dispatch('set_loading_status', true)
+
+        const res = await fetch("/api/get-order-info", {
+            method: "POST",
+            body: JSON.stringify({search_info: this.search_info}),
+            headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+            }
+        });
+        const resJson = await res.json();
+        
+        this.$notify({
+          title: 'Амжилттай',
+          text: 'Амжилттай',
+          type: 'success'
+        });
+        
+        console.log(resJson);
+        
+        if (res.error) {
+            console.log(res.error)
+            this.$notify({
+              title: 'Алдаа',
+              text: res.error,
+              type: 'error'
+            });
+        }
+      }catch(err){
+        this.$notify({
+          title: 'Алдаа',
+          text: err,
+          type: 'error'
+        });
+      }finally{
+          this.$store.dispatch('set_loading_status', false);
+      }
+    },
+  },
   data(){
     return { 
+      search_info: { begindate: new Date().getDate(), enddate: (new Date().getDate() + 10) },
       orderList: [
         {name: 'ger#1', cols: [
           {date: '01', orderday : 0, note : '', status : 0},
