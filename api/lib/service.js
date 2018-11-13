@@ -328,7 +328,7 @@ async function get_order_info(data) {
     let query = `select room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.note as note  from order_room 
     left join room on order_room.room_id = room.id
     left join orders on order_room.order_id = orders.id 
-    where orders.status in ("new, confirmed") and ? < order_room.end_date and order_room.start_date < ?;
+    where orders.status in ('new', 'confirmed') and ? < order_room.end_date and order_room.start_date < ?;
      `;
     let params = [data.search_info.begindate, data.search_info.enddate];
     const orders = await runQuery({
@@ -336,6 +336,7 @@ async function get_order_info(data) {
       query,
       params
     });
+    console.log(orders);
     // orders = [
     //   {
     //     roomname: "ger#1",
