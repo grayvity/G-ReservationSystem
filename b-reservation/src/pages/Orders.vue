@@ -16,11 +16,13 @@
           <div class="card-body">
             <div class="form-group row">
               <label class="col-sm-1 col-form-label">Огноо</label>
-              <div class="col-sm-2">
-                  <input type="date" v-model="search_info.begindate" value="search_info.begindate" max="3000-12-31" min="1000-01-01" class="form-control">
+              <div class="col-sm-3">
+                  <date-picker v-model="search_info.begindate" format="YYYY-MM-DD" type="date" max="3000-12-31" min="1000-01-01" lang="en">
+                    </date-picker>
               </div>
-              <div class="col-sm-2">
-                  <input type="date" v-model="search_info.enddate" value="search_info.enddate" max="3000-12-31" min="1000-01-01" class="form-control">
+              <div class="col-sm-3">
+                  <date-picker v-model="search_info.enddate" format="YYYY-MM-DD" type="date" max="3000-12-31" min="1000-01-01" lang="en">
+                    </date-picker>
               </div>
               <div class="col-sm-2">
                   <button class="btn btn-success mr-2" v-on:click="get_data">Шүүх</button>
@@ -67,9 +69,10 @@
 </template>
 <script>
 import OrderEntry from "@/entry/OrderEntry.vue";
+import DatePicker from 'vue2-datepicker'
 export default {
   name: 'Orders',
-  components: {OrderEntry},
+  components: {OrderEntry, DatePicker},
   methods:{
     async get_data(){
       try{
@@ -90,6 +93,7 @@ export default {
           text: 'Амжилттай',
           type: 'success'
         });
+        console.log(resJson.datas.range_days);
         this.orderDays = resJson.datas.range_days;
         this.orderList = resJson.datas.orderlist;
         if (res.error) {

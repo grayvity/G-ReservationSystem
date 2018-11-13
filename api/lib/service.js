@@ -308,9 +308,9 @@ function eng_weekday_to_mn(weekday) {
 }
 async function get_order_info(data) {
   try {
-    begindate = moment(data.search_info.begindate, "YYYY-MM-DD");
-    enddate = moment(data.search_info.enddate, "YYYY-MM-DD");
-    current_date = moment(data.search_info.begindate, "YYYY-MM-DD");
+    begindate = moment(data.search_info.begindate);
+    enddate = moment(data.search_info.enddate);
+    current_date = moment(data.search_info.begindate);
     if (data.search_info.begindate > data.search_info.enddate) {
       throw "Wrong date:";
     }
@@ -325,7 +325,7 @@ async function get_order_info(data) {
     }
     const connection = await createConnection();
 
-    let query = `select room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.note as note  from order_room 
+    let query = `select room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.cus_name as note  from order_room 
     left join room on order_room.room_id = room.id
     left join orders on order_room.order_id = orders.id 
     where orders.status in ('new', 'confirmed') and ? < order_room.end_date and order_room.start_date < ?;
@@ -336,7 +336,6 @@ async function get_order_info(data) {
       query,
       params
     });
-    console.log(orders);
     // orders = [
     //   {
     //     roomname: "ger#1",
@@ -398,11 +397,11 @@ async function get_order_info(data) {
         }
         list_orders[order.roomname] = cols;
       }
-      begin_date = moment(order.begindate, "YYYY-MM-DD");
+      begin_date = moment(order.begindate);
       if (begin_date < begindate) begin_date = begindate;
-      end_date = moment(order.enddate, "YYYY-MM-DD");
+      end_date = moment(order.enddate);
       if (end_date > enddate) end_date = enddate;
-      cur_date = moment(begin_date.format("YYYY-MM-DD"), "YYYY-MM-DD");
+      cur_date = moment(begin_date.format("YYYY-MM-DD"));
       more_days = [];
       while (cur_date <= end_date) {
         more_days.push(cur_date.format("MM-DD"));
