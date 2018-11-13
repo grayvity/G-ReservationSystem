@@ -1,5 +1,9 @@
+var moment = require('moment');
+
+
 const { runQuery, createConnection } = require("./storage");
 const { creatNewId } = require("./tools");
+
 // import { runQuery, createConnection } from "./storage.js";
 
 async function check_login(username, password) {
@@ -283,113 +287,141 @@ async function delete_room(id) {
     throw err;
   }
 }
-async function get_order_info(search_info) {
+function eng_weekday_to_mn(weekday){
+  switch (weekday){
+    case 'Mon':
+      return 'Дав';
+      case 'Tue':
+      return 'Мяг';
+      case 'Wed':
+      return 'Лха';
+      case 'Thu':
+      return 'Пүр';
+      case 'Fri':
+      return 'Баа';
+      case 'Sat':
+      return 'Бям';
+      case 'Sun':
+      return 'Ням';
+      default:
+      return weekday;
+  }
+}
+async function get_order_info(data) {
   try {
-    console.log("get_order_info service");
-    if (search_info.begindate > search_info.enddate) {
+    begindate = moment(data.search_info.begindate, 'YYYY-MM-DD');
+    enddate = moment(data.search_info.enddate, 'YYYY-MM-DD');
+    current_date = moment(data.search_info.begindate, 'YYYY-MM-DD');
+    if (data.search_info.begindate > data.search_info.enddate) {
       throw "Wrong date:";
     }
     range_days = [];
-    begindate = new Date(search_info.begindate);
-    enddate = new Date(search_info.enddate);
-    current_date = begindate;
-
-    var weekday = new Array(7);
-    weekday[0] = "Ням";
-    weekday[1] = "Дав";
-    weekday[2] = "Мяг";
-    weekday[3] = "Лха";
-    weekday[4] = "Пүр";
-    weekday[5] = "Баа";
-    weekday[6] = "Бям";
     while (current_date <= enddate) {
-      cur_day =
-        current_date.getUTCMonth() + 1 + "/" + current_date.getUTCDate();
       range_days.push({
-        date: current_date,
-        day: cur_day,
-        weekday: weekday(current_date.getDay())
+        date: current_date.format('YYYY-MM-DD'),
+        day: current_date.format('MM-DD'),
+        weekday: eng_weekday_to_mn(current_date.format('ddd'))
       });
-      current_date = current_date + 1;
+      current_date.add(1, 'days');
     }
-    orders = [
-      {
-        roomName: "ger#1",
-        begindate: "2018/11/10",
-        enddate: "2018/11/12",
-        order_status: 1,
-        note: "bla"
-      },
-      {
-        roomName: "ger#2",
-        begindate: "2018/11/11",
-        enddate: "2018/11/12",
-        order_status: 2,
-        note: "bla"
-      },
-      {
-        roomName: "ger#2",
-        begindate: "2018/11/14",
-        enddate: "2018/11/18",
-        order_status: 1,
-        note: "bla"
-      },
-      {
-        roomName: "ger#3",
-        begindate: "2018/11/16",
-        enddate: "2018/11/16",
-        order_status: 1,
-        note: "bla"
-      },
-      {
-        roomName: "ger#4",
-        begindate: "2018/11/10",
-        enddate: "2018/11/15",
-        order_status: 2,
-        note: "bla"
-      },
-      {
-        roomName: "ger#4",
-        begindate: "2018/11/16",
-        enddate: "2018/11/17",
-        order_status: 1,
-        note: "bla"
-      }
-    ];
-    list_orders = [];
+    const connection = await createConnection();
+   
+    let query = `select room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.note as note  from order_room 
+    left join room on order_room.room_id = room.id
+    left join orders on order_room.order_id = orders.id 
+    where orders.status in ("new, confirmed") and ? < order_room.end_date and order_room.start_date < ?;
+     `;
+    let params = [data.search_info.begindate, data.search_info.enddate];
+    const orders = await runQuery({
+      connection,
+      query,
+      params
+    });
+    // orders = [
+    //   {
+    //     roomname: "ger#1",
+    //     begindate: "2018-11-10",
+    //     enddate: "2018-11-12",
+    //     order_status: 1,
+    //     note: "bla"
+    //   },
+    //   {
+    //     roomname: "ger#2",
+    //     begindate: "2018-11-11",
+    //     enddate: "2018-11-12",
+    //     order_status: 2,
+    //     note: "bla"
+    //   },
+    //   {
+    //     roomname: "ger#2",
+    //     begindate: "2018-11-14",
+    //     enddate: "2018-11-18",
+    //     order_status: 1,
+    //     note: "bla"
+    //   },
+    //   {
+    //     roomname: "ger#3",
+    //     begindate: "2018-11-16",
+    //     enddate: "2018-11-16",
+    //     order_status: 1,
+    //     note: "bla"
+    //   },
+    //   {
+    //     roomname: "ger#4",
+    //     begindate: "2018-11-10",
+    //     enddate: "2018-11-15",
+    //     order_status: 2,
+    //     note: "bla"
+    //   },
+    //   {
+    //     roomname: "ger#4",
+    //     begindate: "2018-11-16",
+    //     enddate: "2018-11-17",
+    //     order_status: 1,
+    //     note: "bla"
+    //   }
+    // ];
+    list_orders = {};
     rooms = [];
-    for (order in orders) {
-      if (!rooms.includes(order.roomName)) {
-        rooms.push(order.roomName);
+    for (key in orders) {
+      order = orders[key];
+      if (!rooms.includes(order.roomname)) {
+        rooms.push(order.roomname);
         cols = [];
-        for (curday in range_days) {
-          cols.push({ day: curday.day, orderday: 0, note: "", status: 0 });
+        for (key_range in range_days) {
+          cols.push({ day: range_days[key_range].day, orderday: 0, note: "", status: 'default' });
         }
-        list_orders.push({ key: order.roomName, value: cols });
+        list_orders[order.roomname] = cols;
       }
-      begin_date = new Date(order.begindate);
-      end_date = new Date(order.enddate);
-      cur_date = begin_date;
-      beginday = cur_date.getUTCMonth() + 1 + "/" + cur_date.getUTCDate();
+      begin_date = moment(order.begindate, 'YYYY-MM-DD');
+      if(begin_date < begindate)
+        begin_date = begindate;
+      end_date = moment(order.enddate, 'YYYY-MM-DD');
+      if(end_date > enddate)
+        end_date = enddate;
+      cur_date = moment(begin_date.format('YYYY-MM-DD'), 'YYYY-MM-DD');
       more_days = [];
       while (cur_date <= end_date) {
-        more_day = cur_date.getUTCMonth() + 1 + "/" + cur_date.getUTCDate();
-        more_days.push(more_day);
-        cur_date = cur_date + 1;
+        more_days.push(cur_date.format('MM-DD'));
+        cur_date.add(1, 'days');
       }
-      for (i = list_orders[order.roomName] - 1; i >= 0; i--) {
-        if (more_days.includes(list_orders[order.roomName][i].day)) {
-          if (list_orders[order.roomName][i].day == beginday) {
-            list_orders[order.roomName][i].orderday = more_days.length;
-            list_orders[order.roomName][i].note = order.note;
-            list_orders[order.roomName][i].status = order.order_status;
+      for (i = list_orders[order.roomname].length - 1; i >= 0; i--) {
+        if (more_days.includes(list_orders[order.roomname][i].day)) {
+          if (list_orders[order.roomname][i].day == begin_date.format('MM-DD')) {
+            list_orders[order.roomname][i].orderday = more_days.length;
+            list_orders[order.roomname][i].note = order.note;
+            list_orders[order.roomname][i].status = order.order_status;
           } else {
-            list_orders[order.roomName].splice(i, 1);
+            list_orders[order.roomname].splice(i, 1);
           }
         }
       }
     }
-    return list_orders;
+    orderlist = [];
+    for (key in list_orders){
+      orderlist.push({name: key, cols: list_orders[key]});
+    }
+    return { range_days, orderlist};
   } catch (err) {
     throw err;
   }

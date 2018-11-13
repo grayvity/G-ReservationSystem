@@ -17,10 +17,10 @@
             <div class="form-group row">
               <label class="col-sm-1 col-form-label">Огноо</label>
               <div class="col-sm-2">
-                  <input type="date" v-model="search_info.begindate" date-format="yyyy/mm/dd" max="3000-12-31" min="1000-01-01" class="form-control">
+                  <input type="date" v-model="search_info.begindate" value="search_info.begindate" max="3000-12-31" min="1000-01-01" class="form-control">
               </div>
               <div class="col-sm-2">
-                  <input type="date" v-model="search_info.enddate" date-format="yyyy/mm/dd" max="3000-12-31" min="1000-01-01" class="form-control">
+                  <input type="date" v-model="search_info.enddate" value="search_info.enddate" max="3000-12-31" min="1000-01-01" class="form-control">
               </div>
               <div class="col-sm-2">
                   <button class="btn btn-success mr-2" v-on:click="get_data">Шүүх</button>
@@ -41,7 +41,7 @@
                           <th style="padding: 5px 10px 5px 10px !important" class="text-center">Өрөө&гэр</th>
                           <th style="padding: 5px 10px 5px 10px !important" class="text-center" v-for="day in orderDays" v-bind:key="day.day">
                             {{ day.day }}
-                            {{ day.week_day }}
+                            {{ day.weekday }}
                           </th>
                         </tr>
                       </thead>
@@ -51,7 +51,7 @@
                             {{order.name}}
                           </td>
                           <td style="padding: 5px 10px 5px 10px !important" v-for="cell in order.cols" v-bind:key="cell.date" v-bind:colspan="cell.orderday" class="py-1">
-                            <button type="button" v-bind:class="{'btn-inverse-success w-100' : cell.status == 2,'btn-inverse-warning w-100' : cell.status == 1,'btn-inverse-secondary w-100' : cell.status == 0,}" class="btn btn-rounded">{{ cell.note }}</button>
+                            <button type="button" v-bind:class="{'btn-inverse-success w-100' : cell.status == 'confirmed','btn-inverse-warning w-100' : cell.status == 'new','btn-inverse-secondary w-100' : cell.status == 'default',}" class="btn btn-rounded">{{ cell.note }}</button>
                           </td>
                         </tr>
                       </tbody>
@@ -73,7 +73,6 @@ export default {
   methods:{
     async get_data(){
       try{
-        console.log('get-data...')
         this.$store.dispatch('set_loading_status', true)
 
         const res = await fetch("/api/get-order-info", {
@@ -91,9 +90,8 @@ export default {
           text: 'Амжилттай',
           type: 'success'
         });
-        
-        console.log(resJson);
-        
+        this.orderDays = resJson.datas.range_days;
+        this.orderList = resJson.datas.orderlist;
         if (res.error) {
             console.log(res.error)
             this.$notify({
@@ -115,30 +113,14 @@ export default {
   },
   data(){
     return { 
-      search_info: { begindate: new Date().getDate(), enddate: (new Date().getDate() + 10) },
-      orderList: [
-        {name: 'ger#1', cols: [
-          {date: '01', orderday : 0, note : '', status : 0},
-          {date: '02', orderday : 4, note : '99999999', status : 1},
-          {date: '06', orderday : 0, note : '', status : 0},
-          {date: '07', orderday : 1, note : '88888888', status : 2},
-          {date: '08', orderday : 0, note : '', status : 0},
-          {date: '09', orderday : 1, note : '77777777', status : 2},
-          {date: '10', orderday : 1, note : '77777777', status : 2}]}
-        ],
-      orderDays: [
-        {date: '1', day: '11/01', week_day:'Пүр'},
-        {date: '2', day: '11/02', week_day:'Пүр'},
-        {date: '3', day: '11/03', week_day:'Пүр'},
-        {date: '1', day: '11/04', week_day:'Пүр'},
-        {date: '1', day: '11/05', week_day:'Пүр'},
-        {date: '1', day: '11/06', week_day:'Пүр'},
-        {date: '1', day: '11/07', week_day:'Пүр'},
-        {date: '1', day: '11/08', week_day:'Пүр'},
-        {date: '1', day: '11/09', week_day:'Пүр'},
-        {date: '1', day: '11/10', week_day:'Пүр'}
-      ]
+      search_info: { begindate: moment().format('MM/DD/YYYY'), enddate: moment().add(10, 'days').format('MM/DD/YYYY') },
+      orderList: [],
+      orderDays: []
     }
+  },
+  created(){
+    console.log('DATE: ::>',  this.search_info.begindate)
+    
   }
 }
 </script>
