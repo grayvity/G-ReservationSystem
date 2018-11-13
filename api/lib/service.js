@@ -1,5 +1,4 @@
-var moment = require('moment');
-
+var moment = require("moment");
 
 const { runQuery, createConnection } = require("./storage");
 const { creatNewId } = require("./tools");
@@ -287,45 +286,45 @@ async function delete_room(id) {
     throw err;
   }
 }
-function eng_weekday_to_mn(weekday){
-  switch (weekday){
-    case 'Mon':
-      return 'Дав';
-      case 'Tue':
-      return 'Мяг';
-      case 'Wed':
-      return 'Лха';
-      case 'Thu':
-      return 'Пүр';
-      case 'Fri':
-      return 'Баа';
-      case 'Sat':
-      return 'Бям';
-      case 'Sun':
-      return 'Ням';
-      default:
+function eng_weekday_to_mn(weekday) {
+  switch (weekday) {
+    case "Mon":
+      return "Дав";
+    case "Tue":
+      return "Мяг";
+    case "Wed":
+      return "Лха";
+    case "Thu":
+      return "Пүр";
+    case "Fri":
+      return "Баа";
+    case "Sat":
+      return "Бям";
+    case "Sun":
+      return "Ням";
+    default:
       return weekday;
   }
 }
 async function get_order_info(data) {
   try {
-    begindate = moment(data.search_info.begindate, 'YYYY-MM-DD');
-    enddate = moment(data.search_info.enddate, 'YYYY-MM-DD');
-    current_date = moment(data.search_info.begindate, 'YYYY-MM-DD');
+    begindate = moment(data.search_info.begindate, "YYYY-MM-DD");
+    enddate = moment(data.search_info.enddate, "YYYY-MM-DD");
+    current_date = moment(data.search_info.begindate, "YYYY-MM-DD");
     if (data.search_info.begindate > data.search_info.enddate) {
       throw "Wrong date:";
     }
     range_days = [];
     while (current_date <= enddate) {
       range_days.push({
-        date: current_date.format('YYYY-MM-DD'),
-        day: current_date.format('MM-DD'),
-        weekday: eng_weekday_to_mn(current_date.format('ddd'))
+        date: current_date.format("YYYY-MM-DD"),
+        day: current_date.format("MM-DD"),
+        weekday: eng_weekday_to_mn(current_date.format("ddd"))
       });
-      current_date.add(1, 'days');
+      current_date.add(1, "days");
     }
     const connection = await createConnection();
-   
+
     let query = `select room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.note as note  from order_room 
     left join room on order_room.room_id = room.id
     left join orders on order_room.order_id = orders.id 
@@ -389,25 +388,30 @@ async function get_order_info(data) {
         rooms.push(order.roomname);
         cols = [];
         for (key_range in range_days) {
-          cols.push({ day: range_days[key_range].day, orderday: 0, note: "", status: 'default' });
+          cols.push({
+            day: range_days[key_range].day,
+            orderday: 0,
+            note: "",
+            status: "default"
+          });
         }
         list_orders[order.roomname] = cols;
       }
-      begin_date = moment(order.begindate, 'YYYY-MM-DD');
-      if(begin_date < begindate)
-        begin_date = begindate;
-      end_date = moment(order.enddate, 'YYYY-MM-DD');
-      if(end_date > enddate)
-        end_date = enddate;
-      cur_date = moment(begin_date.format('YYYY-MM-DD'), 'YYYY-MM-DD');
+      begin_date = moment(order.begindate, "YYYY-MM-DD");
+      if (begin_date < begindate) begin_date = begindate;
+      end_date = moment(order.enddate, "YYYY-MM-DD");
+      if (end_date > enddate) end_date = enddate;
+      cur_date = moment(begin_date.format("YYYY-MM-DD"), "YYYY-MM-DD");
       more_days = [];
       while (cur_date <= end_date) {
-        more_days.push(cur_date.format('MM-DD'));
-        cur_date.add(1, 'days');
+        more_days.push(cur_date.format("MM-DD"));
+        cur_date.add(1, "days");
       }
       for (i = list_orders[order.roomname].length - 1; i >= 0; i--) {
         if (more_days.includes(list_orders[order.roomname][i].day)) {
-          if (list_orders[order.roomname][i].day == begin_date.format('MM-DD')) {
+          if (
+            list_orders[order.roomname][i].day == begin_date.format("MM-DD")
+          ) {
             list_orders[order.roomname][i].orderday = more_days.length;
             list_orders[order.roomname][i].note = order.note;
             list_orders[order.roomname][i].status = order.order_status;
@@ -418,10 +422,10 @@ async function get_order_info(data) {
       }
     }
     orderlist = [];
-    for (key in list_orders){
-      orderlist.push({name: key, cols: list_orders[key]});
+    for (key in list_orders) {
+      orderlist.push({ name: key, cols: list_orders[key] });
     }
-    return { range_days, orderlist};
+    return { range_days, orderlist };
   } catch (err) {
     throw err;
   }
@@ -542,7 +546,7 @@ async function save_order(info) {
 
         parseFloat(info.card_amount, 10) + parseFloat(info.cash_amount, 10),
         sum,
-        sum > info.card_amount + info.cash_amount ? "New" : "Confirmed"
+        sum > info.card_amount + info.cash_amount ? "new" : "confirmed"
       ];
     }
 
