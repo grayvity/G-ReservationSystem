@@ -123,8 +123,7 @@ export default {
     }
   },
   created(){
-    console.log('DATE: ::>',  this.search_info.begindate)
-    
+    get_data();
   }
 }
 </script>
