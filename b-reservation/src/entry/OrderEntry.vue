@@ -130,7 +130,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr v-for="info_room in order_room" v-bind:key="info_room.id">
+                              <tr v-for="info_room in order_rooms" v-bind:key="info_room.id">
                                 <td class="pt-3-half" >
                                   <select class="form-control" v-model="info_room.room_id">
                                     <option value="-1" selected>Сонгоно уу</option>
@@ -198,7 +198,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr v-for="info_service in order_service" v-bind:key="info_service.id">
+                              <tr v-for="info_service in order_services" v-bind:key="info_service.id">
                                 <td class="pt-3-half">
                                   <select class="form-control" v-model="info_service.service_id">
                                     <option value="-1" selected>Сонгоно уу</option>
@@ -240,8 +240,8 @@ export default {
       info: {},
       rooms:[],
       services:[],
-      order_room: [{room_id: -1, person_count: 0, child_count: 0, start_date: new Date(), end_date: new Date()}],
-      order_service: [{service_id: -1}]
+      order_rooms: [{room_id: -1, person_count: 0, child_count: 0, start_date: new Date(), end_date: new Date()}],
+      order_services: [{service_id: -1}]
     }
   },
   created(){
@@ -278,8 +278,8 @@ export default {
           // if(!isValidate){ return; }
             
           this.$store.dispatch('set_loading_status', true)
-          this.info.order_room = this.order_room;
-          this.info.order_service = this.order_service;
+          this.info.order_rooms = this.order_rooms;
+          this.info.order_services = this.order_services;
 
           const res = await fetch("/api/save-order", {
               method: "POST",
@@ -291,13 +291,16 @@ export default {
           });
           const resJson = await res.json();
           console.log(resJson)
-          this.$notify({
+          
+
+          // this.$emit("onCompleted")
+          if(resJson.success){
+            this.$notify({
               title: 'Амжилттай',
               text: 'Амжилттай хадгалагдлаа',
               type: 'success'
-          });
-          this.$emit("onCompleted")
-          
+            });
+          }
 
           if (!resJson.success) {
               console.log(resJson.error)
@@ -326,16 +329,16 @@ export default {
       }
     },
     addRoom(){
-      this.order_room.push({room_id: -1, person_count: 0, child_count: 0, start_date: new Date(), end_date: new Date()});
+      this.order_rooms.push({room_id: -1, person_count: 0, child_count: 0, start_date: new Date(), end_date: new Date()});
     },
     addService(){
-      this.order_service.push({service_id: -1});
+      this.order_services.push({service_id: -1});
     },
     removeService(info){
-      this.order_service.splice( this.order_service.indexOf(info), 1 );
+      this.order_services.splice( this.order_services.indexOf(info), 1 );
     },
     removeRoom(info){
-      this.order_room.splice( this.order_room.indexOf(info), 1 );
+      this.order_rooms.splice( this.order_rooms.indexOf(info), 1 );
     }
   }
 }
