@@ -163,7 +163,7 @@ app.get("/api/get-room-and-service", async (req, res) => {
   }
 });
 
-app.post("/api/save_order", async (req, res) => {
+app.post("/api/save-order", async (req, res) => {
   try {
     await save_order(req.body);
     res.json({ success: true });
