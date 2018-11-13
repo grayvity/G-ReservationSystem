@@ -17,11 +17,11 @@
             <div class="form-group row">
               <label class="col-sm-1 col-form-label">Огноо</label>
               <div class="col-sm-3">
-                  <date-picker v-model="search_info.begindate" format="YYYY-MM-DD" type="date" max="3000-12-31" min="1000-01-01" lang="en">
+                  <date-picker v-model="search_info.begindate" placeholder="Сонгоно уу" format="YYYY-MM-DD" type="date" max="3000-12-31" min="1000-01-01" lang="en">
                     </date-picker>
               </div>
               <div class="col-sm-3">
-                  <date-picker v-model="search_info.enddate" format="YYYY-MM-DD" type="date" max="3000-12-31" min="1000-01-01" lang="en">
+                  <date-picker v-model="search_info.enddate" placeholder="Сонгоно уу" format="YYYY-MM-DD" type="date" max="3000-12-31" min="1000-01-01" lang="en">
                     </date-picker>
               </div>
               <div class="col-sm-2">
@@ -40,7 +40,7 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th style="padding: 5px 10px 5px 10px !important" class="text-center">Өрөө&гэр</th>
+                          <th style="padding: 5px 10px 5px 10px !important" class="text-center"></th>
                           <th style="padding: 5px 10px 5px 10px !important" class="text-center" v-for="day in orderDays" v-bind:key="day.day">
                             {{ day.day }}
                             {{ day.weekday }}
