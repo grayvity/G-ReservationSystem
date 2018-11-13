@@ -117,7 +117,7 @@ export default {
   },
   data(){
     return { 
-      search_info: { begindate: moment().format('MM/DD/YYYY'), enddate: moment().add(10, 'days').format('MM/DD/YYYY') },
+      search_info: { begindate: moment(), enddate: moment().add(10, 'days') },
       orderList: [],
       orderDays: []
     }
