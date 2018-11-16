@@ -123,7 +123,7 @@ export default {
     }
   },
   created(){
-    get_data();
+    this.get_data();
   }
 }
 </script>
