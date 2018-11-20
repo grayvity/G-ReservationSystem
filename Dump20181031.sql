@@ -119,7 +119,7 @@ CREATE TABLE `room` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
-  `per_limit` int(11) DEFAULT NULL,
+  `person_limit` int(11) DEFAULT NULL,
   `price` double DEFAULT NULL,
   `is_active` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `note` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,

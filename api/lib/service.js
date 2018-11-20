@@ -325,61 +325,23 @@ async function get_order_info(data) {
     }
     const connection = await createConnection();
 
-    let query = `select room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.cus_name as note  from order_room 
-    left join room on order_room.room_id = room.id
-    left join orders on order_room.order_id = orders.id 
-    where orders.status in ('new', 'confirmed') and ? < order_room.end_date and order_room.start_date < ?;
-     `;
+    let query = `select room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.cus_name as note  
+    from room
+    left join order_room  on order_room.room_id = room.id
+    left join orders on order_room.order_id = orders.id and orders.status in ('new', 'confirmed') 
+      and ? < order_room.end_date and order_room.start_date < ? 
+     where 1 = 1 ` 
+    + (data.search_info.order_status == 2 ? `and orders.status in ('new', 'confirmed') ` : data.search_info.order_status == 1 ? `and orders.status not in ('new', 'confirmed') ` : ``) 
+    + (data.search_info.room_cat_id == 0 ? `` : `and room.category_id = ? `) + `;`;
     let params = [data.search_info.begindate, data.search_info.enddate];
+    if(data.search_info.room_cat_id > 0){
+      params.add(data.search_info.room_cat_id);
+    }
     const orders = await runQuery({
       connection,
       query,
       params
     });
-    // orders = [
-    //   {
-    //     roomname: "ger#1",
-    //     begindate: "2018-11-10",
-    //     enddate: "2018-11-12",
-    //     order_status: 1,
-    //     note: "bla"
-    //   },
-    //   {
-    //     roomname: "ger#2",
-    //     begindate: "2018-11-11",
-    //     enddate: "2018-11-12",
-    //     order_status: 2,
-    //     note: "bla"
-    //   },
-    //   {
-    //     roomname: "ger#2",
-    //     begindate: "2018-11-14",
-    //     enddate: "2018-11-18",
-    //     order_status: 1,
-    //     note: "bla"
-    //   },
-    //   {
-    //     roomname: "ger#3",
-    //     begindate: "2018-11-16",
-    //     enddate: "2018-11-16",
-    //     order_status: 1,
-    //     note: "bla"
-    //   },
-    //   {
-    //     roomname: "ger#4",
-    //     begindate: "2018-11-10",
-    //     enddate: "2018-11-15",
-    //     order_status: 2,
-    //     note: "bla"
-    //   },
-    //   {
-    //     roomname: "ger#4",
-    //     begindate: "2018-11-16",
-    //     enddate: "2018-11-17",
-    //     order_status: 1,
-    //     note: "bla"
-    //   }
-    // ];
     list_orders = {};
     rooms = [];
     for (key in orders) {
@@ -397,6 +359,9 @@ async function get_order_info(data) {
         }
         list_orders[order.roomname] = cols;
       }
+      
+      if(!order.order_status)
+        continue;
       begin_date = moment(order.begindate);
       if (begin_date < begindate) begin_date = begindate;
       end_date = moment(order.enddate);
@@ -425,7 +390,14 @@ async function get_order_info(data) {
     for (key in list_orders) {
       orderlist.push({ name: key, cols: list_orders[key] });
     }
-    return { range_days, orderlist };
+    query = `select * from room_category where room_category.is_active = ?`;
+    params = ['Y'];
+    const room_categories = await runQuery({
+      connection,
+      query,
+      params
+    });
+    return { range_days, orderlist, room_categories };
   } catch (err) {
     throw err;
   }
