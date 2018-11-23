@@ -335,7 +335,7 @@ async function get_order_info(data) {
     + (data.search_info.room_cat_id == 0 ? `` : `and room.category_id = ? `) + `;`;
     let params = [data.search_info.begindate, data.search_info.enddate];
     if(data.search_info.room_cat_id > 0){
-      params.add(data.search_info.room_cat_id);
+      params.push(data.search_info.room_cat_id);
     }
     const orders = await runQuery({
       connection,

@@ -244,7 +244,7 @@ export default {
       order_services: [{service_id: -1}]
     }
   },
-  created(){
+  mounted(){
     this.getData();
   },
   methods:{

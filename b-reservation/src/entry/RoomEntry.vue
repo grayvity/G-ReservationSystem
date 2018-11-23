@@ -67,7 +67,7 @@ export default {
           roomCategories : []
       }
   },
-  created(){
+  mounted(){
     console.log('entry created!');
     this.getData();
   },

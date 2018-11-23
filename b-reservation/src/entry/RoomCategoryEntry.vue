@@ -43,7 +43,7 @@ export default {
   name: 'RoomCategoryEntry',
   props: ['info'],
   
-  created(){
+  mounted(){
        
     console.log('entry created!')
   },

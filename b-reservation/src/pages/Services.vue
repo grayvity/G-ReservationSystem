@@ -96,7 +96,7 @@ export default {
       current_info : {}
     }
   },
-  created(){
+  mounted(){
     this.getServiceList();
   },
   methods: {

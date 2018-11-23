@@ -57,7 +57,7 @@ export default {
   name: 'ServiceEntry',
   props: ['info'],
   
-  created(){
+  mounted(){
        
     console.log('entry created!')
   },

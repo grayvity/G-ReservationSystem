@@ -82,7 +82,7 @@ export default {
       current_info : {}
     }
   },
-  created(){
+  mounted(){
     this.getData();
   },
   methods: {
