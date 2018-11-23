@@ -306,7 +306,7 @@ function eng_weekday_to_mn(weekday) {
       return weekday;
   }
 }
-async function get_order_info(data) {
+async function get_orders(data) {
   try {
     begindate = moment(data.search_info.begindate);
     enddate = moment(data.search_info.enddate);
@@ -325,7 +325,7 @@ async function get_order_info(data) {
     }
     const connection = await createConnection();
 
-    let query = `select room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.cus_name as note  
+    let query = `select room.id as roomid, room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.cus_name as note, orders.id as orderid  
     from room
     left join order_room  on order_room.room_id = room.id
     left join orders on order_room.order_id = orders.id and orders.status in ('new', 'confirmed') 
@@ -346,18 +346,22 @@ async function get_order_info(data) {
     rooms = [];
     for (key in orders) {
       order = orders[key];
-      if (!rooms.includes(order.roomname)) {
-        rooms.push(order.roomname);
+      if (!rooms.includes(order.roomid)) {
+        rooms.push(order.roomid);
         cols = [];
         for (key_range in range_days) {
           cols.push({
+            roomid: order.roomid,
+            roomname: order.roomname,
+            date: range_days[key_range].date,
             day: range_days[key_range].day,
+            orderid: order.orderid,
             orderday: 0,
             note: "",
             status: "default"
           });
         }
-        list_orders[order.roomname] = cols;
+        list_orders[order.roomid] = cols;
       }
       
       if(!order.order_status)
@@ -372,23 +376,21 @@ async function get_order_info(data) {
         more_days.push(cur_date.format("MM-DD"));
         cur_date.add(1, "days");
       }
-      for (i = list_orders[order.roomname].length - 1; i >= 0; i--) {
-        if (more_days.includes(list_orders[order.roomname][i].day)) {
-          if (
-            list_orders[order.roomname][i].day == begin_date.format("MM-DD")
-          ) {
-            list_orders[order.roomname][i].orderday = more_days.length;
-            list_orders[order.roomname][i].note = order.note;
-            list_orders[order.roomname][i].status = order.order_status;
+      for (i = list_orders[order.roomid].length - 1; i >= 0; i--) {
+        if (more_days.includes(list_orders[order.roomid][i].day)) {
+          if (list_orders[order.roomid][i].day == begin_date.format("MM-DD")) {
+            list_orders[order.roomid][i].orderday = more_days.length;
+            list_orders[order.roomid][i].note = order.note;
+            list_orders[order.roomid][i].status = order.order_status;
           } else {
-            list_orders[order.roomname].splice(i, 1);
+            list_orders[order.roomid].splice(i, 1);
           }
         }
       }
     }
     orderlist = [];
     for (key in list_orders) {
-      orderlist.push({ name: key, cols: list_orders[key] });
+      orderlist.push({ name: list_orders[key][0].roomname, cols: list_orders[key] });
     }
     query = `select * from room_category where room_category.is_active = ?`;
     params = ['Y'];
@@ -531,6 +533,37 @@ async function save_order(info) {
     throw err;
   }
 }
+async function get_order_info(data) {
+  try {
+    if (!order_status){
+      return {};
+    }
+    const connection = await createConnection();
+
+    let query = `select * from orders where orders.id = ? `;
+    let params = [data.order_id];
+    const order = await runQuery({
+      connection,
+      query,
+      params
+    })[0];
+    query = `select * from order_room where order_room.order_id = ? `;
+    const order_rooms = await runQuery({
+      connection,
+      query,
+      params
+    });
+    let query = `select * from order_service where order_service.order_id = ? `;
+    const order_services = await runQuery({
+      connection,
+      query,
+      params
+    });
+    return { order, order_rooms, order_services };
+  } catch (err) {
+    throw err;
+  }
+}
 
 module.exports = {
   check_login,
@@ -544,5 +577,6 @@ module.exports = {
   save_room,
   delete_room,
   save_order,
-  get_order_info
+  get_order_info,
+  get_orders
 };

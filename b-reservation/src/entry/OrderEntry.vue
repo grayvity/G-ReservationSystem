@@ -235,6 +235,7 @@
 <script>
 export default {
   name: 'OrderEntry',
+  props: ['orderinfo'],
   data() {
     return{
       info: {},
@@ -250,11 +251,19 @@ export default {
   methods:{
     async getData(){
       try{
-        this.$store.dispatch('set_loading_status', true)
+        this.$store.dispatch('set_loading_status', true);
+        console.log('orderid-------');
+        console.log(this.orderinfo);
         const res = await fetch("/api/get-room-and-service", {
-          method: "GET"
+            method: "POST",
+            body: JSON.stringify({info_id: this.orderinfo.orderid}),
+            headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+            }
         });
         const resJson = await res.json();
+        console.log(resJson.order_info);
         this.rooms = resJson.rooms;
         this.services = resJson.services;
         console.log(this.rooms)

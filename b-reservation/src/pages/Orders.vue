@@ -5,7 +5,7 @@
         <h4 class="card-title">Захиалга жагсаалт</h4>
       </div>
       <div class="col-md-6" style="text-align:right;">
-        <button type="button" class="btn btn-primary btn-fw" data-toggle="modal" data-target="#orderEntryModal">
+        <button type="button" class="btn btn-primary btn-fw" v-on:click="set_order_info('', '', '')" data-toggle="modal" data-target="#orderEntryModal">
           <i class="fa fa-plus"></i>нэмэх
         </button>
       </div>
@@ -71,12 +71,15 @@
                             {{order.name}}
                           </td>
                           <td style="padding: 5px 10px 5px 10px !important" v-for="cell in order.cols" v-bind:key="cell.date" v-bind:colspan="cell.orderday" class="py-1">
-                            <button type="button" v-bind:class="{'btn-inverse-success w-100' : cell.status == 'confirmed','btn-inverse-warning w-100' : cell.status == 'new','btn-inverse-secondary w-100' : cell.status == 'default',}" class="btn btn-rounded">{{ cell.note }}</button>
+                            <button type="button" class="btn btn-rounded" data-toggle="modal" data-target="#orderEntryModal"
+                              v-on:click="set_order_info(cell.orderid, cell.date, cell.roomid)"
+                              v-bind:class="{'btn-inverse-success w-100' : cell.status == 'confirmed','btn-inverse-warning w-100' : cell.status == 'new','btn-inverse-secondary w-100' : cell.status == 'default',}" 
+                              >{{ cell.note }}</button>
                           </td>
                         </tr>
                       </tbody>
                     </table>
-                    <OrderEntry/>
+                    <OrderEntry v-bind:orderinfo="order_info"/>
                   </div>
                 </div>
               </div>
@@ -96,7 +99,7 @@ export default {
       try{
         this.$store.dispatch('set_loading_status', true)
 
-        const res = await fetch("/api/get-order-info", {
+        const res = await fetch("/api/get-orders", {
             method: "POST",
             body: JSON.stringify({search_info: this.search_info}),
             headers: {
@@ -133,13 +136,17 @@ export default {
           this.$store.dispatch('set_loading_status', false);
       }
     },
+    async set_order_info(orderid, date, roomid){
+        this.order_info = {orderid:orderid, date:date, roomid:roomid};
+    }
   },
   data(){
     return { 
       search_info: { current_date: moment(),begindate: moment().add(-4, 'days'), enddate: moment().add(10, 'days'), room_cat_id: 0, order_status: 0 },
       orderList: [],
       orderDays: [],
-      room_categories: []
+      room_categories: [],
+      order_info: {}
     }
   },
   mounted(){
