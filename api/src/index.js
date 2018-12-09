@@ -175,7 +175,6 @@ app.post("/api/save-order", async (req, res) => {
 
 app.post("/api/get-order-info", async (req, res) => {
   try {
-    console.log("calculating order: ", req.body);
     let datas = await get_order_info(req.body);
     res.json({ datas });
   } catch (err) {
@@ -185,7 +184,6 @@ app.post("/api/get-order-info", async (req, res) => {
 });
 app.post("/api/get-orders", async (req, res) => {
   try {
-    console.log("calculating order: ", req.body);
     let datas = await get_orders(req.body);
     res.json({ datas });
   } catch (err) {

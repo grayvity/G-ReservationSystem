@@ -535,7 +535,7 @@ async function save_order(info) {
 }
 async function get_order_info(data) {
   try {
-    if (!order_status){
+    if (!data || !data.order_status){
       return {};
     }
     const connection = await createConnection();
@@ -553,7 +553,7 @@ async function get_order_info(data) {
       query,
       params
     });
-    let query = `select * from order_service where order_service.order_id = ? `;
+    query = `select * from order_service where order_service.order_id = ? `;
     const order_services = await runQuery({
       connection,
       query,
