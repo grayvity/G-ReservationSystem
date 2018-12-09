@@ -17,7 +17,7 @@
             <div class="row">
               <div class="col-md-7">
                 <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">Хугацааны хамрах хүрээ</label>
+                  <label class="col-sm-4 col-form-label">Огноо</label>
                   <div class="col-sm-3">
                       <date-picker class="w-100" v-model="search_info.begindate" placeholder="Сонгоно уу" format="YYYY-MM-DD" type="date" max="3000-12-31" min="1000-01-01" lang="en">
                         </date-picker>
@@ -62,60 +62,59 @@
                             #
                           </th>
                           <th>
-                            Нэр
+                            Төрөл
                           </th>
                           <th>
-                            Бүлэг
+                            Эхлэх огноо
                           </th>
                           <th>
-                            Хүний багтаамж
+                            Дуусах огноо
                           </th>
                           <th>
-                            Үнэ
+                            Захиалагч
+                          </th>
+                          <th>
+                            Бэлнээр
+                          </th>
+                          <th>
+                            Банкаар
+                          </th>
+                          <th>
+                            Нийт дүн
                           </th>
                           <th>
                             Тэмдэглэл
-                          </th>
-                          <th>
-                            Идэвхитэй
-                          </th>
-                          <th/>
                           <th/>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="info in rooms" v-bind:key="info.id">
+                        <tr v-for="order in orders" v-bind:key="order.id">
                           <td class="font-weight-medium">
-                            {{info.id}}
+                            {{order.id}}
                           </td>
                           <td>
-                            {{info.name}}
+                            {{order.status}}
                           </td>
                           <td>
-                            {{info.category_name}}
+                            {{order.start_date}}
                           </td>
                           <td>
-                            {{info.person_limit}}
+                            {{order.end_date}}
                           </td>
                           <td>
-                            {{info.price}}
+                            {{order.cus_name}}
                           </td>
                           <td>
-                            {{info.note}}
+                            {{order.cash_amount}}
                           </td>
-                          <td class="min">
-                            <i v-if="info.is_active === 'Y'" class="fa fa-check-circle-o" style="color:green"></i>
-                            <i v-else class="fa fa-eye-slash" style="color:yellow"></i>
+                          <td>
+                            {{order.card_amount}}
                           </td>
-                          <td class="min">
-                            <a href="javascript:;" v-on:click="setCurrent(info)" data-toggle="modal" data-target="#entryModal">
-                              <i class="fa fa-edit"></i>
-                            </a>
+                          <td>
+                            {{order.total_amount}}
                           </td>
-                          <td class="min">
-                            <a href="javascript:;" v-on:click="setCurrent(info)" data-toggle="modal" data-target="#askmodal">
-                              <i class="fa fa-trash-o" style="color:red"></i>
-                            </a>
+                          <td>
+                            {{order.note}}
                           </td>
                         </tr>
                       </tbody>
@@ -138,7 +137,7 @@ export default {
       try{
         this.$store.dispatch('set_loading_status', true)
 
-        const res = await fetch("/api/get-orders", {
+        const res = await fetch("/api/get-report", {
             method: "POST",
             body: JSON.stringify({search_info: this.search_info}),
             headers: {
@@ -153,10 +152,8 @@ export default {
           text: 'Амжилттай',
           type: 'success'
         });
-        // console.log(resJson.datas.range_days);
-        this.orderDays = resJson.datas.range_days;
-        this.orderList = resJson.datas.orderlist;
-        this.room_categories = resJson.datas.room_categories;
+        console.log(resJson.datas);
+        this.orders = resJson.datas.order;
         if (res.error) {
             console.log(res.error)
             this.$notify({
@@ -182,7 +179,7 @@ export default {
   data(){
     return { 
       search_info: { current_date: moment(),begindate: moment().add(-4, 'days'), enddate: moment().add(10, 'days'), room_cat_id: 0, order_status: 0 },
-      orderList: [],
+      orders: [],
     }
   },
   mounted(){

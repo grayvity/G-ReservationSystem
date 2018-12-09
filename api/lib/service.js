@@ -68,22 +68,22 @@ async function save_service(info) {
     // update
     if (info.id != null) {
       console.log(info);
-      query = `update service set type = ?, name = ?, description = ?, price = ?, is_active = ? where id = ?`;
+      query = `update service set type = ?, name = ?, note = ?, price = ?, is_active = ? where id = ?`;
       params = [
         info.type,
         info.name,
-        info.description,
+        info.note,
         info.price,
         info.is_active ? "Y" : "N",
         info.id
       ];
       // insert
     } else {
-      query = `insert into service (type, name, description, price, is_active) values(?, ?, ?, ?, ?)`;
+      query = `insert into service (type, name, note, price, is_active) values(?, ?, ?, ?, ?)`;
       params = [
         info.type,
         info.name,
-        info.description,
+        info.note,
         info.price,
         info.is_active ? "Y" : "N"
       ];
@@ -564,6 +564,33 @@ async function get_order_info(data) {
     throw err;
   }
 }
+async function get_report(data) {
+  try {
+    const connection = await createConnection();
+    let query = `select * from orders `;
+    let params = [data.order_id];
+    const order = await runQuery({
+      connection,
+      query,
+      params
+    });
+    // query = `select * from order_room where order_room.order_id = ? `;
+    // const order_rooms = await runQuery({
+    //   connection,
+    //   query,
+    //   params
+    // });
+    // query = `select * from order_service where order_service.order_id = ? `;
+    // const order_services = await runQuery({
+    //   connection,
+    //   query,
+    //   params
+    // });
+    return { order };
+  } catch (err) {
+    throw err;
+  }
+}
 
 module.exports = {
   check_login,
@@ -578,5 +605,6 @@ module.exports = {
   delete_room,
   save_order,
   get_order_info,
-  get_orders
+  get_orders,
+  get_report
 };

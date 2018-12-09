@@ -25,15 +25,16 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Огноо</label>
             <div class="col-sm-9">
-              <input
-                type="date"
-                name="bday"
-                v-model="info.order_date"
-                date-format="yyyy/mm/dd"
-                max="3000-12-31"
-                min="1000-01-01"
-                class="form-control"
-              >
+              <date-picker
+                      class="w-100"
+                      v-model="info.order_date"
+                      placeholder="Сонгоно уу"
+                      format="YYYY-MM-DD"
+                      type="date"
+                      max="3000-12-31"
+                      min="1000-01-01"
+                      lang="en"
+                    ></date-picker>
             </div>
           </div>
         </div>
@@ -324,7 +325,9 @@
   </b-modal>
 </template>
 <script>
+import DatePicker from "vue2-datepicker";
 export default {
+  components: { DatePicker },
   name: "OrderEntry",
   props: ["orderinfo"],
   data() {

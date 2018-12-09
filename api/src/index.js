@@ -17,7 +17,8 @@ const {
   get_rooms,
   save_order,
   get_order_info,
-  get_orders
+  get_orders,
+  get_report
 } = require("../lib/service");
 
 const app = express();
@@ -185,6 +186,15 @@ app.post("/api/get-order-info", async (req, res) => {
 app.post("/api/get-orders", async (req, res) => {
   try {
     let datas = await get_orders(req.body);
+    res.json({ datas });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+app.post("/api/get-report", async (req, res) => {
+  try {
+    let datas = await get_report(req.body);
     res.json({ datas });
   } catch (err) {
     console.log(err);
