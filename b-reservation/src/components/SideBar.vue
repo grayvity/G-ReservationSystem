@@ -45,7 +45,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" v-bind:to="{ name: 'orders'}">
+            <router-link class="nav-link" v-bind:to="{ name: 'report'}">
               <i class="menu-icon fa fa-bar-chart-o"></i>
               <span class="menu-title">Тайлан</span>
             </router-link>
