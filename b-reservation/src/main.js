@@ -5,24 +5,27 @@ import App from "./App";
 import router from "./router";
 import { store } from "./store/store";
 import Notifications from "vue-notification";
+import BootstrapVue from 'bootstrap-vue'
 
 Vue.config.productionTip = false;
 
+Vue.use(BootstrapVue);
 Vue.use(Notifications);
+
 Vue.component("my-currency-input", {
   props: ["value"],
   template: `
         <div>
             <input type="text" v-model="displayValue" @blur="isInputActive = false" @focus="isInputActive = true"/>
         </div>`,
-  data: function() {
+  data: function () {
     return {
       isInputActive: false
     };
   },
   computed: {
     displayValue: {
-      get: function() {
+      get: function () {
         if (this.isInputActive) {
           // Cursor is inside the input field. unformat display value for user
           return this.value.toString();
@@ -34,7 +37,7 @@ Vue.component("my-currency-input", {
           );
         }
       },
-      set: function(modifiedValue) {
+      set: function (modifiedValue) {
         // Recalculate value after ignoring "$" and "," in user input
         let newValue = parseFloat(modifiedValue.replace(/[^\d\.]/g, ""));
         // Ensure that it is not NaN

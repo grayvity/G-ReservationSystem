@@ -1,6 +1,5 @@
-<template>  
+<template>
   <div class="content-wrapper">
-    
     <div class="row">
       <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
         <div class="card card-statistics">
@@ -97,78 +96,50 @@
             </div>
             <div class="weather-data d-flex">
               <div class="mr-auto">
-                <h4 class="display-3">21
-                  <span class="symbol">&deg;</span>C</h4>
-                <p>
-                  Үүлэрхэг
-                </p>
+                <h4 class="display-3">
+                  21
+                  <span class="symbol">&deg;</span>C
+                </h4>
+                <p>Үүлэрхэг</p>
               </div>
             </div>
           </div>
           <div class="card-body p-0">
             <div class="d-flex weakly-weather">
               <div class="weakly-weather-item">
-                <p class="mb-0">
-                  Sun
-                </p>
+                <p class="mb-0">Sun</p>
                 <i class="mdi mdi-weather-cloudy"></i>
-                <p class="mb-0">
-                  30°
-                </p>
+                <p class="mb-0">30°</p>
               </div>
               <div class="weakly-weather-item">
-                <p class="mb-1">
-                  Mon
-                </p>
+                <p class="mb-1">Mon</p>
                 <i class="mdi mdi-weather-hail"></i>
-                <p class="mb-0">
-                  31°
-                </p>
+                <p class="mb-0">31°</p>
               </div>
               <div class="weakly-weather-item">
-                <p class="mb-1">
-                  Tue
-                </p>
+                <p class="mb-1">Tue</p>
                 <i class="mdi mdi-weather-partlycloudy"></i>
-                <p class="mb-0">
-                  28°
-                </p>
+                <p class="mb-0">28°</p>
               </div>
               <div class="weakly-weather-item">
-                <p class="mb-1">
-                  Wed
-                </p>
+                <p class="mb-1">Wed</p>
                 <i class="mdi mdi-weather-pouring"></i>
-                <p class="mb-0">
-                  30°
-                </p>
+                <p class="mb-0">30°</p>
               </div>
               <div class="weakly-weather-item">
-                <p class="mb-1">
-                  Thu
-                </p>
+                <p class="mb-1">Thu</p>
                 <i class="mdi mdi-weather-pouring"></i>
-                <p class="mb-0">
-                  29°
-                </p>
+                <p class="mb-0">29°</p>
               </div>
               <div class="weakly-weather-item">
-                <p class="mb-1">
-                  Fri
-                </p>
+                <p class="mb-1">Fri</p>
                 <i class="mdi mdi-weather-snowy-rainy"></i>
-                <p class="mb-0">
-                  31°
-                </p>
+                <p class="mb-0">31°</p>
               </div>
               <div class="weakly-weather-item">
-                <p class="mb-1">
-                  Sat
-                </p>
+                <p class="mb-1">Sat</p>
                 <i class="mdi mdi-weather-snowy"></i>
-                <p class="mb-0">
-                  32°
-                </p>
+                <p class="mb-0">32°</p>
               </div>
             </div>
           </div>
@@ -203,8 +174,14 @@
                 <p class="mb-2 text-primary">88%</p>
               </div>
               <div class="progress">
-                <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" style="width: 88%" aria-valuenow="88"
-                  aria-valuemin="0" aria-valuemax="100"></div>
+                <div
+                  class="progress-bar bg-primary progress-bar-striped progress-bar-animated"
+                  role="progressbar"
+                  style="width: 88%"
+                  aria-valuenow="88"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div class="wrapper mt-4">
@@ -213,8 +190,14 @@
                 <p class="mb-2 text-success">56%</p>
               </div>
               <div class="progress">
-                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 56%" aria-valuenow="56"
-                  aria-valuemin="0" aria-valuemax="100"></div>
+                <div
+                  class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                  role="progressbar"
+                  style="width: 56%"
+                  aria-valuenow="56"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
           </div>
@@ -226,7 +209,57 @@
 </template>
 
 <script>
+// import parser from 'xml2json'
+
 export default {
-  name: 'Dashboard',
-}
+  name: "Dashboard",
+  data() {
+    return {
+      forecasts: []
+    };
+  },
+  mounted() {
+    this.getData();
+  },
+  methods: {
+    async getData() {
+      try {
+        this.$store.dispatch("set_loading_status", true);
+
+        var constants = require("../store/constant");
+
+        fetch("http://tsag-agaar.gov.mn/forecast_xml", {
+          method: "GET"
+          // mode: 'no-cors',
+        })
+          .then(res => res.text())
+          .then(body => {
+            console.log(body);
+            // var options = {
+            //   trim: true,
+            // };
+            // var json = JSON.parse(parser.toJson(body, options));
+
+            // console.log(json)
+            // let city = 'Улаанбаатар';
+
+            // var found = json.xml.forecast5day.find(
+            //     function(data){ return data.city == city }
+            // );
+            // found.data.weather.map(x => {
+            //   console.log(x.date, x.temperatureDay, x.temperatureNight, x.phenoDay, x.phenoIdDay, constants.weathers[x.phenoIdDay])
+            // })
+          });
+      } catch (err) {
+        this.$notify({
+          title: "Алдаа",
+          text: err,
+          type: "error"
+        });
+      } finally {
+        this.$store.dispatch("set_loading_status", false);
+      }
+    }
+  }
+};
 </script>
