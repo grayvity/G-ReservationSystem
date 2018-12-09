@@ -12,8 +12,7 @@
                 <button
                   type="button"
                   class="btn btn-primary btn-fw"
-                  data-toggle="modal"
-                  data-target="#entryModal"
+                  v-b-modal.entryModal
                   @click="createNew"
                 >
                   <i class="fa fa-plus"></i>нэмэх
@@ -41,15 +40,10 @@
                         class="fa fa-check-circle-o"
                         style="color:green"
                       ></i>
-                      <i v-else class="fa fa-eye-slash" style="color:yellow"></i>
+                      <i v-else class="fa fa-eye-slash" style="color:gray"></i>
                     </td>
                     <td class="min">
-                      <a
-                        href="javascript:;"
-                        v-on:click="setCurrent(info)"
-                        data-toggle="modal"
-                        data-target="#entryModal"
-                      >
+                      <a href="javascript:;" v-on:click="setCurrent(info)" v-b-modal.entryModal>
                         <i class="fa fa-edit"></i>
                       </a>
                     </td>
@@ -169,10 +163,6 @@ export default {
     },
     createNew() {
       this.current_info = { is_active: true };
-      // this.showModal();
-    },
-    showModal() {
-      this.$refs.entryModal.show();
     },
     modal_value_changed(value) {
       if (value) {

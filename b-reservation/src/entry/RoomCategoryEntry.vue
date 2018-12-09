@@ -1,38 +1,33 @@
 <template>
   <!-- Modal -->
-  <b-modal id="entryModal" ref="entryModal" hide-footer title="Өрөө">
-    <!-- <b- class="modal fade" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"> -->
-    <!-- <div class="modal-dialog modal-dialog-centered" role="document"> -->
-    <!-- <div class="modal-content"> -->
-    <!-- <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Үйлчилгээ бүртгэл</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-    </div>-->
-    <div class="modal-body">
-      <form class="forms-sample">
-        <div class="form-group">
-          <label for="type">Нэр</label>
-          <input type="text" class="form-control" id="name" v-model="info.name" placeholder="Нэр">
-        </div>
-        <div class="form-check form-check-flat">
-          <label class="form-check-label">
-            <input type="checkbox" class="form-check-input" checked v-model="info.is_active">Идэвхитэй
-            <i class="input-helper"></i>
-          </label>
-        </div>
-      </form>
-    </div>
+  <b-modal
+    id="entryModal"
+    ref="entryModal"
+    hide-footer
+    title="Өрөө бүлэг"
+    role="dialog"
+    aria-labelledby="exampleModalCenterTitle"
+  >
+    <form class="forms-sample">
+      <div class="form-group">
+        <label for="type">Нэр</label>
+        <input type="text" class="form-control" id="name" v-model="info.name" placeholder="Нэр">
+      </div>
+      <div class="form-check form-check-flat">
+        <label class="form-check-label">
+          <input type="checkbox" class="form-check-input" checked v-model="info.is_active">Идэвхитэй
+          <i class="input-helper"></i>
+        </label>
+      </div>
+    </form>
+
     <div class="modal-footer">
-      <button class="btn btn-light" data-dismiss="modal">Болих</button>
+      <button class="btn btn-light" @click="hideModal">Болих</button>
       <button type="button" class="btn btn-success mr-2" v-on:click="save">
         <i class="fa fa-save"></i>
         Хадгалах
       </button>
     </div>
-    <!-- </div> -->
-    <!-- </div> -->
   </b-modal>
 </template>
 
@@ -79,14 +74,6 @@ export default {
           }
         });
         const resJson = await res.json();
-        console.log(resJson);
-        this.$notify({
-          title: "Амжилттай",
-          text: "Амжилттай хадгалагдлаа",
-          type: "success"
-        });
-
-        this.$emit("onCompleted");
 
         if (!resJson.success) {
           console.log(resJson.error);
@@ -103,6 +90,13 @@ export default {
             type: "error"
           });
         } else {
+          this.$notify({
+            title: "Амжилттай",
+            text: "Амжилттай хадгалагдлаа",
+            type: "success"
+          });
+
+          this.$emit("onCompleted");
           this.hideModal();
         }
       } catch (err) {
