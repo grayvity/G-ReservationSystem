@@ -10,7 +10,9 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bootstrap": "4.0.0",
+    "bootstrap-vue": "^2.0.0-rc.11",
     "chart.js": "2.7.1",
     "flag-icon-css": "2.9.0",
     "font-awesome": "4.7.0",
@@ -65,8 +67,8 @@
     "webpack-merge": "^4.1.0"
   },
   "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
+    "node": ">= 10.13.0",
+    "npm": ">= 6.4.1"
   },
   "browserslist": [
     "> 1%",
