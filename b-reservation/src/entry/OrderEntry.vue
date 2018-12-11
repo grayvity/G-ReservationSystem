@@ -26,15 +26,15 @@
             <label class="col-sm-3 col-form-label">Огноо</label>
             <div class="col-sm-9">
               <date-picker
-                      class="w-100"
-                      v-model="info.order_date"
-                      placeholder="Сонгоно уу"
-                      format="YYYY-MM-DD"
-                      type="date"
-                      max="3000-12-31"
-                      min="1000-01-01"
-                      lang="en"
-                    ></date-picker>
+                class="w-100"
+                v-model="info.order_date"
+                placeholder="Сонгоно уу"
+                format="YYYY-MM-DD"
+                type="date"
+                max="3000-12-31"
+                min="1000-01-01"
+                lang="en"
+              ></date-picker>
             </div>
           </div>
         </div>
@@ -354,34 +354,40 @@ export default {
     hideModal() {
       this.$refs.entryModal.hide();
     },
+    showModal() {
+      this.$refs.entryModal.show();
+      this.getData();
+    },
     async getData() {
-      try {
-        this.$store.dispatch("set_loading_status", true);
-        console.log("orderid-------");
-        console.log(this.orderinfo);
-        const res = await fetch("/api/get-room-and-service", {
-          method: "POST",
-          body: JSON.stringify({ info_id: this.orderinfo.orderid }),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          }
-        });
-        const resJson = await res.json();
-        console.log(resJson.order_info);
-        this.rooms = resJson.rooms;
-        this.services = resJson.services;
-        console.log(this.rooms);
-        console.log(this.services);
-      } catch (err) {
-        this.$notify({
-          title: "Алдаа",
-          text: err,
-          type: "error"
-        });
-        console.log(err);
-      } finally {
-        this.$store.dispatch("set_loading_status", false);
+      if (!this.orderinfo.orderid || this.orderinfo.orderid === "") {
+        return;
+      } else {
+        try {
+          this.$store.dispatch("set_loading_status", true);
+
+          console.log(this.orderinfo.orderid);
+          const res = await fetch("/api/get-room-and-service", {
+            method: "POST",
+            body: JSON.stringify({ info_id: this.orderinfo.orderid }),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            }
+          });
+          const resJson = await res.json();
+          console.log(resJson.order_info);
+          this.rooms = resJson.rooms;
+          this.services = resJson.services;
+        } catch (err) {
+          this.$notify({
+            title: "Алдаа",
+            text: err,
+            type: "error"
+          });
+          console.log(err);
+        } finally {
+          this.$store.dispatch("set_loading_status", false);
+        }
       }
     },
     async save() {

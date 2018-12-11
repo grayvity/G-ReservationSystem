@@ -9,8 +9,8 @@
           type="button"
           class="btn btn-primary btn-fw"
           v-on:click="set_order_info('', '', '')"
-          v-b-modal.entryModal
         >
+          <!-- v-b-modal.entryModal -->
           <i class="fa fa-plus"></i>нэмэх
         </button>
       </div>
@@ -117,7 +117,7 @@
                   </tr>
                 </tbody>
               </table>
-              <OrderEntry v-bind:orderinfo="order_info"/>
+              <OrderEntry ref="entryRef" v-bind:orderinfo="order_info"/>
             </div>
           </div>
         </div>
@@ -176,6 +176,7 @@ export default {
     },
     async set_order_info(orderid, date, roomid) {
       this.order_info = { orderid: orderid, date: date, roomid: roomid };
+      this.$refs.entryRef.showModal();
     }
   },
   data() {
