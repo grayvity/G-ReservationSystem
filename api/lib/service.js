@@ -355,7 +355,7 @@ async function get_orders(data) {
             roomname: order.roomname,
             date: range_days[key_range].date,
             day: range_days[key_range].day,
-            orderid: order.orderid,
+            orderid: "",
             orderday: 0,
             note: "",
             status: "default"
@@ -380,6 +380,7 @@ async function get_orders(data) {
         if (more_days.includes(list_orders[order.roomid][i].day)) {
           if (list_orders[order.roomid][i].day == begin_date.format("MM-DD")) {
             list_orders[order.roomid][i].orderday = more_days.length;
+            list_orders[order.roomid][i].orderid = order.orderid;
             list_orders[order.roomid][i].note = order.note;
             list_orders[order.roomid][i].status = order.order_status;
           } else {
@@ -535,32 +536,49 @@ async function save_order(info) {
 }
 async function get_order_info(data) {
   try {
-    if (!data || !data.order_status){
-      return {};
+    if (!data || !data.info || (!data.info.id && !data.info.room_id)){
+      return null;
     }
     const connection = await createConnection();
-
-    let query = `select * from orders where orders.id = ? `;
-    let params = [data.order_id];
-    const order = await runQuery({
-      connection,
-      query,
-      params
-    })[0];
-    query = `select * from order_room where order_room.order_id = ? `;
-    const order_rooms = await runQuery({
-      connection,
-      query,
-      params
-    });
-    query = `select * from order_service where order_service.order_id = ? `;
-    const order_services = await runQuery({
-      connection,
-      query,
-      params
-    });
+    let order = [{id:"", order_date : data.info.order_date}];
+    let order_rooms = [{
+      id: 0,
+      room_id: data.info.room_id,
+      room_name : data.info.roomname,
+      person_count: 0,
+      child_count: 0,
+      start_date: moment(),
+      end_date: moment()
+    }];
+    let order_services = [];
+    if(data.info.id){
+      let query = `select * from orders where orders.id = ? `;
+      let params = [data.info.id];
+      orders = await runQuery({
+        connection,
+        query,
+        params
+      });
+      order = orders[0];
+      query = `select order_room.id, order_room.order_id, order_room.room_category_id, order_room.room_id, order_room.person_count, order_room.child_count, order_room.start_date, order_room.end_date, order_room.price, order_room.note, room.name as room_name from order_room left join room on order_room.room_id = room.id where order_room.order_id = ? `;
+      order_rooms = await runQuery({
+        connection,
+        query,
+        params
+      });
+      query = `select order_service.id, order_service.order_id, order_service.service_id, order_service.price, order_service.note, service.name as service_name from order_service left join service on order_service.service_id = service.id where order_service.order_id = ? `;
+      order_services = await runQuery({
+        connection,
+        query,
+        params
+      });
+    }
+    if (order_services.length == 0){
+      order_services.push({id: 0, service_id: -1});
+    }
     return { order, order_rooms, order_services };
   } catch (err) {
+    console.log(err);
     throw err;
   }
 }

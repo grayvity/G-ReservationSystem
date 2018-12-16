@@ -8,7 +8,7 @@
         <button
           type="button"
           class="btn btn-primary btn-fw"
-          v-on:click="set_order_info('', '', '')"
+          v-on:click="set_order_info('', '', '', '')"
         >
           <!-- v-b-modal.entryModal -->
           <i class="fa fa-plus"></i>нэмэх
@@ -110,14 +110,14 @@
                         class="btn btn-rounded"
                         data-toggle="modal"
                         data-target="#orderEntryModal"
-                        v-on:click="set_order_info(cell.orderid, cell.date, cell.roomid)"
+                        v-on:click="set_order_info(cell.orderid, cell.date, cell.roomid, cell.roomname)"
                         v-bind:class="{'btn-inverse-success w-100' : cell.status == 'confirmed','btn-inverse-warning w-100' : cell.status == 'new','btn-inverse-secondary w-100' : cell.status == 'default',}"
                       >{{ cell.note }}</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <OrderEntry ref="entryRef" v-bind:orderinfo="order_info"/>
+              <OrderEntry ref="entryRef"/>
             </div>
           </div>
         </div>
@@ -135,8 +135,6 @@ export default {
   methods: {
     async get_data() {
       try {
-        this.$store.dispatch("set_loading_status", true);
-
         const res = await fetch("/api/get-orders", {
           method: "POST",
           body: JSON.stringify({ search_info: this.search_info }),
@@ -170,12 +168,10 @@ export default {
           text: err,
           type: "error"
         });
-      } finally {
-        this.$store.dispatch("set_loading_status", false);
       }
     },
-    async set_order_info(orderid, date, roomid) {
-      this.order_info = { orderid: orderid, date: date, roomid: roomid };
+    async set_order_info(orderid, date, roomid, roomname) {
+      this.$refs.entryRef.info = {id: orderid, order_date: date ? date : moment(), room_id: roomid, roomname: roomname};
       this.$refs.entryRef.showModal();
     }
   },
@@ -191,7 +187,6 @@ export default {
       orderList: [],
       orderDays: [],
       room_categories: [],
-      order_info: {}
     };
   },
   mounted() {

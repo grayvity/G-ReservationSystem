@@ -335,20 +335,9 @@ export default {
       info: {},
       rooms: [],
       services: [],
-      order_rooms: [
-        {
-          room_id: -1,
-          person_count: 0,
-          child_count: 0,
-          start_date: new Date(),
-          end_date: new Date()
-        }
-      ],
-      order_services: [{ service_id: -1 }]
+      order_rooms: [],
+      order_services: []
     };
-  },
-  mounted() {
-    this.getData();
   },
   methods: {
     hideModal() {
@@ -359,35 +348,42 @@ export default {
       this.getData();
     },
     async getData() {
-      if (!this.orderinfo.orderid || this.orderinfo.orderid === "") {
-        return;
-      } else {
-        try {
-          this.$store.dispatch("set_loading_status", true);
-
-          console.log(this.orderinfo.orderid);
-          const res = await fetch("/api/get-room-and-service", {
-            method: "POST",
-            body: JSON.stringify({ info_id: this.orderinfo.orderid }),
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
+      try {
+        const res = await fetch("/api/get-room-and-service", {
+          method: "POST",
+          body: JSON.stringify({ info: this.info }),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          }
+        });
+        const resJson = await res.json();
+        if(resJson.order_info){
+          this.info = resJson.order_info.order;
+          this.order_rooms = resJson.order_info.order_rooms;
+          this.order_services = resJson.order_info.order_services;
+        }else{
+          this.order_rooms = [
+            {
+              id:0,
+              room_id: -1,
+              person_count: 0,
+              child_count: 0,
+              start_date: moment(),
+              end_date: moment()
             }
-          });
-          const resJson = await res.json();
-          console.log(resJson.order_info);
-          this.rooms = resJson.rooms;
-          this.services = resJson.services;
-        } catch (err) {
-          this.$notify({
-            title: "Алдаа",
-            text: err,
-            type: "error"
-          });
-          console.log(err);
-        } finally {
-          this.$store.dispatch("set_loading_status", false);
+          ];
+          this.order_services = [{ id:0, service_id: -1 }];
         }
+        this.rooms = resJson.rooms;
+        this.services = resJson.services;
+      } catch (err) {
+        this.$notify({
+          title: "Алдаа",
+          text: err,
+          type: "error"
+        });
+        console.log(err);
       }
     },
     async save() {
@@ -396,8 +392,6 @@ export default {
         // let isValidate = await this.checkControl();
         // console.log('isValid: ', isValidate)
         // if(!isValidate){ return; }
-
-        this.$store.dispatch("set_loading_status", true);
         this.info.order_rooms = this.order_rooms;
         this.info.order_services = this.order_services;
 
@@ -447,15 +441,16 @@ export default {
     },
     addRoom() {
       this.order_rooms.push({
+        id:0,
         room_id: -1,
         person_count: 0,
         child_count: 0,
-        start_date: new Date(),
-        end_date: new Date()
+        start_date: moment(),
+        end_date: moment()
       });
     },
     addService() {
-      this.order_services.push({ service_id: -1 });
+      this.order_services.push({id:0, service_id: -1 });
     },
     removeService(info) {
       this.order_services.splice(this.order_services.indexOf(info), 1);
