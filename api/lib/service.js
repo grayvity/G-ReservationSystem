@@ -566,16 +566,37 @@ async function get_order_info(data) {
 }
 async function get_report(data) {
   try {
+    console.log(data);
     const connection = await createConnection();
-    let query = `select * from orders `;
-    let params = [data.order_id];
+    let query = `select * from orders where ? <= end_date and start_date <= ? `;
+    let params = [data.search_info.begindate, data.search_info.enddate];
+    if (data.search_info.report_type == 1){
+      query = `select order_room.id, room.name, order_room.person_count, order_room.child_count, order_room.start_date, order_room.end_date, order_room.price, order_room.note, orders.cus_name, orders.cus_phone, orders.cus_email, orders.status from order_room left join orders on order_room.order_id = orders.id left join room on order_room.room_id = room.id where ? <= order_room.end_date and order_room.start_date <= ? `;
+      if (data.search_info.room_cat_id > 0){
+        query += `and order_room.room_category_id = ? `;
+        params.push(data.search_info.room_cat_id);
+      }
+      if (data.search_info.room_id > 0){
+        query += `and order_room.room_id = ? `;
+        params.push(data.search_info.room_id);
+      }
+    }
+    if (data.search_info.cus_name && data.search_info.cus_name != ''){
+      query += `and orders.cus_name like ? `;
+      params.push(`%` + data.search_info.cus_name + `%`);
+    }
+    if (data.search_info.order_status && data.search_info.order_status != ''){
+      query += `and orders.status = ? `;
+      params.push(data.search_info.order_status);
+    }
+    console.log(query);
     const order = await runQuery({
       connection,
       query,
       params
     });
-    // query = `select * from order_room where order_room.order_id = ? `;
-    // const order_rooms = await runQuery({
+    // query = `select * from room_category `;
+    // const room_categories = await runQuery({
     //   connection,
     //   query,
     //   params
@@ -591,7 +612,33 @@ async function get_report(data) {
     throw err;
   }
 }
-
+async function get_filter_data(data) {
+  try {
+    const connection = await createConnection();
+    let query = `select * from room `;
+    let params = [];
+    const rooms = await runQuery({
+      connection,
+      query,
+      params
+    });
+    query = `select * from room_category `;
+    const room_categories = await runQuery({
+      connection,
+      query,
+      params
+    });
+    query = `select cus_name from orders GROUP BY cus_name `;
+    const cus_names = await runQuery({
+      connection,
+      query,
+      params
+    });
+    return { rooms, room_categories, cus_names };
+  } catch (err) {
+    throw err;
+  }
+}
 module.exports = {
   check_login,
   get_service_list,
@@ -606,5 +653,6 @@ module.exports = {
   save_order,
   get_order_info,
   get_orders,
-  get_report
+  get_report,
+  get_filter_data
 };
