@@ -4,21 +4,21 @@ Tourist camp reservation system
 ## installation
 
 ```sh
-cd gr-system
+cd b-reservation
 npm install
 ```
 
 ## start
 
 ```sh
-cd gr-system
+cd b-reservation
 npm run dev
 ```
 
 ## production 
 
 ```sh
-cd gr-system
+cd b-reservation
 npm build
 ```
 
