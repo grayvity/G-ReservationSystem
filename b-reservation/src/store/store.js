@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     is_logged: localStorage.getItem("token") || 0,
+    logged_user: localStorage.getItem("logged_user") || {},
     is_loading: false
   },
   getters: {
@@ -14,6 +15,9 @@ export const store = new Vuex.Store({
     },
     get_is_loading: state => {
       return state.is_loading;
+    },
+    get_logged_user: state => {
+      return state.logged_user;
     }
   },
   mutations: {
@@ -23,6 +27,9 @@ export const store = new Vuex.Store({
     },
     set_loading_status: (state, is_loading) => {
       state.is_loading = is_loading;
+    },
+    set_logged_user: (state, logged_user) => {
+      state.logged_user = logged_user
     }
   },
   actions: {
@@ -31,6 +38,9 @@ export const store = new Vuex.Store({
     },
     set_loading_status: (context, is_loading) => {
       context.commit("set_loading_status", is_loading);
+    },
+    set_logged_user: (context, logged_user) => {
+      context.commit("set_logged_user", logged_user);
     }
   }
 });

@@ -42,10 +42,10 @@ http.listen(process.env.PORT, () =>
 app.post("/api/login", async (req, res) => {
   try {
     const { username, password } = req.body;
-    let is_success = await check_login(username, password);
-    res.json({ is_success: is_success });
+    let response = await check_login(username, password);
+    res.json({ response });
   } catch (err) {
-    res.json({ is_success: false, error: err });
+    res.json({ response: false, error: err });
   }
 });
 

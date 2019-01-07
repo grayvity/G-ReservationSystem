@@ -8,36 +8,18 @@ const { creatNewId } = require("./tools");
 async function check_login(username, password) {
   const connection = await createConnection();
 
-  let query = `select username, password from users where username = ? and password = ?`;
+  let query = `select username, password, role from users where username = ? and password = ?`;
   const found = await runQuery({
     connection,
     query,
     params: [username, password]
   });
-  console.log(found);
+  console.log(new Date(), ' : Logged => ', found[0].username);
   if (found.length > 0) {
-    return true;
+    return { is_success: true, username: found[0].username, role: found[0].role };
   }
 
-  return false;
-}
-
-// orders.vue
-async function get_order_list(begindate, enddate) {
-  const connection = await createConnection();
-
-  let query = `select username, password from order a  where username = ? and password = ?;`;
-  const found = await runQuery({
-    connection,
-    query,
-    params: [begindate, enddate]
-  });
-
-  if (found.length > 0) {
-    return true;
-  }
-
-  return false;
+  return { is_success: false };
 }
 
 async function get_service_list(isActive) {
@@ -330,11 +312,11 @@ async function get_orders(data) {
     left join order_room  on order_room.room_id = room.id
     left join orders on order_room.order_id = orders.id and orders.status in ('new', 'confirmed') 
       and ? < order_room.end_date and order_room.start_date < ? 
-     where 1 = 1 ` 
-    + (data.search_info.order_status == 2 ? `and orders.status in ('new', 'confirmed') ` : data.search_info.order_status == 1 ? `and orders.status not in ('new', 'confirmed') ` : ``) 
-    + (data.search_info.room_cat_id == 0 ? `` : `and room.category_id = ? `) + `;`;
+     where 1 = 1 `
+      + (data.search_info.order_status == 2 ? `and orders.status in ('new', 'confirmed') ` : data.search_info.order_status == 1 ? `and orders.status not in ('new', 'confirmed') ` : ``)
+      + (data.search_info.room_cat_id == 0 ? `` : `and room.category_id = ? `) + `;`;
     let params = [data.search_info.begindate, data.search_info.enddate];
-    if(data.search_info.room_cat_id > 0){
+    if (data.search_info.room_cat_id > 0) {
       params.push(data.search_info.room_cat_id);
     }
     const orders = await runQuery({
@@ -363,8 +345,8 @@ async function get_orders(data) {
         }
         list_orders[order.roomid] = cols;
       }
-      
-      if(!order.order_status)
+
+      if (!order.order_status)
         continue;
       begin_date = moment(order.begindate);
       if (begin_date < begindate) begin_date = begindate;
@@ -534,7 +516,7 @@ async function save_order(info) {
 }
 async function get_order_info(data) {
   try {
-    if (!data || !data.info || (!data.info.id && !data.info.room_id)){
+    if (!data || !data.info || (!data.info.id && !data.info.room_id)) {
       return null;
     }
     const connection = await createConnection();
@@ -564,7 +546,7 @@ async function get_order_info(data) {
       order_rooms[0].price = room[0].price;
     }
     let order_services = [];
-    if(data.info.id){
+    if (data.info.id) {
       let query = `select * from orders where orders.id = ? `;
       let params = [data.info.id];
       orders = await runQuery({
@@ -586,8 +568,8 @@ async function get_order_info(data) {
         params
       });
     }
-    if (order_services.length == 0){
-      order_services.push({id: 0, service_id: -1});
+    if (order_services.length == 0) {
+      order_services.push({ id: 0, service_id: -1 });
     }
     return { order, order_rooms, order_services };
   } catch (err) {
@@ -601,22 +583,22 @@ async function get_report(data) {
     const connection = await createConnection();
     let query = `select * from orders where ? <= end_date and start_date <= ? `;
     let params = [data.search_info.begindate, data.search_info.enddate];
-    if (data.search_info.report_type == 1){
+    if (data.search_info.report_type == 1) {
       query = `select order_room.id, room.name, order_room.person_count, order_room.child_count, order_room.start_date, order_room.end_date, order_room.price, order_room.note, orders.cus_name, orders.cus_phone, orders.cus_email, orders.status from order_room left join orders on order_room.order_id = orders.id left join room on order_room.room_id = room.id where ? <= order_room.end_date and order_room.start_date <= ? `;
-      if (data.search_info.room_cat_id > 0){
+      if (data.search_info.room_cat_id > 0) {
         query += `and order_room.room_category_id = ? `;
         params.push(data.search_info.room_cat_id);
       }
-      if (data.search_info.room_id > 0){
+      if (data.search_info.room_id > 0) {
         query += `and order_room.room_id = ? `;
         params.push(data.search_info.room_id);
       }
     }
-    if (data.search_info.cus_name && data.search_info.cus_name != ''){
+    if (data.search_info.cus_name && data.search_info.cus_name != '') {
       query += `and orders.cus_name like ? `;
       params.push(`%` + data.search_info.cus_name + `%`);
     }
-    if (data.search_info.order_status && data.search_info.order_status != ''){
+    if (data.search_info.order_status && data.search_info.order_status != '') {
       query += `and orders.status = ? `;
       params.push(data.search_info.order_status);
     }
