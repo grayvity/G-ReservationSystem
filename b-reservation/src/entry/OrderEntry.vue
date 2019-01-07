@@ -153,7 +153,7 @@
               <tbody>
                 <tr v-for="info_room in order_rooms" v-bind:key="info_room.id">
                   <td class="pt-3-half">
-                    <select class="form-control" v-model="info_room.room_id">
+                    <select class="form-control" @change="change_room($event, info_room)" v-model="info_room.room_id">
                       <option value="-1" selected>Сонгоно уу</option>
                       <option
                         v-for="room in rooms"
@@ -180,27 +180,29 @@
                       placeholder="Оруулна уу"
                     >
                   </td>
-                  <td class="pt-3-half">
-                    <input
-                      type="date"
-                      name="bday"
+                  <td style="position: relative;" class="pt-3-half">
+                    <date-picker
+                      class="w-100"
                       v-model="info_room.start_date"
-                      date-format="yyyy/mm/dd"
-                      max="3000-12-31"
-                      min="1000-01-01"
-                      class="form-control"
-                    >
-                  </td>
-                  <td class="pt-3-half">
-                    <input
+                      placeholder="Сонгоно уу"
+                      format="YYYY-MM-DD"
                       type="date"
-                      name="bday"
-                      v-model="info_room.end_date"
-                      date-format="yyyy/mm/dd"
                       max="3000-12-31"
                       min="1000-01-01"
-                      class="form-control"
-                    >
+                      lang="en"
+                    ></date-picker>
+                  </td>
+                  <td style="position: relative;" class="pt-3-half">
+                    <date-picker
+                      class="w-100"
+                      v-model="info_room.end_date"
+                      placeholder="Сонгоно уу"
+                      format="YYYY-MM-DD"
+                      type="date"
+                      max="3000-12-31"
+                      min="1000-01-01"
+                      lang="en"
+                    ></date-picker>
                   </td>
                   <td class="pt-3-half">
                     <input
@@ -274,7 +276,7 @@
               <tbody>
                 <tr v-for="info_service in order_services" v-bind:key="info_service.id">
                   <td class="pt-3-half">
-                    <select class="form-control" v-model="info_service.service_id">
+                    <select class="form-control" @change="change_service($event, info_service)" v-model="info_service.service_id">
                       <option value="-1" selected>Сонгоно уу</option>
                       <option
                         v-for="service in services"
@@ -320,7 +322,8 @@
 
     <div class="modal-footer">
       <button class="btn btn-light" @click="hideModal">Болих</button>
-      <button type="button" class="btn btn-success mr-2" v-on:click="save">Хадгалах</button>
+      <button type="button" class="btn btn-success mr-2" v-on:click="save('new')">Түр хадгалах</button>
+      <button type="button" class="btn btn-success mr-2" v-on:click="save('confirmed')">Тооцоо хаах</button>
     </div>
   </b-modal>
 </template>
@@ -332,7 +335,7 @@ export default {
   props: ["orderinfo"],
   data() {
     return {
-      info: {},
+      info: {cash_amount: 0.00, card_amount:0.00},
       rooms: [],
       services: [],
       order_rooms: [],
@@ -340,6 +343,34 @@ export default {
     };
   },
   methods: {
+    change_room(event,room_info){
+      if (event.target.value && event.target.value > 0){
+        var lucky = this.rooms.filter(function(room) {
+          return room.id == event.target.value;
+        });
+        room_info.person_count = lucky[0].person_limit;
+        room_info.child_count = 0;
+        room_info.price = lucky[0].price;
+        room_info.room_category_id = lucky[0].category_id;
+      }else{
+        room_info.person_count = 0;
+        room_info.child_count = 0;
+        room_info.price = 0;
+        room_info.room_category_id = 0;
+        room_info.note = '';
+      }
+    },
+    change_service(event,service_info){
+      if (event.target.value && event.target.value > 0){
+        var lucky = this.services.filter(function(service) {
+          return service.id == event.target.value;
+        });
+        service_info.price = lucky[0].price;
+      }else{
+        service_info.price = 0.00;
+        service_info.note = '';
+      }
+    },
     hideModal() {
       this.$refs.entryModal.hide();
     },
@@ -359,6 +390,7 @@ export default {
         });
         const resJson = await res.json();
         if(resJson.order_info){
+          // resJson.order_info.order.order_date = moment(resJson.order_info.order.order_date);
           this.info = resJson.order_info.order;
           this.order_rooms = resJson.order_info.order_rooms;
           this.order_services = resJson.order_info.order_services;
@@ -375,6 +407,10 @@ export default {
           ];
           this.order_services = [{ id:0, service_id: -1 }];
         }
+        if(!this.info.card_amount)
+          this.info.card_amount = 0.00;
+        if(!this.info.cash_amount)
+          this.info.cash_amount = 0.00;
         this.rooms = resJson.rooms;
         this.services = resJson.services;
       } catch (err) {
@@ -386,7 +422,7 @@ export default {
         console.log(err);
       }
     },
-    async save() {
+    async save(info_status) {
       try {
         console.log("Saving");
         // let isValidate = await this.checkControl();
@@ -394,7 +430,7 @@ export default {
         // if(!isValidate){ return; }
         this.info.order_rooms = this.order_rooms;
         this.info.order_services = this.order_services;
-
+        this.info.status = info_status;
         const res = await fetch("/api/save-order", {
           method: "POST",
           body: JSON.stringify(this.info),

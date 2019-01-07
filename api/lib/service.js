@@ -415,116 +415,114 @@ async function save_order(info) {
     let orderId = creatNewId();
     let room_param = [];
     let service_param = [];
-
+    let is_update = info.id != null && info.id.toString().length > 0;
     // update
-    if (info.id != null) {
-      console.log("update:");
-      // query = `update orders set name = ?, category_id = ?, person_limit = ?, price = ?, is_active = ?, note = ? where id = ?`;
-      // params = [
-      //   info.name,
-      //   info.category_id,
-      //   info.person_limit,
-      //   info.price,
-      //   info.is_active ? "Y" : "N",
-      //   info.note,
-      //   info.id
-      // ];
-      // insert
-    } else {
-      console.log("insert: ", orderId);
+    let dates = [];
+    let prices = [];
 
-      let dates = [];
-      let prices = [];
-
-      // prepare room datas
-
-      await info.order_rooms.map(x => {
-        dates.push(x.start_date);
-        dates.push(x.end_date);
-        prices.push(x.price);
-
-        /**
-         * insert rooms
-         */
-        query = `insert into order_room
-        (
-          order_id, room_id, person_count, child_count, start_date,
-          end_date, price, note
-        )
-        values (?, ?, ?, ?, ?,  ?, ?, ?)`;
-        params = [
-          orderId,
-          x.room_id,
-          x.person_count,
-          x.child_count,
-          x.start_date,
-          x.end_date,
-          x.price,
-          x.note
-        ];
-        runQuery({
-          connection,
-          query,
-          params
-        });
+    // prepare room datas
+    if (is_update){
+      query = `delete from order_room where order_id = ? `;
+      params = [info.id];
+      runQuery({
+        connection,
+        query,
+        params
       });
-
-      // prepare service datas
-      await info.order_services.map(x => {
-        prices.push(x.price);
-
-        /**
-         * insert rooms
-         */
-        query = `insert into order_service
-        (
-          order_id, service_id, price, note
-        )
-        values (?, ?, ?, ?)`;
-        params = [orderId, x.service_id, x.price, x.note];
-
-        console.log(query, params);
-        runQuery({
-          connection,
-          query,
-          params
-        });
+      query = `delete from order_service where order_id = ? `;
+      runQuery({
+        connection,
+        query,
+        params
       });
-
-      // calculate values
-      var min_date = dates.reduce(function(a, b) {
-        return a < b ? a : b;
-      });
-      var max_date = dates.reduce(function(a, b) {
-        return a > b ? a : b;
-      });
-      var sum = prices.reduce((a, b) => {
-        return parseFloat(a, 10) + parseFloat(b, 10);
-      }, 0);
-
-      query = `insert into orders (id, cus_name, cus_type, cus_phone, cus_email, note, card_amount, cash_amount, order_date, start_date, end_date, total_amount, price, status) 
-      values(?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ?, ?)`;
-
-      params = [
-        orderId,
-        info.cus_name,
-        info.cus_type,
-        info.cus_phone,
-        info.cus_email,
-        info.note,
-
-        info.card_amount,
-        info.cash_amount,
-        info.order_date,
-        min_date,
-        max_date,
-
-        parseFloat(info.card_amount, 10) + parseFloat(info.cash_amount, 10),
-        sum,
-        sum > info.card_amount + info.cash_amount ? "new" : "confirmed"
-      ];
+    }else{
+      info.id = orderId;
     }
+    await info.order_rooms.map(x => {
+      dates.push(x.start_date);
+      dates.push(x.end_date);
+      prices.push(x.price);
+      /**
+       * insert rooms
+       */
+      query = `insert into order_room
+      (
+        order_id, room_category_id, room_id, person_count, child_count, start_date,
+        end_date, price, note
+      )
+      values (?, ?, ?, ?, ?, ?,  ?, ?, ?)`;
+      params = [
+        info.id,
+        x.room_category_id,
+        x.room_id,
+        x.person_count,
+        x.child_count,
+        moment(x.start_date).format('YYYY-MM-DD HH:mm:ss'),
+        moment(x.end_date).format('YYYY-MM-DD HH:mm:ss'),
+        x.price,
+        x.note
+      ];
+      runQuery({
+        connection,
+        query,
+        params
+      });
+    });
 
+    // prepare service datas
+    await info.order_services.map(x => {
+      prices.push(x.price);
+      /**
+       * insert rooms
+       */
+      query = `insert into order_service
+      (
+        order_id, service_id, price, note
+      )
+      values (?, ?, ?, ?)`;
+      params = [info.id, x.service_id, x.price, x.note];
+      runQuery({
+        connection,
+        query,
+        params
+      });
+    });
+
+    // calculate values
+    var min_date = dates.reduce(function(a, b) {
+      return a < b ? a : b;
+    });
+    var max_date = dates.reduce(function(a, b) {
+      return a > b ? a : b;
+    });
+    var sum = prices.reduce((a, b) => {
+      return parseFloat(a, 10) + parseFloat(b, 10);
+    }, 0);
+    if(is_update){
+      query = `update orders set cus_name = ?, cus_type = ?, cus_phone = ?, cus_email = ?, note = ?, card_amount = ?, cash_amount = ?, order_date = ?, start_date = ?, end_date = ?, total_amount = ?, price = ?, status = ? 
+       where id = ?`;
+    }else{
+      query = `insert into orders (cus_name, cus_type, cus_phone, cus_email, note, card_amount, cash_amount, order_date, start_date, end_date, total_amount, price, status, id) 
+      values(?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ?, ?)`;
+    }
+    params = [
+      info.cus_name,
+      info.cus_type,
+      info.cus_phone,
+      info.cus_email,
+      info.note,
+
+      info.card_amount,
+      info.cash_amount,
+      moment(info.order_date).format('YYYY-MM-DD HH:mm:ss'),
+      moment(min_date).format('YYYY-MM-DD HH:mm:ss'),
+      moment(max_date).format('YYYY-MM-DD HH:mm:ss'),
+
+      parseFloat(info.card_amount, 10) + parseFloat(info.cash_amount, 10),
+      sum,
+      info.status,
+      info.id
+    ];
     await runQuery({
       connection,
       query,
@@ -540,16 +538,31 @@ async function get_order_info(data) {
       return null;
     }
     const connection = await createConnection();
-    let order = [{id:"", order_date : data.info.order_date}];
+    let order = {id:"", order_date : data.info.order_date};
     let order_rooms = [{
       id: 0,
-      room_id: data.info.room_id,
-      room_name : data.info.roomname,
+      room_id: -1,
+      room_name : null,
       person_count: 0,
       child_count: 0,
-      start_date: moment(),
-      end_date: moment()
+      start_date: data.info.order_date,
+      end_date: data.info.order_date
     }];
+    let query = ``;
+    let params = [];
+    if (data.info.room_id){
+      query = `select * from room where id = ? `;
+      params = [data.info.room_id];
+      room = await runQuery({
+        connection,
+        query,
+        params
+      });
+      order_rooms[0].room_id = room[0].id;
+      order_rooms[0].room_name = room[0].name;
+      order_rooms[0].person_count = room[0].person_limit;
+      order_rooms[0].price = room[0].price;
+    }
     let order_services = [];
     if(data.info.id){
       let query = `select * from orders where orders.id = ? `;

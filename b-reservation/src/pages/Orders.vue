@@ -8,7 +8,7 @@
         <button
           type="button"
           class="btn btn-primary btn-fw"
-          v-on:click="set_order_info('', '', '', '')"
+          v-on:click="set_order_info('', '', '')"
         >
           <!-- v-b-modal.entryModal -->
           <i class="fa fa-plus"></i>нэмэх
@@ -110,7 +110,7 @@
                         class="btn btn-rounded"
                         data-toggle="modal"
                         data-target="#orderEntryModal"
-                        v-on:click="set_order_info(cell.orderid, cell.date, cell.roomid, cell.roomname)"
+                        v-on:click="set_order_info(cell.orderid, cell.date, cell.roomid)"
                         v-bind:class="{'btn-inverse-success w-100' : cell.status == 'confirmed','btn-inverse-warning w-100' : cell.status == 'new','btn-inverse-secondary w-100' : cell.status == 'default',}"
                       >{{ cell.note }}</button>
                     </td>
@@ -170,8 +170,8 @@ export default {
         });
       }
     },
-    async set_order_info(orderid, date, roomid, roomname) {
-      this.$refs.entryRef.info = {id: orderid, order_date: date ? date : moment(), room_id: roomid, roomname: roomname};
+    async set_order_info(orderid, date, roomid) {
+      this.$refs.entryRef.info = {id: orderid, order_date: date ? date : moment(), room_id: roomid};
       this.$refs.entryRef.showModal();
     }
   },
