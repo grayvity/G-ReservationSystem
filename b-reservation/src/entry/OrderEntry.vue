@@ -17,7 +17,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Дугаар</label>
             <div class="col-sm-9">
-              <input type="text" v-model="info.id" class="form-control" readonly>
+              <input ref="i_info_id" type="text" v-model="info.id" class="form-control" readonly>
             </div>
           </div>
         </div>
@@ -26,6 +26,7 @@
             <label class="col-sm-3 col-form-label">Огноо</label>
             <div class="col-sm-9">
               <date-picker
+                ref="i_info_order_date"
                 class="w-100"
                 v-model="info.order_date"
                 placeholder="Сонгоно уу"
@@ -43,6 +44,7 @@
             <label class="col-sm-3 col-form-label">Банкаар</label>
             <div class="col-sm-9">
               <input
+                ref="i_info_card_amount"
                 type="number"
                 v-model="info.card_amount"
                 pattern="^\d+(\.|\,)\d{2}$"
@@ -58,6 +60,7 @@
             <label class="col-sm-3 col-form-label">Бэлнээр</label>
             <div class="col-sm-9">
               <input
+                ref="i_info_cash_amount"
                 type="number"
                 v-model="info.cash_amount"
                 pattern="^\d+(\.|\,)\d{2}$"
@@ -75,7 +78,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Нэр</label>
             <div class="col-sm-9">
-              <input type="text" v-model="info.cus_name" class="form-control">
+              <input ref = "i_info_cus_name" type="text" v-model="info.cus_name" class="form-control">
             </div>
           </div>
         </div>
@@ -83,7 +86,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Төрөл</label>
             <div class="col-sm-9">
-              <input type="text" v-model="info.cus_type" class="form-control">
+              <input ref = "i_info_cus_type" type="text" v-model="info.cus_type" class="form-control">
             </div>
           </div>
         </div>
@@ -91,7 +94,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Утас</label>
             <div class="col-sm-9">
-              <input type="text" v-model="info.cus_phone" class="form-control">
+              <input ref="i_info_cus_phone" type="text" v-model="info.cus_phone" class="form-control">
             </div>
           </div>
         </div>
@@ -99,7 +102,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Имэйл</label>
             <div class="col-sm-9">
-              <input type="text" v-model="info.cus_email" class="form-control">
+              <input ref="i_info_cus_email" type="text" v-model="info.cus_email" class="form-control">
             </div>
           </div>
         </div>
@@ -107,7 +110,7 @@
       <p class="card-description font-weight-bold">Нэмэлт мэдээлэл</p>
       <div class="row">
         <div class="col-md-12">
-          <textarea class="form-control" v-model="info.note" id="exampleTextarea1" rows="2"></textarea>
+          <textarea ref="i_info_note" class="form-control" v-model="info.note" rows="2"></textarea>
         </div>
       </div>
       <div style="margin-top: 15px;" class="row">
@@ -153,7 +156,7 @@
               <tbody>
                 <tr v-for="info_room in order_rooms" v-bind:key="info_room.id">
                   <td class="pt-3-half">
-                    <select class="form-control" @change="change_room($event, info_room)" v-model="info_room.room_id">
+                    <select :ref="'room_col_' + info_room.id" class="form-control" @change="change_room($event, info_room)" v-model="info_room.room_id">
                       <option value="-1" selected>Сонгоно уу</option>
                       <option
                         v-for="room in rooms"
@@ -180,9 +183,9 @@
                       placeholder="Оруулна уу"
                     >
                   </td>
-                  <td style="position: relative;" class="pt-3-half">
+                  <td class="pt-3-half">
                     <date-picker
-                      class="w-100"
+                      class="form-datepicker"
                       v-model="info_room.start_date"
                       placeholder="Сонгоно уу"
                       format="YYYY-MM-DD"
@@ -192,9 +195,9 @@
                       lang="en"
                     ></date-picker>
                   </td>
-                  <td style="position: relative;" class="pt-3-half">
+                  <td class="pt-3-half">
                     <date-picker
-                      class="w-100"
+                      class="form-datepicker"
                       v-model="info_room.end_date"
                       placeholder="Сонгоно уу"
                       format="YYYY-MM-DD"
@@ -422,14 +425,103 @@ export default {
         console.log(err);
       }
     },
+    checkControl(){
+      let isValidate = true;
+      let validate_msg = 'Талбар бүрэн бөглөнө үү.';
+      let is_focus = false;
+      if(!this.info.order_date || this.info.order_date.length < 4){
+        isValidate = false;
+        validate_msg += '\n - Огноо ';
+        if (!is_focus){
+          $(this.$refs['i_info_order_date']).focus();
+          is_focus = true;
+        }
+      }
+      if(!this.info.cus_name || this.info.cus_name.length < 4){
+        isValidate = false;
+        validate_msg += '\n - Захиалагчын нэр ';
+        if (!is_focus){
+          $(this.$refs['i_info_cus_name']).focus();
+          is_focus = true;
+        }
+      }
+      // if(!this.info.cus_type || this.info.cus_type.length < 4){
+      //   isValidate = false;
+      //   validate_msg += '\n - Захиалагчын төрөл ';
+      //   if (!is_focus){
+      //     $(this.$refs['i_info_cus_type']).focus();
+      //     is_focus = true;
+      //   }
+      // }
+      if(!this.info.cus_phone || this.info.cus_phone.length < 4){
+        isValidate = false;
+        validate_msg += '\n - Захиалагчын утас ';
+        if (!is_focus){
+          $(this.$refs['i_info_cus_phone']).focus();
+          is_focus = true;
+        }
+      }
+
+      if(!this.info.cus_email || this.info.cus_email.length < 4){
+        isValidate = false;
+        validate_msg += '\n - Захиалагчын имэйл ';
+        if (!is_focus){
+          $(this.$refs['i_info_cus_email']).focus();
+          is_focus = true;
+        }
+      }
+      // if(!this.info.note || this.info.note.length < 4){
+      //   isValidate = false;
+      //   validate_msg += '\n - Нэмэлт мэдээлэл ';
+      //   if (!is_focus){
+      //     $(this.$refs['i_info_note']).focus();
+      //     is_focus = true;
+      //   }
+      // }
+      if(!this.order_rooms || this.order_rooms.length == 0){
+        isValidate = false;
+        validate_msg += '\n - Өрөөний мэдээлэл оруулна уу ';
+      }else{
+        var lucky = this.order_rooms.filter(function(room) {
+          return room.room_id && parseInt(room.room_id) > 0;
+        });
+        if(!lucky || lucky.length == 0){
+          isValidate = false;
+          validate_msg += '\n - Өрөөний мэдээлэл оруулна уу ';
+          if (!is_focus){
+            var ids = []
+            for(var x in this.order_rooms)
+              if(parseInt(this.order_rooms[x].room_id) < 1)
+                ids.push(this.order_rooms[x].id);
+            if(ids.length == 0)
+              for(var x in this.order_rooms)
+                ids.push(this.order_rooms[x].id);
+            var min_id = Math.min(...ids);
+            $(this.$refs['room_col_' + min_id]).focus();
+            is_focus = true;
+          }
+        }
+      }
+      return [isValidate, validate_msg];
+    },
     async save(info_status) {
       try {
         console.log("Saving");
-        // let isValidate = await this.checkControl();
-        // console.log('isValid: ', isValidate)
-        // if(!isValidate){ return; }
-        this.info.order_rooms = this.order_rooms;
-        this.info.order_services = this.order_services;
+        let valid_param = await this.checkControl();
+        if(!valid_param[0]){ 
+          this.$notify({
+            title: "Анхаар",
+            text: valid_param[1],
+            type: "warn"
+          });
+          return; 
+        }
+        this.info.order_rooms = this.order_rooms.filter(function(room) {
+          return room.room_id && parseInt(room.room_id) > 0;
+        });
+        this.info.order_services = this.order_services.filter(function(room) {
+          return room.service_id && parseInt(room.service_id) > 0;
+        });
         this.info.status = info_status;
         const res = await fetch("/api/save-order", {
           method: "POST",
@@ -457,6 +549,8 @@ export default {
           });
           //if success
         } else {
+          console.log('resJson---');
+          console.log(resJson);
           this.$notify({
             title: "Амжилттай",
             text: "Амжилттай хадгалагдлаа",
@@ -471,13 +565,15 @@ export default {
           text: err,
           type: "error"
         });
-      } finally {
-        this.$store.dispatch("set_loading_status", false);
       }
     },
     addRoom() {
+      var ids = []
+      for(var x in this.order_rooms)
+        ids.push(this.order_rooms[x].id);
+      var max_id = ids.length > 0 ? Math.max(...ids) : 0;
       this.order_rooms.push({
-        id:0,
+        id: max_id + 1,
         room_id: -1,
         person_count: 0,
         child_count: 0,
@@ -486,7 +582,11 @@ export default {
       });
     },
     addService() {
-      this.order_services.push({id:0, service_id: -1 });
+      var ids = []
+      for(var x in this.order_services)
+        ids.push(this.order_services[x].id);
+      var max_id = ids.length > 0 ? Math.max(...ids) : 0;
+      this.order_services.push({id:max_id + 1, service_id: -1 });
     },
     removeService(info) {
       this.order_services.splice(this.order_services.indexOf(info), 1);

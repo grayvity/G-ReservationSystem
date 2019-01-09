@@ -10501,7 +10501,6 @@ tbody.collapse.show {
     .card-columns .card {
       display: inline-block;
       width: 100%; } }
-
 .breadcrumb {
   display: flex;
   flex-wrap: wrap;
@@ -16300,5 +16299,10 @@ ul {
 @media (min-width: 992px) {
   .error-page .error-page-divider {
     border-left: 3px solid rgba(255, 255, 255, 0.2); } }
-
+.form-datepicker {
+  position: absolute !important;
+    width: 120px !important;
+    margin-top: -17px;
+    margin-left: -22px;
+  }
 /*# sourceMappingURL=maps/style.css.map */

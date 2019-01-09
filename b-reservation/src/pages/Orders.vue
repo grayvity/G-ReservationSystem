@@ -117,7 +117,7 @@
                   </tr>
                 </tbody>
               </table>
-              <OrderEntry ref="entryRef"/>
+              <OrderEntry ref="entryRef" @hidden="onHiddenOrderEntry"/>
             </div>
           </div>
         </div>
@@ -133,6 +133,10 @@ export default {
   name: "Orders",
   components: { OrderEntry, DatePicker },
   methods: {
+    onHiddenOrderEntry (evt) {
+      console.log('jasdhasdas-----');
+      this.get_data();
+    },
     async get_data() {
       try {
         const res = await fetch("/api/get-orders", {

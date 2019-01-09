@@ -401,7 +401,32 @@ async function save_order(info) {
     // update
     let dates = [];
     let prices = [];
-
+    let room_warnings = 'Өрөөний захиалгын огноо давхардаж байна.';
+    let has_room_warning = false;
+    if (!is_update)
+      info.id = orderId;
+    for (i in info.order_rooms)
+    { x = info.order_rooms[i];
+      query = `select order_room.room_id, room.name as room_name, order_room.start_date, order_room.end_date from order_room left join room on order_room.room_id = room.id where order_room.order_id <> ? and order_room.room_id = ? and ? <= order_room.end_date and order_room.start_date <= ? `;
+      params = [
+        info.id,
+        x.room_id,
+        moment(x.start_date).format('YYYY-MM-DD HH:mm:ss'),
+        moment(x.end_date).format('YYYY-MM-DD HH:mm:ss'),
+      ];
+      order_rooms = await runQuery({
+        connection,
+        query,
+        params
+      });
+      if(order_rooms && order_rooms.length > 0)
+      {
+        room_warnings += '\\n - Өрөө: ' + order_rooms[0].room_name + ', Огноо: ' + moment(order_rooms[0].start_date).format('YYYY-MM-DD') + ' - ' + moment(order_rooms[0].end_date).format('YYYY-MM-DD');
+        has_room_warning = true;
+      }
+    };
+    if(has_room_warning)
+      throw room_warnings;
     // prepare room datas
     if (is_update){
       query = `delete from order_room where order_id = ? `;
@@ -417,8 +442,6 @@ async function save_order(info) {
         query,
         params
       });
-    }else{
-      info.id = orderId;
     }
     await info.order_rooms.map(x => {
       dates.push(x.start_date);
