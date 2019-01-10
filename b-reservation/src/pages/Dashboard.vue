@@ -11,7 +11,7 @@
               <div class="float-right">
                 <p class="mb-0 text-right">Өрөө</p>
                 <div class="fluid-container">
-                  <h3 class="font-weight-medium text-right mb-0">65650</h3>
+                  <h3 class="font-weight-medium text-right mb-0">{{info.room_count}}</h3>
                 </div>
               </div>
             </div>
@@ -31,7 +31,7 @@
               <div class="float-right">
                 <p class="mb-0 text-right">Захиалагдсан</p>
                 <div class="fluid-container">
-                  <h3 class="font-weight-medium text-right mb-0">3455</h3>
+                  <h3 class="font-weight-medium text-right mb-0">{{info.ordered_count}}</h3>
                 </div>
               </div>
             </div>
@@ -51,7 +51,7 @@
               <div class="float-right">
                 <p class="mb-0 text-right">Баталгаажсан</p>
                 <div class="fluid-container">
-                  <h3 class="font-weight-medium text-right mb-0">5693</h3>
+                  <h3 class="font-weight-medium text-right mb-0">{{info.confirmed_count}}</h3>
                 </div>
               </div>
             </div>
@@ -71,7 +71,7 @@
               <div class="float-right">
                 <p class="mb-0 text-right">Багтаамж</p>
                 <div class="fluid-container">
-                  <h3 class="font-weight-medium text-right mb-0">246</h3>
+                  <h3 class="font-weight-medium text-right mb-0">{{info.person_count}}</h3>
                 </div>
               </div>
             </div>
@@ -215,7 +215,8 @@ export default {
   name: "Dashboard",
   data() {
     return {
-      forecasts: []
+      forecasts: [],
+      info: {}
     };
   },
   mounted() {
@@ -228,28 +229,44 @@ export default {
 
         var constants = require("../store/constant");
 
-        fetch("http://tsag-agaar.gov.mn/forecast_xml", {
+        const res = await fetch("/api/get-dashboard-data", {
           method: "GET"
-          // mode: 'no-cors',
-        })
-          .then(res => res.text())
-          .then(body => {
-            console.log(body);
-            // var options = {
-            //   trim: true,
-            // };
-            // var json = JSON.parse(parser.toJson(body, options));
-
-            // console.log(json)
-            // let city = 'Улаанбаатар';
-
-            // var found = json.xml.forecast5day.find(
-            //     function(data){ return data.city == city }
-            // );
-            // found.data.weather.map(x => {
-            //   console.log(x.date, x.temperatureDay, x.temperatureNight, x.phenoDay, x.phenoIdDay, constants.weathers[x.phenoIdDay])
-            // })
+        });
+        const resJson = await res.json();
+        console.log("response!");
+        console.log(resJson.data);
+        this.info = resJson.data;
+        if (res.error) {
+          console.log(res.error);
+          this.$notify({
+            title: "Алдаа",
+            text: res.error,
+            type: "error"
           });
+        }
+
+        // fetch("http://tsag-agaar.gov.mn/forecast_xml", {
+        //   method: "GET"
+        //   // mode: 'no-cors',
+        // })
+        //   .then(res => res.text())
+        //   .then(body => {
+        //     console.log(body);
+        //     // var options = {
+        //     //   trim: true,
+        //     // };
+        //     // var json = JSON.parse(parser.toJson(body, options));
+
+        //     // console.log(json)
+        //     // let city = 'Улаанбаатар';
+
+        //     // var found = json.xml.forecast5day.find(
+        //     //     function(data){ return data.city == city }
+        //     // );
+        //     // found.data.weather.map(x => {
+        //     //   console.log(x.date, x.temperatureDay, x.temperatureNight, x.phenoDay, x.phenoIdDay, constants.weathers[x.phenoIdDay])
+        //     // })
+        //   });
       } catch (err) {
         this.$notify({
           title: "Алдаа",

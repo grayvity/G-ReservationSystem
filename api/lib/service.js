@@ -22,6 +22,46 @@ async function check_login(username, password) {
   return { is_success: false };
 }
 
+async function get_dashboard_data() {
+  const connection = await createConnection();
+
+  // room count
+  let query = `select count(1) as value from room where is_active = 'Y'`;
+  const roomCount = await runQuery({
+    connection,
+    query
+  });
+
+  // ordered count
+  query = `select count(distinct room_id) as value from order_room where CURDATE() between start_date and end_date`;
+  const orderedRoomCount = await runQuery({
+    connection,
+    query
+  });
+
+  // confirmed count
+  query = `select count(distinct b.room_id) as value from orders a 
+  left join order_room b on a.id = b.order_id
+  where a.status = 'confirmed' and CURDATE() between b.start_date and b.end_date`;
+  const confirmedRoomCount = await runQuery({
+    connection,
+    query
+  });
+
+  // Available person
+  query = `select sum(c.person_limit) as value from orders a 
+  left join order_room b on a.id = b.order_id
+  left join room c on b.room_id = c.id
+  where CURDATE() > b.end_date`;
+  const personCount = await runQuery({
+    connection,
+    query
+  });
+
+  return { room_count: roomCount[0].value, ordered_count: orderedRoomCount[0].value, confirmed_count: confirmedRoomCount[0].value, person_count: personCount[0].value };
+}
+
+
 async function get_service_list(isActive) {
   const connection = await createConnection();
 
@@ -405,8 +445,8 @@ async function save_order(info) {
     let has_room_warning = false;
     if (!is_update)
       info.id = orderId;
-    for (i in info.order_rooms)
-    { x = info.order_rooms[i];
+    for (i in info.order_rooms) {
+      x = info.order_rooms[i];
       query = `select order_room.room_id, room.name as room_name, order_room.start_date, order_room.end_date from order_room left join room on order_room.room_id = room.id where order_room.order_id <> ? and order_room.room_id = ? and ? <= order_room.end_date and order_room.start_date <= ? `;
       params = [
         info.id,
@@ -419,16 +459,15 @@ async function save_order(info) {
         query,
         params
       });
-      if(order_rooms && order_rooms.length > 0)
-      {
+      if (order_rooms && order_rooms.length > 0) {
         room_warnings += '\\n - Өрөө: ' + order_rooms[0].room_name + ', Огноо: ' + moment(order_rooms[0].start_date).format('YYYY-MM-DD') + ' - ' + moment(order_rooms[0].end_date).format('YYYY-MM-DD');
         has_room_warning = true;
       }
     };
-    if(has_room_warning)
+    if (has_room_warning)
       throw room_warnings;
     // prepare room datas
-    if (is_update){
+    if (is_update) {
       query = `delete from order_room where order_id = ? `;
       params = [info.id];
       runQuery({
@@ -494,19 +533,19 @@ async function save_order(info) {
     });
 
     // calculate values
-    var min_date = dates.reduce(function(a, b) {
+    var min_date = dates.reduce(function (a, b) {
       return a < b ? a : b;
     });
-    var max_date = dates.reduce(function(a, b) {
+    var max_date = dates.reduce(function (a, b) {
       return a > b ? a : b;
     });
     var sum = prices.reduce((a, b) => {
       return parseFloat(a, 10) + parseFloat(b, 10);
     }, 0);
-    if(is_update){
+    if (is_update) {
       query = `update orders set cus_name = ?, cus_type = ?, cus_phone = ?, cus_email = ?, note = ?, card_amount = ?, cash_amount = ?, order_date = ?, start_date = ?, end_date = ?, total_amount = ?, price = ?, status = ? 
        where id = ?`;
-    }else{
+    } else {
       query = `insert into orders (cus_name, cus_type, cus_phone, cus_email, note, card_amount, cash_amount, order_date, start_date, end_date, total_amount, price, status, id) 
       values(?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ?, ?)`;
     }
@@ -543,11 +582,11 @@ async function get_order_info(data) {
       return null;
     }
     const connection = await createConnection();
-    let order = {id:"", order_date : data.info.order_date};
+    let order = { id: "", order_date: data.info.order_date };
     let order_rooms = [{
       id: 0,
       room_id: -1,
-      room_name : null,
+      room_name: null,
       person_count: 0,
       child_count: 0,
       start_date: data.info.order_date,
@@ -555,7 +594,7 @@ async function get_order_info(data) {
     }];
     let query = ``;
     let params = [];
-    if (data.info.room_id){
+    if (data.info.room_id) {
       query = `select * from room where id = ? `;
       params = [data.info.room_id];
       room = await runQuery({
@@ -690,5 +729,6 @@ module.exports = {
   get_order_info,
   get_orders,
   get_report,
-  get_filter_data
+  get_filter_data,
+  get_dashboard_data
 };

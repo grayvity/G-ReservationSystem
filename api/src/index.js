@@ -19,7 +19,8 @@ const {
   get_order_info,
   get_orders,
   get_report,
-  get_filter_data
+  get_filter_data,
+  get_dashboard_data
 } = require("../lib/service");
 
 const app = express();
@@ -49,6 +50,17 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+
+
+app.get("/api/get-dashboard-data", async (req, res) => {
+  try {
+    let data = await get_dashboard_data();
+    res.json({ data });
+  } catch (err) {
+    console.log(err)
+    res.json({ data: [], error: err });
+  }
+});
 app.get("/api/get-service-list", async (req, res) => {
   try {
     const { is_active } = req.query;
