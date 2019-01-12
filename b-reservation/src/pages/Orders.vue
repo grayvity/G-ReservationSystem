@@ -8,7 +8,7 @@
         <button
           type="button"
           class="btn btn-primary btn-fw"
-          v-on:click="set_order_info('', '', '')"
+          v-on:click="set_order_info('', '', '', '')"
         >
           <!-- v-b-modal.entryModal -->
           <i class="fa fa-plus"></i>нэмэх
@@ -80,7 +80,7 @@
         <div class="card">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-bordered">
+              <table class="table table-bordered" style="position: initial;">
                 <thead>
                   <tr>
                     <th style="padding: 5px 10px 5px 10px !important" class="text-center"></th>
@@ -110,7 +110,7 @@
                         class="btn btn-rounded"
                         data-toggle="modal"
                         data-target="#orderEntryModal"
-                        v-on:click="set_order_info(cell.orderid, cell.date, cell.roomid)"
+                        v-on:click="set_order_info(cell.orderid, cell.date, cell.roomid, cell.status)"
                         v-bind:class="{'btn-inverse-success w-100' : cell.status == 'confirmed','btn-inverse-warning w-100' : cell.status == 'new','btn-inverse-secondary w-100' : cell.status == 'default',}"
                       >{{ cell.note }}</button>
                     </td>
@@ -159,7 +159,6 @@ export default {
         this.orderList = resJson.datas.orderlist;
         this.room_categories = resJson.datas.room_categories;
         if (res.error) {
-          console.log(res.error);
           this.$notify({
             title: "Алдаа",
             text: res.error,
@@ -169,12 +168,21 @@ export default {
       } catch (err) {
         this.$notify({
           title: "Алдаа",
-          text: err,
+          text: err.message,
           type: "error"
         });
       }
     },
-    async set_order_info(orderid, date, roomid) {
+    async set_order_info(orderid, date, roomid, status) {
+      if(status == 'confirmed')
+      {
+        this.$notify({
+          title: "Амжилттай",
+          text: "Тооцоо хаасан захиалга байна. Тайлангаас харах боломжтой.",
+          type: "success"
+        });
+        return;
+      }
       this.$refs.entryRef.info = {id: orderid, order_date: date ? date : moment(), room_id: roomid};
       this.$refs.entryRef.showModal();
     }

@@ -39,35 +39,11 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Банкаар</label>
+            <label class="col-sm-3 col-form-label">Нэмэлт мэдээлэл</label>
             <div class="col-sm-9">
-              <input
-                ref="i_info_card_amount"
-                type="number"
-                v-model="info.card_amount"
-                pattern="^\d+(\.|\,)\d{2}$"
-                min="0"
-                class="form-control"
-                value="0.00"
-              >
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Бэлнээр</label>
-            <div class="col-sm-9">
-              <input
-                ref="i_info_cash_amount"
-                type="number"
-                v-model="info.cash_amount"
-                pattern="^\d+(\.|\,)\d{2}$"
-                min="0"
-                class="form-control"
-                value="0.00"
-              >
+              <textarea ref="i_info_note" class="form-control" v-model="info.note" rows="1"></textarea>
             </div>
           </div>
         </div>
@@ -107,10 +83,71 @@
           </div>
         </div>
       </div>
-      <p class="card-description font-weight-bold">Нэмэлт мэдээлэл</p>
+      <p class="card-description font-weight-bold">Төлбөрийн мэдээлэл</p>
       <div class="row">
-        <div class="col-md-12">
-          <textarea ref="i_info_note" class="form-control" v-model="info.note" rows="2"></textarea>
+        <div class="col-md-3">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Банкаар</label>
+            <div class="col-sm-9">
+              <input
+                ref="i_info_card_amount"
+                type="number"
+                v-model="card_amount"
+                pattern="^\d+(\.|\,)\d{2}$"
+                min="0"
+                class="form-control"
+                value="0.00"
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Бэлнээр</label>
+            <div class="col-sm-9">
+              <input
+                ref="i_info_cash_amount"
+                type="number"
+                v-model="cash_amount"
+                pattern="^\d+(\.|\,)\d{2}$"
+                min="0"
+                class="form-control"
+                value="0.00"
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Төлсөн</label>
+            <div class="col-sm-9">
+              <input
+                ref="i_info_total_amount"
+                type="number"
+                v-model="total_amount"
+                pattern="^\d+(\.|\,)\d{2}$"
+                min="0"
+                class="form-control"
+                disabled
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Төлөх</label>
+            <div class="col-sm-9">
+              <input
+                ref="i_info_price"
+                type="number"
+                v-model="total_price"
+                pattern="^\d+(\.|\,)\d{2}$"
+                min="0"
+                class="form-control"
+                disabled
+              >
+            </div>
+          </div>
         </div>
       </div>
       <div style="margin-top: 15px;" class="row">
@@ -235,6 +272,11 @@
                     </a>
                   </td>
                 </tr>
+                <tr>
+                  <th colspan="6" class="text-center"></th>
+                  <th class="text-center">Нийт: {{room_total_price}}</th>
+                  <th class="text-center"></th>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -316,16 +358,20 @@
                     </a>
                   </td>
                 </tr>
+                <tr>
+                  <th colspan="2" class="text-center"></th>
+                  <th class="text-center">Нийт: {{service_total_price}}</th>
+                  <th class="text-center"></th>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
     </form>
-
-    <div class="modal-footer">
+    <div v-if="info.status != 'confirmed'" class="modal-footer">
       <button class="btn btn-light" @click="hideModal">Болих</button>
-      <button type="button" class="btn btn-success mr-2" v-on:click="save('new')">Түр хадгалах</button>
+      <button type="button" class="btn btn-primary mr-2" v-on:click="save('new')">Түр хадгалах</button>
       <button type="button" class="btn btn-success mr-2" v-on:click="save('confirmed')">Тооцоо хаах</button>
     </div>
   </b-modal>
@@ -336,8 +382,28 @@ export default {
   components: { DatePicker },
   name: "OrderEntry",
   props: ["orderinfo"],
+  computed: {
+    room_total_price: function(){
+      return this.order_rooms.reduce(function(room_total_price, item){
+        return room_total_price + (item.price ? parseInt(item.price) : 0); 
+      },0);
+    },
+    service_total_price: function(){
+      return this.order_services.reduce(function(service_total_price, item){
+        return service_total_price + (item.price ? parseInt(item.price) : 0); 
+      },0);
+    },
+    total_amount:function(){
+      return parseInt(this.card_amount) + parseInt(this.cash_amount);
+    },
+    total_price:function(){
+      return this.room_total_price + this.service_total_price;
+    },
+  },
   data() {
     return {
+      cash_amount: 0,
+      card_amount: 0,
       info: {cash_amount: 0.00, card_amount:0.00},
       rooms: [],
       services: [],
@@ -405,15 +471,16 @@ export default {
               person_count: 0,
               child_count: 0,
               start_date: moment(),
-              end_date: moment()
+              end_date: moment(),
+              price: 0.00
             }
           ];
-          this.order_services = [{ id:0, service_id: -1 }];
-        }
-        if(!this.info.card_amount)
+          this.order_services = [{ id:0, service_id: -1, price: 0.00 }];
           this.info.card_amount = 0.00;
-        if(!this.info.cash_amount)
           this.info.cash_amount = 0.00;
+        }
+        this.card_amount = this.info.card_amount;
+        this.cash_amount = this.info.cash_amount;
         this.rooms = resJson.rooms;
         this.services = resJson.services;
       } catch (err) {
@@ -502,6 +569,16 @@ export default {
           }
         }
       }
+      if(isValidate && this.info.status == 'confirmed' && this.total_price == 0)
+      {
+        isValidate = false;
+        validate_msg += '\n - Төлөх дүн 0 үед тооцоо хаах боломжгүй. ';
+      }
+      else if(isValidate && this.info.status == 'confirmed' && this.total_amount < this.total_price)
+      {
+        isValidate = false;
+        validate_msg += '\n - Төлсөн дүн нь төлөх дүнгээс бага үед тооцоо хаах боломжгүй. ';
+      }
       return [isValidate, validate_msg];
     },
     async save(info_status) {
@@ -523,6 +600,10 @@ export default {
           return room.service_id && parseInt(room.service_id) > 0;
         });
         this.info.status = info_status;
+        this.info.card_amount = this.card_amount;
+        this.info.cash_amount = this.cash_amount;
+        this.info.total_amount = this.total_amount;
+        this.info.price = this.total_price;
         const res = await fetch("/api/save-order", {
           method: "POST",
           body: JSON.stringify(this.info),
@@ -578,7 +659,8 @@ export default {
         person_count: 0,
         child_count: 0,
         start_date: moment(),
-        end_date: moment()
+        end_date: moment(),
+        price:0.00
       });
     },
     addService() {
@@ -586,7 +668,7 @@ export default {
       for(var x in this.order_services)
         ids.push(this.order_services[x].id);
       var max_id = ids.length > 0 ? Math.max(...ids) : 0;
-      this.order_services.push({id:max_id + 1, service_id: -1 });
+      this.order_services.push({id:max_id + 1, service_id: -1, price:0.00 });
     },
     removeService(info) {
       this.order_services.splice(this.order_services.indexOf(info), 1);

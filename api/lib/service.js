@@ -424,7 +424,7 @@ async function get_orders(data) {
     });
     return { range_days, orderlist, room_categories };
   } catch (err) {
-    throw err;
+    throw err.message;
   }
 }
 
@@ -590,7 +590,8 @@ async function get_order_info(data) {
       person_count: 0,
       child_count: 0,
       start_date: data.info.order_date,
-      end_date: data.info.order_date
+      end_date: data.info.order_date,
+      price: 0.00
     }];
     let query = ``;
     let params = [];
@@ -606,6 +607,10 @@ async function get_order_info(data) {
       order_rooms[0].room_name = room[0].name;
       order_rooms[0].person_count = room[0].person_limit;
       order_rooms[0].price = room[0].price;
+      order.price = room[0].price;
+      order.cash_amount = 0.00;
+      order.card_amount = 0.00;
+      order.total_amount = 0.00;
     }
     let order_services = [];
     if (data.info.id) {
@@ -631,7 +636,7 @@ async function get_order_info(data) {
       });
     }
     if (order_services.length == 0) {
-      order_services.push({ id: 0, service_id: -1 });
+      order_services.push({ id: 0, service_id: -1, price: 0.00 });
     }
     return { order, order_rooms, order_services };
   } catch (err) {
