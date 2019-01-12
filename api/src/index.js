@@ -2,6 +2,8 @@ const httpLib = require("http");
 const express = require("express");
 var bodyParser = require("body-parser");
 var path = require("path");
+var moment = require("moment");
+
 require("dotenv").config();
 
 const {
@@ -22,6 +24,7 @@ const {
   get_filter_data,
   get_dashboard_data
 } = require("../lib/service");
+const { eng_weekday_to_mn } = require("../lib/tools");
 
 const app = express();
 const http = httpLib.createServer(app);
@@ -55,7 +58,44 @@ app.post("/api/login", async (req, res) => {
 app.get("/api/get-dashboard-data", async (req, res) => {
   try {
     let data = await get_dashboard_data();
-    res.json({ data });
+    let parser = require('xml2json');
+    let rp = require('request-promise');
+    let forecasts = []
+
+    var constants = require('../lib/constant');
+
+    rp('http://tsag-agaar.gov.mn/forecast_xml')
+      .then(function (htmlString) {
+        var json = JSON.parse(parser.toJson(htmlString));
+
+        let city = 'Улаанбаатар';
+
+        var found = json.xml.forecast5day.find(
+          function (data) { return data.city == city }
+        );
+
+        // console.log(found.data[0].weather);
+        found.data.weather.map(x => {
+          forecasts.push(
+            {
+              date: x.date,
+              dayOfWeek: moment(x.date).locale('mn').format("ddd"),
+              dayOfWeekLong: moment(x.date).locale('mn').format("dddd"),
+              temperatureDay: x.temperatureDay,
+              temperatureNight: x.temperatureNight,
+              phenoDay: x.phenoDay,
+              phenoIdDay: x.phenoIdDay,
+              imgClass: constants.weathers[x.phenoIdDay]
+            })
+        });
+
+        res.json({ data, forecasts, todayWeather: forecasts[0] });
+      })
+      .catch(function (err) {
+        console.log('WEATHER ERROR', err);
+        res.json({ data, forecasts, todayWeather: {}, error: err });
+      });
+
   } catch (err) {
     console.log(err)
     res.json({ data: [], error: err });
