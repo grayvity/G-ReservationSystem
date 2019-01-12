@@ -1,7 +1,7 @@
 var moment = require("moment");
 
 const { runQuery, createConnection } = require("./storage");
-const { creatNewId } = require("./tools");
+const { creatNewId, eng_weekday_to_mn } = require("./tools");
 
 // import { runQuery, createConnection } from "./storage.js";
 
@@ -308,26 +308,7 @@ async function delete_room(id) {
     throw err;
   }
 }
-function eng_weekday_to_mn(weekday) {
-  switch (weekday) {
-    case "Mon":
-      return "Дав";
-    case "Tue":
-      return "Мяг";
-    case "Wed":
-      return "Лха";
-    case "Thu":
-      return "Пүр";
-    case "Fri":
-      return "Баа";
-    case "Sat":
-      return "Бям";
-    case "Sun":
-      return "Ням";
-    default:
-      return weekday;
-  }
-}
+
 async function get_orders(data) {
   try {
     begindate = moment(data.search_info.begindate);

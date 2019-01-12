@@ -56,7 +56,7 @@
               </div>
             </div>
             <p class="text-muted mt-3 mb-0">
-              <i class="mdi mdi-calendar mr-1" aria-hidden="true"></i> Сүүлийн долоо хоногт баталгаажсан захиалгын тоо
+              <i class="mdi mdi-calendar mr-1" aria-hidden="true"></i> Одоогийн байдлаар баталгаажсан захиалгын тоо
             </p>
           </div>
         </div>
@@ -88,58 +88,32 @@
         <div class="card card-weather">
           <div class="card-body">
             <div class="weather-date-location">
-              <h3>Лхагва</h3>
+              <h3>{{todayWeather.dayOfWeekLong}}</h3>
               <p class="text-gray">
-                <span class="weather-date">2018-01-01</span>
-                <span class="weather-location">Улаанбаатар, Мон</span>
+                <span class="weather-date">{{todayWeather.date}}</span>
+                <span class="weather-location">Улаанбаатар, {{todayWeather.dayOfWeek}}</span>
               </p>
             </div>
             <div class="weather-data d-flex">
               <div class="mr-auto">
                 <h4 class="display-3">
-                  21
+                  {{todayWeather.temperatureDay}}
                   <span class="symbol">&deg;</span>C
                 </h4>
-                <p>Үүлэрхэг</p>
+                <p>{{todayWeather.phenoDay}}</p>
               </div>
             </div>
           </div>
           <div class="card-body p-0">
             <div class="d-flex weakly-weather">
-              <div class="weakly-weather-item">
-                <p class="mb-0">Sun</p>
-                <i class="mdi mdi-weather-cloudy"></i>
-                <p class="mb-0">30°</p>
-              </div>
-              <div class="weakly-weather-item">
-                <p class="mb-1">Mon</p>
-                <i class="mdi mdi-weather-hail"></i>
-                <p class="mb-0">31°</p>
-              </div>
-              <div class="weakly-weather-item">
-                <p class="mb-1">Tue</p>
-                <i class="mdi mdi-weather-partlycloudy"></i>
-                <p class="mb-0">28°</p>
-              </div>
-              <div class="weakly-weather-item">
-                <p class="mb-1">Wed</p>
-                <i class="mdi mdi-weather-pouring"></i>
-                <p class="mb-0">30°</p>
-              </div>
-              <div class="weakly-weather-item">
-                <p class="mb-1">Thu</p>
-                <i class="mdi mdi-weather-pouring"></i>
-                <p class="mb-0">29°</p>
-              </div>
-              <div class="weakly-weather-item">
-                <p class="mb-1">Fri</p>
-                <i class="mdi mdi-weather-snowy-rainy"></i>
-                <p class="mb-0">31°</p>
-              </div>
-              <div class="weakly-weather-item">
-                <p class="mb-1">Sat</p>
-                <i class="mdi mdi-weather-snowy"></i>
-                <p class="mb-0">32°</p>
+              <div
+                class="weakly-weather-item"
+                v-for="weather in forecasts"
+                v-bind:key="weather.date"
+              >
+                <p class="mb-0">{{weather.dayOfWeek}}</p>
+                <i v-bind:class="weather.imgClass"></i>
+                <p class="mb-0">{{weather.temperatureDay}}°/{{weather.temperatureNight}}°</p>
               </div>
             </div>
           </div>
@@ -216,7 +190,8 @@ export default {
   data() {
     return {
       forecasts: [],
-      info: {}
+      info: {},
+      todayWeather: {}
     };
   },
   mounted() {
@@ -227,15 +202,16 @@ export default {
       try {
         this.$store.dispatch("set_loading_status", true);
 
-        var constants = require("../store/constant");
-
         const res = await fetch("/api/get-dashboard-data", {
           method: "GET"
         });
         const resJson = await res.json();
         console.log("response!");
-        console.log(resJson.data);
+
         this.info = resJson.data;
+        this.forecasts = resJson.forecasts;
+        this.todayWeather = resJson.todayWeather;
+
         if (res.error) {
           console.log(res.error);
           this.$notify({
@@ -244,29 +220,6 @@ export default {
             type: "error"
           });
         }
-
-        // fetch("http://tsag-agaar.gov.mn/forecast_xml", {
-        //   method: "GET"
-        //   // mode: 'no-cors',
-        // })
-        //   .then(res => res.text())
-        //   .then(body => {
-        //     console.log(body);
-        //     // var options = {
-        //     //   trim: true,
-        //     // };
-        //     // var json = JSON.parse(parser.toJson(body, options));
-
-        //     // console.log(json)
-        //     // let city = 'Улаанбаатар';
-
-        //     // var found = json.xml.forecast5day.find(
-        //     //     function(data){ return data.city == city }
-        //     // );
-        //     // found.data.weather.map(x => {
-        //     //   console.log(x.date, x.temperatureDay, x.temperatureNight, x.phenoDay, x.phenoIdDay, constants.weathers[x.phenoIdDay])
-        //     // })
-        //   });
       } catch (err) {
         this.$notify({
           title: "Алдаа",
