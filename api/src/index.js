@@ -39,6 +39,14 @@ app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "../../b-reservation/dist/index.html"))
 );
 
+app.get("/dashboard", (req, res) =>
+  res.sendFile(path.join(__dirname, "../../b-reservation/dist/index.html"))
+);
+
+app.get("/orders", (req, res) =>
+  res.sendFile(path.join(__dirname, "../../b-reservation/dist/index.html"))
+);
+
 http.listen(process.env.PORT, () =>
   console.log("API listening on port ", process.env.PORT, "!")
 );
