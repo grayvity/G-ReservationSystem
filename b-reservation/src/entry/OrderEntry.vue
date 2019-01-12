@@ -496,7 +496,7 @@ export default {
       let isValidate = true;
       let validate_msg = 'Талбар бүрэн бөглөнө үү.';
       let is_focus = false;
-      if(!this.info.order_date || this.info.order_date.length < 4){
+      if(!this.info.order_date || this.info.order_date.length < 1){
         isValidate = false;
         validate_msg += '\n - Огноо ';
         if (!is_focus){
@@ -504,7 +504,7 @@ export default {
           is_focus = true;
         }
       }
-      if(!this.info.cus_name || this.info.cus_name.length < 4){
+      if(!this.info.cus_name || this.info.cus_name.length < 1){
         isValidate = false;
         validate_msg += '\n - Захиалагчын нэр ';
         if (!is_focus){
@@ -520,7 +520,7 @@ export default {
       //     is_focus = true;
       //   }
       // }
-      if(!this.info.cus_phone || this.info.cus_phone.length < 4){
+      if(!this.info.cus_phone || this.info.cus_phone.length < 1){
         isValidate = false;
         validate_msg += '\n - Захиалагчын утас ';
         if (!is_focus){
@@ -529,7 +529,7 @@ export default {
         }
       }
 
-      if(!this.info.cus_email || this.info.cus_email.length < 4){
+      if(!this.info.cus_email || this.info.cus_email.length < 1){
         isValidate = false;
         validate_msg += '\n - Захиалагчын имэйл ';
         if (!is_focus){
@@ -630,8 +630,6 @@ export default {
           });
           //if success
         } else {
-          console.log('resJson---');
-          console.log(resJson);
           this.$notify({
             title: "Амжилттай",
             text: "Амжилттай хадгалагдлаа",

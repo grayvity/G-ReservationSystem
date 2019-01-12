@@ -117,7 +117,7 @@
                   </tr>
                 </tbody>
               </table>
-              <OrderEntry ref="entryRef" @hidden="onHiddenOrderEntry"/>
+              <OrderEntry ref="entryRef" @hidden="onHiddenOrderEntry" @onCompleted="modal_completed"/>
             </div>
           </div>
         </div>
@@ -133,6 +133,9 @@ export default {
   name: "Orders",
   components: { OrderEntry, DatePicker },
   methods: {
+    modal_completed(){
+      this.get_data();
+    },
     onHiddenOrderEntry (evt) {
       console.log('jasdhasdas-----');
       this.get_data();
