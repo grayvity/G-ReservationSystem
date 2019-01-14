@@ -39,7 +39,7 @@
                     <td>{{info.type}}</td>
                     <td>{{info.name}}</td>
                     <td>{{info.note}}</td>
-                    <td>{{info.price}}</td>
+                    <td>{{info.price | currency}}</td>
                     <td class="min">
                       <i
                         v-if="info.is_active === 'Y'"
@@ -80,7 +80,16 @@
 <script>
 import Entry from "@/entry/ServiceEntry.vue";
 import AskModal from "@/components/AskModal.vue";
-
+import VueCurrencyFilter from 'vue-currency-filter'
+import Vue from 'vue'
+Vue.use(VueCurrencyFilter, {
+  symbol: '',
+  thousandsSeparator: ',',
+  fractionCount: 0,
+  fractionSeparator: '.',
+  symbolPosition: 'front',
+  symbolSpacing: true
+})
 export default {
   name: "Services",
   components: { Entry, AskModal },

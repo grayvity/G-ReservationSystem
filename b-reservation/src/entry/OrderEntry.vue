@@ -89,15 +89,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Банкаар</label>
             <div class="col-sm-9">
-              <input
-                ref="i_info_card_amount"
-                type="number"
-                v-model="card_amount"
-                pattern="^\d+(\.|\,)\d{2}$"
-                min="0"
-                class="form-control"
-                value="0.00"
-              >
+              <money ref="i_info_card_amount" class="form-control" v-model="card_amount" v-bind="money"></money>
             </div>
           </div>
         </div>
@@ -105,15 +97,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Бэлнээр</label>
             <div class="col-sm-9">
-              <input
-                ref="i_info_cash_amount"
-                type="number"
-                v-model="cash_amount"
-                pattern="^\d+(\.|\,)\d{2}$"
-                min="0"
-                class="form-control"
-                value="0.00"
-              >
+              <money ref="i_info_cash_amount" class="form-control" v-model="cash_amount" v-bind="money"></money>
             </div>
           </div>
         </div>
@@ -121,15 +105,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Төлсөн</label>
             <div class="col-sm-9">
-              <input
-                ref="i_info_total_amount"
-                type="number"
-                v-model="total_amount"
-                pattern="^\d+(\.|\,)\d{2}$"
-                min="0"
-                class="form-control"
-                disabled
-              >
+              <span ref="i_info_total_amount" class="form-control">{{ total_amount | currency}}</span>
             </div>
           </div>
         </div>
@@ -137,15 +113,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Төлөх</label>
             <div class="col-sm-9">
-              <input
-                ref="i_info_price"
-                type="number"
-                v-model="total_price"
-                pattern="^\d+(\.|\,)\d{2}$"
-                min="0"
-                class="form-control"
-                disabled
-              >
+              <span ref="i_info_price" class="form-control">{{ total_price | currency}}</span>
             </div>
           </div>
         </div>
@@ -253,14 +221,15 @@
                     >
                   </td>
                   <td class="pt-3-half">
-                    <input
+                    <money class="form-control" v-model="info_room.price" v-bind="money"></money>
+                    <!-- <input
                       class="form-control"
                       v-model="info_room.price"
                       type="number"
                       pattern="(^\d+(\.|\,)\d{2}$)"
                       min="0"
                       placeholder="Оруулна уу"
-                    >
+                    > -->
                   </td>
                   <td class="pt-3-half">
                     <a
@@ -274,7 +243,7 @@
                 </tr>
                 <tr>
                   <th colspan="6" class="text-center"></th>
-                  <th class="text-center">Нийт: {{room_total_price}}</th>
+                  <th class="text-center">Нийт: {{room_total_price | currency}}</th>
                   <th class="text-center"></th>
                 </tr>
               </tbody>
@@ -339,14 +308,15 @@
                     >
                   </td>
                   <td class="pt-3-half">
-                    <input
+                    <money class="form-control" v-model="info_service.price" v-bind="money"></money>
+                    <!-- <input
                       class="form-control"
                       v-model="info_service.price"
                       type="number"
                       pattern="(^\d+(\.|\,)\d{2}$)"
                       min="0"
                       placeholder="Оруулна уу"
-                    >
+                    > -->
                   </td>
                   <td class="pt-3-half">
                     <a
@@ -360,7 +330,7 @@
                 </tr>
                 <tr>
                   <th colspan="2" class="text-center"></th>
-                  <th class="text-center">Нийт: {{service_total_price}}</th>
+                  <th class="text-center">Нийт: {{service_total_price | currency}}</th>
                   <th class="text-center"></th>
                 </tr>
               </tbody>
@@ -378,8 +348,19 @@
 </template>
 <script>
 import DatePicker from "vue2-datepicker";
+import {Money} from 'v-money'
+import VueCurrencyFilter from 'vue-currency-filter'
+import Vue from 'vue'
+Vue.use(VueCurrencyFilter, {
+  symbol: '',
+  thousandsSeparator: ',',
+  fractionCount: 0,
+  fractionSeparator: '.',
+  symbolPosition: 'front',
+  symbolSpacing: true
+})
 export default {
-  components: { DatePicker },
+  components: { DatePicker, Money },
   name: "OrderEntry",
   props: ["orderinfo"],
   computed: {
@@ -404,11 +385,19 @@ export default {
     return {
       cash_amount: 0,
       card_amount: 0,
-      info: {cash_amount: 0.00, card_amount:0.00},
+      info: {cash_amount: 0, card_amount:0},
       rooms: [],
       services: [],
       order_rooms: [],
-      order_services: []
+      order_services: [],
+      money: {
+          decimal: '.',
+          thousands: ',',
+          prefix: '',
+          suffix: '',
+          precision: 0,
+          masked: false /* doesn't work with directive */
+        }
     };
   },
   methods: {
@@ -436,7 +425,7 @@ export default {
         });
         service_info.price = lucky[0].price;
       }else{
-        service_info.price = 0.00;
+        service_info.price = 0;
         service_info.note = '';
       }
     },
@@ -472,12 +461,12 @@ export default {
               child_count: 0,
               start_date: moment(),
               end_date: moment(),
-              price: 0.00
+              price: 0
             }
           ];
-          this.order_services = [{ id:0, service_id: -1, price: 0.00 }];
-          this.info.card_amount = 0.00;
-          this.info.cash_amount = 0.00;
+          this.order_services = [{ id:0, service_id: -1, price: 0 }];
+          this.info.card_amount = 0;
+          this.info.cash_amount = 0;
         }
         this.card_amount = this.info.card_amount;
         this.cash_amount = this.info.cash_amount;
@@ -658,7 +647,7 @@ export default {
         child_count: 0,
         start_date: moment(),
         end_date: moment(),
-        price:0.00
+        price:0
       });
     },
     addService() {
@@ -666,7 +655,7 @@ export default {
       for(var x in this.order_services)
         ids.push(this.order_services[x].id);
       var max_id = ids.length > 0 ? Math.max(...ids) : 0;
-      this.order_services.push({id:max_id + 1, service_id: -1, price:0.00 });
+      this.order_services.push({id:max_id + 1, service_id: -1, price:0 });
     },
     removeService(info) {
       this.order_services.splice(this.order_services.indexOf(info), 1);

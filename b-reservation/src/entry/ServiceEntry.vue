@@ -31,16 +31,7 @@
         <div class="input-group-prepend">
           <span class="input-group-text">₮</span>
         </div>
-        <input
-          type="number"
-          value
-          min="0"
-          step="100"
-          data-number-to-fixed="2"
-          data-number-stepfactor="100"
-          class="form-control currency"
-          v-model="info.price"
-        >
+        <money class="form-control currency" v-model="info.price" v-bind="money"></money>
       </div>
       <div class="form-check form-check-flat">
         <label class="form-check-label">
@@ -61,10 +52,23 @@
 </template>
 
 <script>
+import {Money} from 'v-money'
 export default {
+  components: { Money },
   name: "ServiceEntry",
   props: ["info"],
-
+  data() {
+    return {
+      money: {
+          decimal: '.',
+          thousands: ',',
+          prefix: '',
+          suffix: '',
+          precision: 0,
+          masked: false /* doesn't work with directive */
+        }
+    };
+  },
   mounted() {
     console.log("entry created!");
   },
