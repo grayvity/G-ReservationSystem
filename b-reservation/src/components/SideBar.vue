@@ -45,7 +45,12 @@
                 <i class="menu-icon fa fa-money"></i>
                 <span class="menu-title">Үйлчилгээ</span>
               </router-link>
-              <!-- <a class="nav-link" href="java">Үйлчилгээ</a> -->
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" v-bind:to="{ name: 'users'}">
+                <i class="menu-icon fa fa-user"></i>
+                <span class="menu-title">Хэрэглэгч</span>
+              </router-link>
             </li>
           </ul>
         </div>

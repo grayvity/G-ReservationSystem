@@ -8,7 +8,7 @@ const { creatNewId, eng_weekday_to_mn } = require("./tools");
 async function check_login(username, password) {
   const connection = await createConnection();
 
-  let query = `select username, password, role from users where username = ? and password = ?`;
+  let query = `select fullname, password, role from users where username = ? and password = ?`;
   const found = await runQuery({
     connection,
     query,
@@ -16,7 +16,7 @@ async function check_login(username, password) {
   });
   console.log(new Date(), ' : Logged => ', found[0].username);
   if (found.length > 0) {
-    return { is_success: true, username: found[0].username, role: found[0].role };
+    return { is_success: true, username: found[0].fullname, role: found[0].role };
   }
 
   return { is_success: false };
@@ -557,6 +557,7 @@ async function save_order(info) {
     throw err;
   }
 }
+
 async function get_order_info(data) {
   try {
     if (!data || !data.info || (!data.info.id && !data.info.room_id)) {
@@ -625,6 +626,7 @@ async function get_order_info(data) {
     throw err;
   }
 }
+
 async function get_report(data) {
   try {
     console.log(data);
@@ -673,6 +675,7 @@ async function get_report(data) {
     throw err;
   }
 }
+
 async function get_filter_data(data) {
   try {
     const connection = await createConnection();
@@ -700,6 +703,84 @@ async function get_filter_data(data) {
     throw err;
   }
 }
+
+/**
+ * USER
+ */
+async function get_user_list() {
+  const connection = await createConnection();
+  let query = `select * from users`;
+
+  const user_list = await runQuery({
+    connection,
+    query
+  });
+
+  return user_list;
+}
+
+async function save_user(info) {
+  try {
+    const connection = await createConnection();
+    let query = "";
+    let params = [];
+    // update
+    if (info.id != null) {
+      console.log(info);
+      query = `update users set username = ?, fullname = ?, password = ?, role = ?, is_active = ? where id = ?`;
+      params = [
+        info.username,
+        info.fullname,
+        info.password,
+        info.role,
+        info.is_active ? "Y" : "N",
+        info.id
+      ];
+      // insert
+    } else {
+      query = `insert into users (username, fullname, password, role, is_active) values(?, ?, ?, ?, ?)`;
+      params = [
+        info.username,
+        info.fullname,
+        info.password,
+        info.role,
+        info.is_active ? "Y" : "N"
+      ];
+      console.log(query, params);
+    }
+
+    await runQuery({
+      connection,
+      query,
+      params: params
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function delete_users(id) {
+  try {
+    console.log("Deleting users");
+    const connection = await createConnection();
+    let query = "";
+
+    // delete
+    if (id != null) {
+      query = `delete from users where id = ?`;
+      await runQuery({
+        connection,
+        query,
+        params: [id]
+      });
+      return true;
+    }
+    return false;
+  } catch (err) {
+    throw err;
+  }
+}
+
 module.exports = {
   check_login,
   get_service_list,
@@ -716,5 +797,8 @@ module.exports = {
   get_orders,
   get_report,
   get_filter_data,
-  get_dashboard_data
+  get_dashboard_data,
+  get_user_list,
+  save_user,
+  delete_users
 };

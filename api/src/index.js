@@ -22,9 +22,11 @@ const {
   get_orders,
   get_report,
   get_filter_data,
-  get_dashboard_data
+  get_dashboard_data,
+  get_user_list,
+  delete_users,
+  save_user
 } = require("../lib/service");
-const { eng_weekday_to_mn } = require("../lib/tools");
 
 const app = express();
 const http = httpLib.createServer(app);
@@ -60,8 +62,6 @@ app.post("/api/login", async (req, res) => {
     res.json({ response: false, error: err });
   }
 });
-
-
 
 app.get("/api/get-dashboard-data", async (req, res) => {
   try {
@@ -109,6 +109,7 @@ app.get("/api/get-dashboard-data", async (req, res) => {
     res.json({ data: [], error: err });
   }
 });
+
 app.get("/api/get-service-list", async (req, res) => {
   try {
     const { is_active } = req.query;
@@ -244,6 +245,7 @@ app.post("/api/get-order-info", async (req, res) => {
     res.json({ success: false, error: err });
   }
 });
+
 app.post("/api/get-orders", async (req, res) => {
   try {
     let datas = await get_orders(req.body);
@@ -253,6 +255,7 @@ app.post("/api/get-orders", async (req, res) => {
     res.json({ success: false, error: err });
   }
 });
+
 app.post("/api/get-filter-data", async (req, res) => {
   try {
     let datas = await get_filter_data(req.body);
@@ -262,10 +265,46 @@ app.post("/api/get-filter-data", async (req, res) => {
     res.json({ success: false, error: err });
   }
 });
+
 app.post("/api/get-report", async (req, res) => {
   try {
     let datas = await get_report(req.body);
     res.json({ datas });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+/**
+ * USERS
+ */
+
+app.get("/api/get-users", async (req, res) => {
+  try {
+    let datas = await get_user_list();
+    res.json({ datas });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+app.post("/api/save-user", async (req, res) => {
+  try {
+    await save_user(req.body);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false, error: err });
+  }
+});
+
+app.post("/api/delete-user", async (req, res) => {
+  try {
+    console.log("deleting: ", req.body, req.body.id);
+    await delete_users(req.body.id);
+    res.json({ success: true });
   } catch (err) {
     console.log(err);
     res.json({ success: false, error: err });

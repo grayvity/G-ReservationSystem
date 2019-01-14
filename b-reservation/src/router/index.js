@@ -8,6 +8,7 @@ import Controller from "@/pages/PageController";
 import Services from "@/pages/Services";
 import Rooms from "@/pages/Rooms";
 import Orders from "@/pages/Orders";
+import Users from "@/pages/Users";
 import RoomCategories from "@/pages/RoomCategories";
 import Report from "@/pages/Report";
 Vue.use(Router);
@@ -34,6 +35,11 @@ export default new Router({
           path: "rooms",
           name: "rooms",
           component: Rooms
+        },
+        {
+          path: "users",
+          name: "users",
+          component: Users
         },
         {
           path: "room_categories",
