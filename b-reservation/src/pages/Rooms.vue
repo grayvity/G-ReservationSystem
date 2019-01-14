@@ -40,7 +40,7 @@
                     <td>{{info.name}}</td>
                     <td>{{info.category_name}}</td>
                     <td>{{info.person_limit}}</td>
-                    <td>{{info.price}}</td>
+                    <td>{{info.price | currency}}</td>
                     <td>{{info.note}}</td>
                     <td class="min">
                       <i
@@ -82,7 +82,16 @@
 <script>
 import Entry from "@/entry/RoomEntry.vue";
 import AskModal from "@/components/AskModal.vue";
-
+import VueCurrencyFilter from 'vue-currency-filter'
+import Vue from 'vue'
+Vue.use(VueCurrencyFilter, {
+  symbol: '',
+  thousandsSeparator: ',',
+  fractionCount: 0,
+  fractionSeparator: '.',
+  symbolPosition: 'front',
+  symbolSpacing: true
+})
 export default {
   name: "RoomGategories",
   components: { Entry, AskModal },
