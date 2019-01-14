@@ -38,7 +38,7 @@
                     <td class="font-weight-medium">1</td>
                     <td>{{info.type}}</td>
                     <td>{{info.name}}</td>
-                    <td>{{info.description}}</td>
+                    <td>{{info.note}}</td>
                     <td>{{info.price}}</td>
                     <td class="min">
                       <i

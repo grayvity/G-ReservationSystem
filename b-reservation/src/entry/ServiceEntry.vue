@@ -23,7 +23,7 @@
           type="text"
           class="form-control"
           id="description"
-          v-model="info.description"
+          v-model="info.note"
           placeholder="Тайлбар"
         >
       </div>
