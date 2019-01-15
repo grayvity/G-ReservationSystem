@@ -36,7 +36,7 @@
               </div>
             </div>
             <p class="text-muted mt-3 mb-0">
-              <i class="mdi mdi-bookmark-outline mr-1" aria-hidden="true"></i> Захиалагдсан төлөвт байгаа гэрийн тоо
+              <i class="mdi mdi-bookmark-outline mr-1" aria-hidden="true"></i> Захиалагдсан төлөвт байгаа өрөөний тоо
             </p>
           </div>
         </div>
@@ -83,7 +83,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-7 grid-margin stretch-card">
+      <div class="col-lg-5 grid-margin stretch-card">
         <!--weather card-->
         <div class="card card-weather">
           <div class="card-body">
@@ -120,59 +120,63 @@
         </div>
         <!--weather card ends-->
       </div>
-      <div class="col-lg-5 grid-margin stretch-card">
+      <div class="col-lg-7 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h2 class="card-title text-primary mb-5">Performance History</h2>
-            <div class="wrapper d-flex justify-content-between">
-              <div class="side-left">
-                <p class="mb-2">The best performance</p>
-                <p class="display-3 mb-4 font-weight-light">+45.2%</p>
-              </div>
-              <div class="side-right">
-                <small class="text-muted">2017</small>
-              </div>
-            </div>
-            <div class="wrapper d-flex justify-content-between">
-              <div class="side-left">
-                <p class="mb-2">Worst performance</p>
-                <p class="display-3 mb-5 font-weight-light">-35.3%</p>
-              </div>
-              <div class="side-right">
-                <small class="text-muted">2015</small>
-              </div>
-            </div>
-            <div class="wrapper">
-              <div class="d-flex justify-content-between">
-                <p class="mb-2">Sales</p>
-                <p class="mb-2 text-primary">88%</p>
-              </div>
-              <div class="progress">
-                <div
-                  class="progress-bar bg-primary progress-bar-striped progress-bar-animated"
-                  role="progressbar"
-                  style="width: 88%"
-                  aria-valuenow="88"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                ></div>
-              </div>
-            </div>
-            <div class="wrapper mt-4">
-              <div class="d-flex justify-content-between">
-                <p class="mb-2">Visits</p>
-                <p class="mb-2 text-success">56%</p>
-              </div>
-              <div class="progress">
-                <div
-                  class="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                  role="progressbar"
-                  style="width: 56%"
-                  aria-valuenow="56"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                ></div>
-              </div>
+            <h4 class="card-title">Сүүлийн үйлдлүүд</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Бүртгэсэн</th>
+                    <th>Захиалгын дугаар</th>
+                    <th>Үүсгэсэн огноо</th>
+                    <th>Төлөв</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Jacob</td>
+                    <td>53275531</td>
+                    <td>12 May 2017</td>
+                    <td>
+                      <label class="badge badge-danger">Pending</label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Messsy</td>
+                    <td>53275532</td>
+                    <td>15 May 2017</td>
+                    <td>
+                      <label class="badge badge-warning">In progress</label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>John</td>
+                    <td>53275533</td>
+                    <td>14 May 2017</td>
+                    <td>
+                      <label class="badge badge-info">Fixed</label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Peter</td>
+                    <td>53275534</td>
+                    <td>16 May 2017</td>
+                    <td>
+                      <label class="badge badge-success">Completed</label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Dave</td>
+                    <td>53275535</td>
+                    <td>20 May 2017</td>
+                    <td>
+                      <label class="badge badge-warning">In progress</label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
