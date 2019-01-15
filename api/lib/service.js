@@ -49,10 +49,10 @@ async function get_dashboard_data() {
   });
 
   // Available person
-  query = `select sum(c.person_limit) as value from orders a 
-  left join order_room b on a.id = b.order_id
-  left join room c on b.room_id = c.id
-  where CURDATE() > b.end_date`;
+  query = `select COALESCE(sum(a.person_limit),0) as value from room a
+  left join order_room b on a.id = b.room_id and b.end_date <= CURDATE()
+  left join orders c on b.order_id = c.id and c.status <> 'deleted'
+  where c.id is null`;
   const personCount = await runQuery({
     connection,
     query

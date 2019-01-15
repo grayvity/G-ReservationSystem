@@ -101,12 +101,12 @@ app.get("/api/get-dashboard-data", async (req, res) => {
       })
       .catch(function (err) {
         console.log('WEATHER ERROR', err);
-        res.json({ data, forecasts, todayWeather: {}, error: err });
+        res.json({ data, forecasts, todayWeather: {}, error: err.message });
       });
 
   } catch (err) {
     console.log(err)
-    res.json({ data: [], error: err });
+    res.json({ data: [], error: err.message });
   }
 });
 
