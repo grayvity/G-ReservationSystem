@@ -140,7 +140,7 @@
                     <td>53275531</td>
                     <td>12 May 2017</td>
                     <td>
-                      <label class="badge badge-danger">Pending</label>
+                      <label class="badge badge-danger">Устгасан</label>
                     </td>
                   </tr>
                   <tr>
@@ -148,7 +148,7 @@
                     <td>53275532</td>
                     <td>15 May 2017</td>
                     <td>
-                      <label class="badge badge-warning">In progress</label>
+                      <label class="badge badge-warning">Бүртгэсэн</label>
                     </td>
                   </tr>
                   <tr>
@@ -156,7 +156,7 @@
                     <td>53275533</td>
                     <td>14 May 2017</td>
                     <td>
-                      <label class="badge badge-info">Fixed</label>
+                      <label class="badge badge-info">Зассан</label>
                     </td>
                   </tr>
                   <tr>
@@ -164,7 +164,7 @@
                     <td>53275534</td>
                     <td>16 May 2017</td>
                     <td>
-                      <label class="badge badge-success">Completed</label>
+                      <label class="badge badge-success">Баталгаажуулсан</label>
                     </td>
                   </tr>
                   <tr>
@@ -172,7 +172,7 @@
                     <td>53275535</td>
                     <td>20 May 2017</td>
                     <td>
-                      <label class="badge badge-warning">In progress</label>
+                      <label class="badge badge-warning">Бүртгэсэн</label>
                     </td>
                   </tr>
                 </tbody>
