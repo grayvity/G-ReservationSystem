@@ -135,44 +135,18 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Jacob</td>
-                    <td>53275531</td>
-                    <td>12 May 2017</td>
-                    <td>
+                  <tr v-for="order in info.last_orders" v-bind:key="order.id">
+                    <td>{{order.username}}</td>
+                    <td>{{order.id}}</td>
+                    <td>{{order.created_date | moment}}</td>
+                    <td v-if="order.status == 'canceled'" >
                       <label class="badge badge-danger">Устгасан</label>
                     </td>
-                  </tr>
-                  <tr>
-                    <td>Messsy</td>
-                    <td>53275532</td>
-                    <td>15 May 2017</td>
-                    <td>
-                      <label class="badge badge-warning">Бүртгэсэн</label>
+                    <td v-if="order.status == 'new'" >
+                      <label class="badge badge-primary">Бүртгэсэн</label>
                     </td>
-                  </tr>
-                  <tr>
-                    <td>John</td>
-                    <td>53275533</td>
-                    <td>14 May 2017</td>
-                    <td>
-                      <label class="badge badge-info">Зассан</label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Peter</td>
-                    <td>53275534</td>
-                    <td>16 May 2017</td>
-                    <td>
+                    <td v-if="order.status == 'confirmed'" >
                       <label class="badge badge-success">Баталгаажуулсан</label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Dave</td>
-                    <td>53275535</td>
-                    <td>20 May 2017</td>
-                    <td>
-                      <label class="badge badge-warning">Бүртгэсэн</label>
                     </td>
                   </tr>
                 </tbody>
@@ -197,6 +171,11 @@ export default {
       info: {},
       todayWeather: {}
     };
+  },
+  filters: {
+    moment: function (date) {
+      return moment(date).format('YYYY-MM-DD HH:mm:SS');
+    },
   },
   mounted() {
     this.getData();

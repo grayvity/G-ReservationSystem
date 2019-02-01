@@ -93,7 +93,7 @@ Vue.use(VueCurrencyFilter, {
   symbolSpacing: true
 })
 export default {
-  name: "RoomGategories",
+  name: "Rooms",
   components: { Entry, AskModal },
   data() {
     return {

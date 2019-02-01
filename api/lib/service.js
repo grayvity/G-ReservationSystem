@@ -57,8 +57,17 @@ async function get_dashboard_data() {
     connection,
     query
   });
-
-  return { room_count: roomCount[0].value, ordered_count: orderedRoomCount[0].value, confirmed_count: confirmedRoomCount[0].value, person_count: personCount[0].value };
+  
+  // last 10 order action
+  query = `select users.username as username, orders.id, orders.created_date, orders.status  
+  from orders 
+  left join users on orders.created_by = users.id 
+  order by created_date desc limit 10;`;
+  const last_orders = await runQuery({
+    connection,
+    query
+  });
+  return { room_count: roomCount[0].value, ordered_count: orderedRoomCount[0].value, confirmed_count: confirmedRoomCount[0].value, person_count: personCount[0].value, last_orders: last_orders };
 }
 
 
@@ -424,12 +433,17 @@ async function save_order(info) {
     let prices = [];
     let room_warnings = 'Өрөөний захиалгын огноо давхардаж байна.';
     let has_room_warning = false;
-    if (!is_update)
+    info.updated_date = moment();
+    if (!is_update){
       info.id = orderId;
+      info.created_by = info.updated_by;
+      info.created_date = moment();
+    }
     for (i in info.order_rooms) {
       x = info.order_rooms[i];
-      query = `select order_room.room_id, room.name as room_name, order_room.start_date, order_room.end_date from order_room left join room on order_room.room_id = room.id where order_room.order_id <> ? and order_room.room_id = ? and ? <= order_room.end_date and order_room.start_date <= ? `;
+      query = `select order_room.room_id, room.name as room_name, order_room.start_date, order_room.end_date from order_room left join orders on order_room.order_id = orders.id left join room on order_room.room_id = room.id where orders.status <> ? and order_room.order_id <> ? and order_room.room_id = ? and ? <= order_room.end_date and order_room.start_date <= ? `;
       params = [
+        'canceled',
         info.id,
         x.room_id,
         moment(x.start_date).format('YYYY-MM-DD HH:mm:ss'),
@@ -524,11 +538,11 @@ async function save_order(info) {
       return parseFloat(a, 10) + parseFloat(b, 10);
     }, 0);
     if (is_update) {
-      query = `update orders set cus_name = ?, cus_type = ?, cus_phone = ?, cus_email = ?, note = ?, card_amount = ?, cash_amount = ?, order_date = ?, start_date = ?, end_date = ?, total_amount = ?, price = ?, status = ? 
+      query = `update orders set cus_name = ?, cus_type = ?, cus_phone = ?, cus_email = ?, note = ?, card_amount = ?, cash_amount = ?, order_date = ?, start_date = ?, end_date = ?, total_amount = ?, price = ?, status = ?, created_by = ?, created_date = ?, updated_by = ?, updated_date = ? 
        where id = ?`;
     } else {
-      query = `insert into orders (cus_name, cus_type, cus_phone, cus_email, note, card_amount, cash_amount, order_date, start_date, end_date, total_amount, price, status, id) 
-      values(?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ?, ?)`;
+      query = `insert into orders (cus_name, cus_type, cus_phone, cus_email, note, card_amount, cash_amount, order_date, start_date, end_date, total_amount, price, status, created_by, created_date, updated_by, updated_date,id) 
+      values(?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     }
     params = [
       info.cus_name,
@@ -546,13 +560,18 @@ async function save_order(info) {
       parseFloat(info.card_amount, 10) + parseFloat(info.cash_amount, 10),
       sum,
       info.status,
-      info.id
+      info.created_by,
+      info.created_date ? moment(info.created_date).format('YYYY-MM-DD HH:mm:ss') : null,
+      info.updated_by,
+      moment(info.updated_date).format('YYYY-MM-DD HH:mm:ss'),
+      info.id,
     ];
     await runQuery({
       connection,
       query,
       params
     });
+    return info.id;
   } catch (err) {
     throw err;
   }

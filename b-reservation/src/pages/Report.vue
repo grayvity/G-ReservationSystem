@@ -78,9 +78,24 @@
               </div>
             </div>
             <div class="row float-right">
-              <div class="col-md-2">
+              <div v-if="orders && orders.length > 0" class="col-md-6">
                 <div class="form-group row">
-                  <div class="col">
+                    <div class="col">
+                      <downloadexcel
+                        class = "btn btn-primary mr-2"
+                        :data   = "orders"
+                        :fields = "json_fields"
+                        >
+                        Excel татах
+                      </downloadexcel>
+                      <!-- <button class="btn btn-success mr-2" v-on:click="get_report_data">Excel татах</button> -->
+                      <!-- <button class="btn btn-success mr-2" v-on:click="fetchData">Excel татах</button> -->
+                    </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                    <div class="col">
                       <button class="btn btn-success mr-2" v-on:click="get_report_data">Шүүх</button>
                     </div>
                 </div>
@@ -255,6 +270,8 @@
 import DatePicker from 'vue2-datepicker'
 import VueCurrencyFilter from 'vue-currency-filter'
 import Vue from 'vue'
+import downloadexcel from "vue-json-excel";
+import axios from 'axios';
 Vue.use(VueCurrencyFilter, {
   symbol: '',
   thousandsSeparator: ',',
@@ -265,7 +282,7 @@ Vue.use(VueCurrencyFilter, {
 })
 export default {
   name: 'Report',
-  components: {DatePicker},
+  components: {DatePicker, downloadexcel},
   filters: {
     moment: function (date) {
       return moment(date).format('YYYY-MM-DD');
@@ -282,6 +299,13 @@ export default {
     }
   },
   methods:{
+    async fetchData(){
+      const response = await axios.get('https://holidayapi.com/v1/holidays?key=a4b2083b-1577-4acd-9408-6e529996b129&country=US&year=2017&month=09');
+      // console.log(response);
+      // console.log(response.data.holidays);
+      // console.log(this.orders);
+      return response.data.holidays;
+    },
     async get_data(){
       try{
         const res = await fetch("/api/get-filter-data", {
@@ -361,6 +385,36 @@ export default {
   },
   data(){
     return {
+      json_fields: {
+        '#' : {
+            field: 'id',
+            callback: (value) => {
+                return value.toString();
+            }
+        },
+        'Төрөл': {
+            field: 'status',
+            callback: (value) => {
+                return this.$options.filters.status(value);
+            }
+        },
+        'Эхлэл огноо': {
+            field: 'start_date',
+            callback: (value) => {
+                return this.$options.filters.moment(value);
+            }
+        },
+        'Дуусах огноо': {
+            field: 'end_date',
+            callback: (value) => {
+                return this.$options.filters.moment(value);
+            }
+        },
+        'Захиалагч': 'cus_name',
+        'Утас': 'cus_phone',
+        'Бэлнээр': 'cash_amount',
+        'Банкаар' : 'card_amount',
+    },
       search_info: {
         report_type: 0,
         begindate: moment().add(-1, "month"),

@@ -10,7 +10,7 @@
     style="max-width: none; width: 90%;"
     size="lg"
   >
-    <form class="forms-sample">
+    <form class="forms-sample" style="overflow-y: auto;height: 600px;">
       <p class="card-description font-weight-bold">Захиалгын мэдээлэл</p>
       <div class="row">
         <div class="col-md-3">
@@ -35,6 +35,7 @@
                 max="3000-12-31"
                 min="1000-01-01"
                 lang="en"
+                :disabled="info.status == 'confirmed'"
               ></date-picker>
             </div>
           </div>
@@ -43,7 +44,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Нэмэлт мэдээлэл</label>
             <div class="col-sm-9">
-              <textarea ref="i_info_note" class="form-control" v-model="info.note" rows="1"></textarea>
+              <textarea :disabled="info.status == 'confirmed'" ref="i_info_note" class="form-control" v-model="info.note" rows="1"></textarea>
             </div>
           </div>
         </div>
@@ -54,7 +55,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Нэр</label>
             <div class="col-sm-9">
-              <input ref = "i_info_cus_name" type="text" v-model="info.cus_name" class="form-control">
+              <input :disabled="info.status == 'confirmed'" ref = "i_info_cus_name" type="text" v-model="info.cus_name" class="form-control">
             </div>
           </div>
         </div>
@@ -62,7 +63,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Төрөл</label>
             <div class="col-sm-9">
-              <input ref = "i_info_cus_type" type="text" v-model="info.cus_type" class="form-control">
+              <input :disabled="info.status == 'confirmed'" ref = "i_info_cus_type" type="text" v-model="info.cus_type" class="form-control">
             </div>
           </div>
         </div>
@@ -70,7 +71,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Утас</label>
             <div class="col-sm-9">
-              <input ref="i_info_cus_phone" type="text" v-model="info.cus_phone" class="form-control">
+              <input :disabled="info.status == 'confirmed'" ref="i_info_cus_phone" type="text" v-model="info.cus_phone" class="form-control">
             </div>
           </div>
         </div>
@@ -78,7 +79,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Имэйл</label>
             <div class="col-sm-9">
-              <input ref="i_info_cus_email" type="text" v-model="info.cus_email" class="form-control">
+              <input :disabled="info.status == 'confirmed'" ref="i_info_cus_email" type="text" v-model="info.cus_email" class="form-control">
             </div>
           </div>
         </div>
@@ -89,7 +90,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Банкаар</label>
             <div class="col-sm-9">
-              <money ref="i_info_card_amount" class="form-control" v-model="card_amount" v-bind="money"></money>
+              <money :disabled="info.status == 'confirmed'" ref="i_info_card_amount" class="form-control" v-model="card_amount" v-bind="money"></money>
             </div>
           </div>
         </div>
@@ -97,7 +98,7 @@
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Бэлнээр</label>
             <div class="col-sm-9">
-              <money ref="i_info_cash_amount" class="form-control" v-model="cash_amount" v-bind="money"></money>
+              <money :disabled="info.status == 'confirmed'" ref="i_info_cash_amount" class="form-control" v-model="cash_amount" v-bind="money"></money>
             </div>
           </div>
         </div>
@@ -136,7 +137,7 @@
         </div>
         <div class="col">
           <div id="roomAddCollapse" class="multi-collapse1 show" style="text-align:right;">
-            <button type="button" class="btn btn-primary btn-sm" v-on:click="addRoom">
+            <button :disabled="info.status == 'confirmed'" type="button" class="btn btn-primary btn-sm" v-on:click="addRoom">
               <i class="fa fa-plus"></i>нэмэх
             </button>
           </div>
@@ -161,7 +162,7 @@
               <tbody>
                 <tr v-for="info_room in order_rooms" v-bind:key="info_room.id">
                   <td class="pt-3-half">
-                    <select :ref="'room_col_' + info_room.id" class="form-control" @change="change_room($event, info_room)" v-model="info_room.room_id">
+                    <select :disabled="info.status == 'confirmed'" :ref="'room_col_' + info_room.id" class="form-control" @change="change_room($event, info_room)" v-model="info_room.room_id">
                       <option value="-1" selected>Сонгоно уу</option>
                       <option
                         v-for="room in rooms"
@@ -171,7 +172,7 @@
                     </select>
                   </td>
                   <td class="pt-3-half">
-                    <input
+                    <input :disabled="info.status == 'confirmed'"
                       class="form-control"
                       v-model="info_room.person_count"
                       type="number"
@@ -180,7 +181,7 @@
                     >
                   </td>
                   <td class="pt-3-half">
-                    <input
+                    <input :disabled="info.status == 'confirmed'"
                       class="form-control"
                       v-model="info_room.child_count"
                       type="number"
@@ -189,7 +190,7 @@
                     >
                   </td>
                   <td class="pt-3-half">
-                    <date-picker
+                    <date-picker :disabled="info.status == 'confirmed'"
                       class="form-datepicker"
                       v-model="info_room.start_date"
                       placeholder="Сонгоно уу"
@@ -201,7 +202,7 @@
                     ></date-picker>
                   </td>
                   <td class="pt-3-half">
-                    <date-picker
+                    <date-picker :disabled="info.status == 'confirmed'"
                       class="form-datepicker"
                       v-model="info_room.end_date"
                       placeholder="Сонгоно уу"
@@ -213,7 +214,7 @@
                     ></date-picker>
                   </td>
                   <td class="pt-3-half">
-                    <input
+                    <input :disabled="info.status == 'confirmed'"
                       class="form-control"
                       v-model="info_room.note"
                       type="text"
@@ -221,7 +222,7 @@
                     >
                   </td>
                   <td class="pt-3-half">
-                    <money class="form-control" v-model="info_room.price" v-bind="money"></money>
+                    <money :disabled="info.status == 'confirmed'" class="form-control" v-model="info_room.price" v-bind="money"></money>
                     <!-- <input
                       class="form-control"
                       v-model="info_room.price"
@@ -231,8 +232,8 @@
                       placeholder="Оруулна уу"
                     > -->
                   </td>
-                  <td class="pt-3-half">
-                    <a
+                  <td v-if="info.status != 'confirmed'" class="pt-3-half">
+                    <a 
                       href="javascript:;"
                       style="margin-left: 10px;"
                       v-on:click="removeRoom(info_room)"
@@ -269,7 +270,7 @@
         </div>
         <div class="col">
           <div id="serviceAddCollapse" class="multi-collapse show" style="text-align:right;">
-            <button type="button" class="btn btn-primary btn-sm" v-on:click="addService">
+            <button :disabled="info.status == 'confirmed'" type="button" class="btn btn-primary btn-sm" v-on:click="addService">
               <i class="fa fa-plus"></i>нэмэх
             </button>
           </div>
@@ -290,7 +291,7 @@
               <tbody>
                 <tr v-for="info_service in order_services" v-bind:key="info_service.id">
                   <td class="pt-3-half">
-                    <select class="form-control" @change="change_service($event, info_service)" v-model="info_service.service_id">
+                    <select :disabled="info.status == 'confirmed'" class="form-control" @change="change_service($event, info_service)" v-model="info_service.service_id">
                       <option value="-1" selected>Сонгоно уу</option>
                       <option
                         v-for="service in services"
@@ -300,7 +301,7 @@
                     </select>
                   </td>
                   <td class="pt-3-half">
-                    <input
+                    <input :disabled="info.status == 'confirmed'"
                       class="form-control"
                       v-model="info_service.note"
                       type="text"
@@ -308,7 +309,7 @@
                     >
                   </td>
                   <td class="pt-3-half">
-                    <money class="form-control" v-model="info_service.price" v-bind="money"></money>
+                    <money :disabled="info.status == 'confirmed'" class="form-control" v-model="info_service.price" v-bind="money"></money>
                     <!-- <input
                       class="form-control"
                       v-model="info_service.price"
@@ -318,7 +319,7 @@
                       placeholder="Оруулна уу"
                     > -->
                   </td>
-                  <td class="pt-3-half">
+                  <td v-if="info.status != 'confirmed'" class="pt-3-half">
                     <a
                       href="javascript:;"
                       style="margin-left: 10px;"
@@ -339,11 +340,114 @@
         </div>
       </div>
     </form>
-    <div v-if="info.status != 'confirmed'" class="modal-footer">
+    <div id="printMe" style="display:none">
+                <link rel="stylesheet" href="./static/css/style.css">
+                <div class="invoice-box">
+                
+                <table cellpadding="0" cellspacing="0">
+                  <tr class="top justify-content-center">
+                    <h2>Хулжир ресорт</h2>
+                  </tr>
+                  <tr class="information">
+                    <td colspan="4">
+                      <table>
+                        <tr>
+                          <td>
+                            Захиалгын #: {{info.id}}<br> Огноо: {{info.confirmed_date | moment}}
+                          </td>
+
+                          <td>
+                            {{ info.cus_type ? info.cus_type : 'Захиалагч' }}<br> {{info.cus_name}}<br> {{info.cus_email}}
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <tr class="heading">
+                    <td colspan="3">Төлбөрийн хэлбэр</td>
+                    <td>Дүн</td>
+                  </tr>
+
+                  <tr class="item">
+                    <td colspan="3">Банкаар</td>
+                    <td>{{ info.card_amount | currency }}</td>
+                  </tr>
+                  <tr class="item">
+                    <td colspan="3">Бэлнээр</td>
+                    <td>{{ info.cash_amount | currency }}</td>
+                  </tr>
+                  <tr class="total">
+                    <td colspan="3"></td>
+                    <td>Төлсөн нийт дүн : {{ total_amount | currency }}</td>
+                  </tr>
+                  <tr class="heading">
+                    <td>Гэр</td>
+                    <td>Том хүн</td>
+                    <td>Хүүхэд</td>
+                    <td>Дүн</td>
+                  </tr>
+
+                  <tr class="item" v-for="room in order_rooms" v-bind:key="room.room_id">
+                    <td>{{room.room_name}}</td>
+                    <td>{{room.person_count}}</td>
+                    <td>{{room.child_count}}</td>
+                    <td>{{room.price | currency}}</td>
+                  </tr>
+                  <tr class="total">
+                    <td colspan="3"></td>
+                    <td>Нийт: {{ room_total_price | currency }}</td>
+                  </tr>
+                  <tr class="heading">
+                    <td colspan="3">Үйлчилгээ</td>
+                    <td>Дүн</td>
+                  </tr>
+
+                  <tr class="item" v-for="room in order_services" v-bind:key="room.id">
+                    <td colspan="3">{{room.service_name}}</td>
+                    <td>{{room.price | currency}}</td>
+                  </tr>
+                  <tr class="total">
+                    <td colspan="3"></td>
+                    <td>Нийт: {{ service_total_price | currency }}</td>
+                  </tr>
+                  <tr class="total">
+                    <td colspan="3"></td>
+                    <td>Төлбөрийн нийт дүн: {{ total_price | currency }}</td>
+                  </tr>
+                </table>
+              </div>
+              </div>
+    <div class="modal-footer">
       <button class="btn btn-light" @click="hideModal">Болих</button>
-      <button type="button" class="btn btn-primary mr-2" v-on:click="save('new')">Түр хадгалах</button>
-      <button type="button" class="btn btn-success mr-2" v-on:click="save('confirmed')">Тооцоо хаах</button>
+      <button v-if="info.status" type="button" class="btn btn-danger mr-2" v-on:click="modalAddShow = !modalAddShow">Цуцлах</button>
+      <button class="btn btn-primary mr-2 hidden-print" v-on:click="print()"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Хэвлэх</button>
+      <button v-if="info.status != 'confirmed'" type="button" class="btn btn-primary mr-2" v-on:click="save('new')">Түр хадгалах</button>
+      <button v-if="info.status != 'confirmed'" type="button" class="btn btn-success mr-2" v-on:click="save('confirmed')">Тооцоо хаах</button>
     </div>
+    <b-modal
+      id="askBModal"
+      ref="askBModal"
+      hide-footer
+      hide-header
+      v-model="modalAddShow"
+      @hidden="modalAddHidden"
+      :centered="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Та тухайн захиалга цуцлахдаа итгэлтэй байна уу?</h5>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" v-on:click="hideAsk(false)">Үгүй</button>
+                <button class="btn btn-danger mr-2"  v-on:click="hideAsk(true)">
+                    Тийм
+                </button>
+            </div>
+            </div>
+        </div>
+    </b-modal>
   </b-modal>
 </template>
 <script>
@@ -351,7 +455,21 @@ import DatePicker from "vue2-datepicker";
 import {Money} from 'v-money'
 import VueCurrencyFilter from 'vue-currency-filter'
 import Vue from 'vue'
-Vue.use(VueCurrencyFilter, {
+import AskModalB from "@/components/AskModalB.vue";
+import VueHtmlToPaper from 'vue-html-to-paper';
+const options = {
+  name: '_blank',
+  specs: [
+    'fullscreen=yes',
+    'titlebar=yes',
+    'scrollbars=yes'
+  ],
+  styles: [
+    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+    'https://unpkg.com/kidlat-css/css/kidlat.css',
+  ]
+}
+Vue.use(VueHtmlToPaper, options, VueCurrencyFilter, {
   symbol: '',
   thousandsSeparator: ',',
   fractionCount: 0,
@@ -360,9 +478,14 @@ Vue.use(VueCurrencyFilter, {
   symbolSpacing: true
 })
 export default {
-  components: { DatePicker, Money },
+  components: { DatePicker, Money, AskModalB },
   name: "OrderEntry",
   props: ["orderinfo"],
+  filters: {
+    moment: function (date) {
+      return moment(date).format('YYYY-MM-DD');
+    },
+  },
   computed: {
     room_total_price: function(){
       return this.order_rooms.reduce(function(room_total_price, item){
@@ -385,6 +508,7 @@ export default {
     return {
       cash_amount: 0,
       card_amount: 0,
+      modalAddShow: false,
       info: {cash_amount: 0, card_amount:0},
       rooms: [],
       services: [],
@@ -400,7 +524,95 @@ export default {
         }
     };
   },
+  mounted(){
+    let self = this
+    let emitEvent = function(bvEvt) {
+            const type = bvEvt.type
+            self.$emit(type, bvEvt)
+        }
+      self.$refs.askBModal.emitEvent = emitEvent.bind(self.$refs.askBModal)
+     // not need to set focus on main modal if additional modal is open
+        let onFocusout = function(evt) {
+            // If focus leaves modal, bring it back
+            // 'focusout' Event Listener bound on content
+            const content = self.$refs.content
+            if (
+                !self.modalAddShow &&
+                !self.noEnforceFocus &&
+                self.is_visible &&
+                content &&
+                !content.contains(evt.relatedTarget)
+            ) {
+                content.focus({preventScroll: true})
+            }
+        };
+        self.$refs.entryModal.onFocusout = onFocusout.bind(self.$refs.entryModal)
+
+        // replace show function for additional modal
+        let show = function() {
+
+            if (this.is_visible) {
+                return
+            }
+            // const showEvt = new BvEvent('show', {
+            //     cancelable: true,
+            //     vueTarget: this,
+            //     target: this.$refs.entryModal,
+            //     relatedTarget: null
+            // })
+            // this.emitEvent(showEvt)
+            // if (showEvt.defaultPrevented || this.is_visible) {
+            //     // Don't show if canceled
+            //     return
+            // }
+            this.doShow()
+        }
+        self.$refs.askBModal.show = show.bind(self.$refs.askBModal)
+  },
   methods: {
+    print() {
+      this.$htmlToPaper('printMe');
+    },
+    hideAsk(isCancel){
+      this.modalAddShow = false
+      if(isCancel)
+      {
+        this.save('canceled')
+      }
+    },
+    modalAddHidden() {
+      if (this.modalShow) {
+          const vueModal = this.$root.$refs.entryModal
+          vueModal.onBeforeEnter()
+          vueModal.is_block = true
+          vueModal.is_show = true
+          vueModal.is_transitioning = false
+          vueModal.$nextTick(() => {
+              // Don't try and focus if we are SSR
+              if (typeof document === 'undefined') {
+                  return
+              }
+              const content = vueModal.$refs.content
+              const modal = vueModal.$refs.entryModal
+              const activeElement = document.activeElement
+              if (activeElement && content && content.contains(activeElement)) {
+                  // If activeElement is child of content, no need to change focus
+              } else if (content) {
+                  // Focus the modal content wrapper
+                  content.focus({preventScroll: true})
+              }
+            /*
+              const shownEvt = new BvEvent('shown', {
+                  cancelable: false,
+                  vueTarget: vueModal,
+                  target: modal,
+                  relatedTarget: null
+              })
+              vueModal.emitEvent(shownEvt)
+              */
+          })
+      }
+    },
     change_room(event,room_info){
       if (event.target.value && event.target.value > 0){
         var lucky = this.rooms.filter(function(room) {
@@ -481,7 +693,7 @@ export default {
         console.log(err);
       }
     },
-    checkControl(){
+    checkControl(info_status){
       let isValidate = true;
       let validate_msg = 'Талбар бүрэн бөглөнө үү.';
       let is_focus = false;
@@ -558,12 +770,12 @@ export default {
           }
         }
       }
-      if(isValidate && this.info.status == 'confirmed' && this.total_price == 0)
+      if(isValidate && info_status == 'confirmed' && this.total_price == 0)
       {
         isValidate = false;
         validate_msg += '\n - Төлөх дүн 0 үед тооцоо хаах боломжгүй. ';
       }
-      else if(isValidate && this.info.status == 'confirmed' && this.total_amount < this.total_price)
+      if(isValidate && info_status == 'confirmed' && this.total_amount < this.total_price)
       {
         isValidate = false;
         validate_msg += '\n - Төлсөн дүн нь төлөх дүнгээс бага үед тооцоо хаах боломжгүй. ';
@@ -573,7 +785,7 @@ export default {
     async save(info_status) {
       try {
         console.log("Saving");
-        let valid_param = await this.checkControl();
+        let valid_param = await this.checkControl(info_status);
         if(!valid_param[0]){ 
           this.$notify({
             title: "Анхаар",
@@ -593,6 +805,7 @@ export default {
         this.info.cash_amount = this.cash_amount;
         this.info.total_amount = this.total_amount;
         this.info.price = this.total_price;
+        this.info.updated_by = 1;//this.$store.getters.get_logged_user.role
         const res = await fetch("/api/save-order", {
           method: "POST",
           body: JSON.stringify(this.info),
@@ -602,23 +815,16 @@ export default {
           }
         });
         const resJson = await res.json();
-        // if error
-        if (!resJson.success) {
+        if (resJson.error) {
           console.log(resJson.error);
           this.$notify({
-            title: "Алдаа 0",
-            text: resJson.error,
-            type: "error"
-          });
-        } else if (res.error) {
-          console.log(res.error);
-          this.$notify({
             title: "Алдаа 1",
-            text: res.error,
+            text: resJson.error,
             type: "error"
           });
           //if success
         } else {
+          this.info.id = resJson.order_id;
           this.$notify({
             title: "Амжилттай",
             text: "Амжилттай хадгалагдлаа",
@@ -629,7 +835,7 @@ export default {
         }
       } catch (err) {
         this.$notify({
-          title: "Алдаа 2",
+          title: "Алдаа",
           text: err,
           type: "error"
         });
@@ -662,7 +868,7 @@ export default {
     },
     removeRoom(info) {
       this.order_rooms.splice(this.order_rooms.indexOf(info), 1);
-    }
-  }
+    },
+  },
 };
 </script>

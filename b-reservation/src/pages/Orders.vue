@@ -129,15 +129,54 @@
 <script>
 import OrderEntry from "@/entry/OrderEntry.vue";
 import DatePicker from "vue2-datepicker";
+import Vue from 'vue';
+import VueCurrencyFilter from 'vue-currency-filter'
+Vue.use(VueCurrencyFilter, {
+  symbol: '',
+  thousandsSeparator: ',',
+  fractionCount: 0,
+  fractionSeparator: '.',
+  symbolPosition: 'front',
+  symbolSpacing: true
+})
 export default {
   name: "Orders",
   components: { OrderEntry, DatePicker },
+  filters: {
+    status: function (status) {
+      if (status == 'new')
+        return 'Захиалагдсан';
+      else if (status == 'confirmed')
+        return 'Төлбөр төлөгдсөн';
+      else if (status == 'canceled')
+        return 'Цуцалсан';
+      else
+        return status;
+    }
+  },
+  computed: {
+    room_total: function(){
+      return this.print_info.order_rooms ? this.print_info.order_rooms.reduce(function(room_total, item){
+        return room_total + (item.price ? parseInt(item.price) : 0); 
+      },0) : 0;
+    },
+    service_total: function(){
+      return this.print_info.order_services ? this.print_info.order_services.reduce(function(service_total, item){
+        return service_total + (item.price ? parseInt(item.price) : 0); 
+      },0) : 0;
+    },
+    total_amount:function(){
+      return parseInt(this.print_info.card_amount) + parseInt(this.print_info.cash_amount);
+    },
+    total_price:function(){
+      return this.print_info.room_total_price + this.print_info.service_total_price;
+    },
+  },
   methods: {
     modal_completed(){
       this.get_data();
     },
     onHiddenOrderEntry (evt) {
-      console.log('jasdhasdas-----');
       this.get_data();
     },
     async get_data() {
@@ -177,15 +216,15 @@ export default {
       }
     },
     async set_order_info(orderid, date, roomid, status) {
-      if(status == 'confirmed')
-      {
-        this.$notify({
-          title: "Амжилттай",
-          text: "Тооцоо хаасан захиалга байна. Тайлангаас харах боломжтой.",
-          type: "success"
-        });
-        return;
-      }
+      // if(status == 'confirmed')
+      // {
+      //   this.$notify({
+      //     title: "Амжилттай",
+      //     text: "Тооцоо хаасан захиалга байна. Тайлангаас харах боломжтой.",
+      //     type: "success"
+      //   });
+      //   return;
+      // }
       this.$refs.entryRef.info = {id: orderid, order_date: date ? date : moment(), room_id: roomid};
       this.$refs.entryRef.showModal();
     }
@@ -197,11 +236,12 @@ export default {
         begindate: moment().add(-4, "days"),
         enddate: moment().add(10, "days"),
         room_cat_id: 0,
-        order_status: 0
+        order_status: 0,
       },
       orderList: [],
       orderDays: [],
       room_categories: [],
+      print_info: {},
     };
   },
   mounted() {

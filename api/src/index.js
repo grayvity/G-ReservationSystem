@@ -228,11 +228,11 @@ app.post("/api/get-room-and-service", async (req, res) => {
 
 app.post("/api/save-order", async (req, res) => {
   try {
-    await save_order(req.body);
-    res.json({ success: true });
+    let order_id = await save_order(req.body);
+    res.json({ order_id });
   } catch (err) {
     console.log(err);
-    res.json({ success: false, error: err });
+    res.json({ order_id: null, error:err });
   }
 });
 
