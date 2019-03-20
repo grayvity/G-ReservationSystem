@@ -13,7 +13,7 @@
     <form class="forms-sample" style="overflow-y: auto;height: 600px;">
       <p class="card-description font-weight-bold">Захиалгын мэдээлэл</p>
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Дугаар</label>
             <div class="col-sm-9">
@@ -21,7 +21,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Огноо</label>
             <div class="col-sm-9">
@@ -40,9 +40,9 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Нэмэлт мэдээлэл</label>
+            <label class="col-sm-3 col-form-label">Тайлбар</label>
             <div class="col-sm-9">
               <textarea :disabled="info.status == 'confirmed'" ref="i_info_note" class="form-control" v-model="info.note" rows="1"></textarea>
             </div>
@@ -51,7 +51,7 @@
       </div>
       <p class="card-description font-weight-bold">Захиалагчын мэдээлэл</p>
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Нэр</label>
             <div class="col-sm-9">
@@ -59,15 +59,15 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <!-- <div class="col-md-3">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Төрөл</label>
             <div class="col-sm-9">
               <input :disabled="info.status == 'confirmed'" ref = "i_info_cus_type" type="text" v-model="info.cus_type" class="form-control">
             </div>
           </div>
-        </div>
-        <div class="col-md-3">
+        </div> -->
+        <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Утас</label>
             <div class="col-sm-9">
@@ -75,7 +75,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Имэйл</label>
             <div class="col-sm-9">
@@ -86,7 +86,7 @@
       </div>
       <p class="card-description font-weight-bold">Төлбөрийн мэдээлэл</p>
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Банкаар</label>
             <div class="col-sm-9">
@@ -94,7 +94,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Бэлнээр</label>
             <div class="col-sm-9">
@@ -102,7 +102,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Төлсөн</label>
             <div class="col-sm-9">
@@ -110,11 +110,27 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group row">
+            
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Нийт төлбөр</label>
+            <div class="col-sm-9">
+              <span ref="i_info_price" class="form-control">{{ total_price | currency}}</span>
+            </div>
+          </div>
+        </div>
+         <div class="col-md-4">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Төлөх</label>
             <div class="col-sm-9">
-              <span ref="i_info_price" class="form-control">{{ total_price | currency}}</span>
+              <span ref="i_info_price" class="form-control">{{ diff_price | currency}}</span>
             </div>
           </div>
         </div>
@@ -153,9 +169,9 @@
                   <th class="text-center">Том хүн</th>
                   <th class="text-center">Хүүхэд</th>
                   <th class="text-center">Орох огноо</th>
-                  <th class="text-center">Гарах огноо</th>
+                  <th class="text-center">Хоног / Гарах огноо</th>
                   <th class="text-center">Тайлбар</th>
-                  <th class="text-center">Дүн</th>
+                  <th class="text-center">Төлбөр</th>
                   <th class="text-center"></th>
                 </tr>
               </thead>
@@ -172,28 +188,39 @@
                     </select>
                   </td>
                   <td class="pt-3-half">
-                    <input :disabled="info.status == 'confirmed'"
-                      class="form-control"
-                      v-model="info_room.person_count"
-                      type="number"
-                      min="0"
-                      placeholder="Оруулна уу"
-                    >
+                    <div class="row">
+                      <label class="form-control col-md-4" style="border:none;">{{info_room.person_price}} X </label>
+                      <input :disabled="info.status == 'confirmed'"
+                        class="form-control col-md-3"
+                        v-model="info_room.person_count"
+                        v-on:input="calc_room_row_price(info_room)"
+                        type="number"
+                        min="0"
+                        placeholder="Оруулна уу"
+                      >
+                      <label class="form-control col-md-4" style="border:none;"> = {{info_room.person_price * info_room.person_count}}</label>
+                    </div>
                   </td>
                   <td class="pt-3-half">
-                    <input :disabled="info.status == 'confirmed'"
-                      class="form-control"
-                      v-model="info_room.child_count"
-                      type="number"
-                      min="0"
-                      placeholder="Оруулна уу"
-                    >
+                    <div class="row">
+                      <label class="form-control col-md-4" style="border:none;">{{info_room.child_price}} X </label>
+                      <input :disabled="info.status == 'confirmed'"
+                        class="form-control col-md-3"
+                        v-model="info_room.child_count"
+                        v-on:input="calc_room_row_price(info_room)"
+                        type="number"
+                        min="0"
+                        placeholder="Оруулна уу"
+                      >
+                      <label class="form-control col-md-4" style="border:none;"> = {{info_room.child_price * info_room.child_count}}</label>
+                    </div>
                   </td>
                   <td class="pt-3-half">
                     <date-picker :disabled="info.status == 'confirmed'"
                       class="form-datepicker"
                       v-model="info_room.start_date"
                       placeholder="Сонгоно уу"
+                      v-on:input="calc_room_row_end_date(info_room)"
                       format="YYYY-MM-DD"
                       type="date"
                       max="3000-12-31"
@@ -201,17 +228,18 @@
                       lang="en"
                     ></date-picker>
                   </td>
-                  <td class="pt-3-half">
-                    <date-picker :disabled="info.status == 'confirmed'"
-                      class="form-datepicker"
-                      v-model="info_room.end_date"
-                      placeholder="Сонгоно уу"
-                      format="YYYY-MM-DD"
-                      type="date"
-                      max="3000-12-31"
-                      min="1000-01-01"
-                      lang="en"
-                    ></date-picker>
+                  <td class="pt-1-half">
+                    <div class="row">
+                      <input :disabled="info.status == 'confirmed'"
+                        class="form-control col-md-4"
+                        v-model="info_room.days"
+                        v-on:input="calc_room_row_end_date(info_room)"
+                        type="number"
+                        min="0"
+                        placeholder=""
+                      >
+                      <label class="form-control col-md-7" style="border:none;"> / {{info_room.end_date | moment}}</label>
+                    </div>
                   </td>
                   <td class="pt-3-half">
                     <input :disabled="info.status == 'confirmed'"
@@ -222,7 +250,8 @@
                     >
                   </td>
                   <td class="pt-3-half">
-                    <money :disabled="info.status == 'confirmed'" class="form-control" v-model="info_room.price" v-bind="money"></money>
+                    <money style="min-width: 80px;" :disabled="info.status == 'confirmed'" class="form-control" 
+                      v-model="info_room.price" v-bind="money"></money>
                     <!-- <input
                       class="form-control"
                       v-model="info_room.price"
@@ -346,7 +375,7 @@
                 
                 <table cellpadding="0" cellspacing="0">
                   <tr class="top justify-content-center">
-                    <h2>Хулжир ресорт</h2>
+                    <h2>Хульж ресорт</h2>
                   </tr>
                   <tr class="information">
                     <td colspan="4">
@@ -502,6 +531,9 @@ export default {
     },
     total_price:function(){
       return this.room_total_price + this.service_total_price;
+    },
+    diff_price:function(){
+      return this.total_price - this.total_amount;
     },
   },
   data() {
@@ -670,8 +702,11 @@ export default {
               id:0,
               room_id: -1,
               person_count: 0,
+              person_price: 0,
               child_count: 0,
+              child_price: 0,
               start_date: moment(),
+              days: 1,
               end_date: moment(),
               price: 0
             }
@@ -730,14 +765,14 @@ export default {
         }
       }
 
-      if(!this.info.cus_email || this.info.cus_email.length < 1){
-        isValidate = false;
-        validate_msg += '\n - Захиалагчын имэйл ';
-        if (!is_focus){
-          $(this.$refs['i_info_cus_email']).focus();
-          is_focus = true;
-        }
-      }
+      // if(!this.info.cus_email || this.info.cus_email.length < 1){
+      //   isValidate = false;
+      //   validate_msg += '\n - Захиалагчын имэйл ';
+      //   if (!is_focus){
+      //     $(this.$refs['i_info_cus_email']).focus();
+      //     is_focus = true;
+      //   }
+      // }
       // if(!this.info.note || this.info.note.length < 4){
       //   isValidate = false;
       //   validate_msg += '\n - Нэмэлт мэдээлэл ';
@@ -816,7 +851,6 @@ export default {
         });
         const resJson = await res.json();
         if (resJson.error) {
-          console.log(resJson.error);
           this.$notify({
             title: "Алдаа 1",
             text: resJson.error,
@@ -852,6 +886,7 @@ export default {
         person_count: 0,
         child_count: 0,
         start_date: moment(),
+        days: 1,
         end_date: moment(),
         price:0
       });
@@ -869,6 +904,12 @@ export default {
     removeRoom(info) {
       this.order_rooms.splice(this.order_rooms.indexOf(info), 1);
     },
+    calc_room_row_price(row){
+      row.price = row.person_count * row.person_price + row.child_price * row.child_count;
+    },
+    calc_room_row_end_date(row){
+      row.end_date = moment(row.start_date).add(row.days - 1, "days");
+    }
   },
 };
 </script>

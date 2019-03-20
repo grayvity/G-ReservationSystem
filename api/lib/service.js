@@ -14,7 +14,6 @@ async function check_login(username, password) {
     query,
     params: [username, password]
   });
-  console.log(new Date(), ' : Logged => ', found[0].username);
   if (found.length > 0) {
     return { is_success: true, username: found[0].fullname, role: found[0].role };
   }
@@ -98,7 +97,6 @@ async function save_service(info) {
     let params = [];
     // update
     if (info.id != null) {
-      console.log(info);
       query = `update service set type = ?, name = ?, note = ?, price = ?, is_active = ? where id = ?`;
       params = [
         info.type,
@@ -118,7 +116,7 @@ async function save_service(info) {
         info.price,
         info.is_active ? "Y" : "N"
       ];
-      console.log(query, params);
+      
     }
 
     await runQuery({
@@ -184,14 +182,13 @@ async function save_room_category(info) {
     let params = [];
     // update
     if (info.id != null) {
-      console.log(info);
       query = `update room_category set name = ?, is_active = ? where id = ?`;
       params = [info.name, info.is_active ? "Y" : "N", info.id];
       // insert
     } else {
       query = `insert into room_category (name, is_active) values(?, ?)`;
       params = [info.name, info.is_active ? "Y" : "N"];
-      console.log(query, params);
+      
     }
 
     await runQuery({
@@ -261,29 +258,31 @@ async function save_room(info) {
     let params = [];
     // update
     if (info.id != null) {
-      console.log(info);
-      query = `update room set name = ?, category_id = ?, person_limit = ?, price = ?, is_active = ?, note = ? where id = ?`;
+      
+      query = `update room set name = ?, category_id = ?, person_limit = ?, price = ?, child_price = ?, is_active = ?, note = ? where id = ?`;
       params = [
         info.name,
         info.category_id,
         info.person_limit,
         info.price,
+        info.child_price,
         info.is_active ? "Y" : "N",
         info.note,
         info.id
       ];
       // insert
     } else {
-      query = `insert into room (name, category_id, person_limit, price, is_active, note) values(?, ?, ?, ?, ?, ?)`;
+      query = `insert into room (name, category_id, person_limit, price, child_price, is_active, note) values(?, ?, ?, ?, ?, ?, ?)`;
       params = [
         info.name,
         info.category_id,
         info.person_limit,
         info.price,
+        info.child_price,
         info.is_active ? "Y" : "N",
         info.note
       ];
-      console.log(query, params);
+      
     }
 
     await runQuery({
@@ -486,17 +485,20 @@ async function save_order(info) {
        */
       query = `insert into order_room
       (
-        order_id, room_category_id, room_id, person_count, child_count, start_date,
-        end_date, price, note
+        order_id, room_category_id, room_id, person_count, person_price, child_count, child_price, start_date,
+        days, end_date, price, note
       )
-      values (?, ?, ?, ?, ?, ?,  ?, ?, ?)`;
+      values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
       params = [
         info.id,
         x.room_category_id,
         x.room_id,
         x.person_count,
+        x.person_price,
         x.child_count,
+        x.child_price,
         moment(x.start_date).format('YYYY-MM-DD HH:mm:ss'),
+        x.days,
         moment(x.end_date).format('YYYY-MM-DD HH:mm:ss'),
         x.price,
         x.note
@@ -589,8 +591,11 @@ async function get_order_info(data) {
       room_id: -1,
       room_name: null,
       person_count: 0,
+      person_price: 0,
       child_count: 0,
+      child_price: 0,
       start_date: data.info.order_date,
+      days: 1,
       end_date: data.info.order_date,
       price: 0
     }];
@@ -607,8 +612,11 @@ async function get_order_info(data) {
       order_rooms[0].room_id = room[0].id;
       order_rooms[0].room_name = room[0].name;
       order_rooms[0].person_count = room[0].person_limit;
-      order_rooms[0].price = room[0].price;
-      order.price = room[0].price;
+      order_rooms[0].person_price = room[0].price;
+      order_rooms[0].child_count = 0;
+      order_rooms[0].child_price = room[0].child_price;
+      order_rooms[0].price = room[0].person_limit * room[0].price;
+      order.price = order_rooms[0].price;
       order.cash_amount = 0;
       order.card_amount = 0;
       order.total_amount = 0;
@@ -623,7 +631,7 @@ async function get_order_info(data) {
         params
       });
       order = orders[0];
-      query = `select order_room.id, order_room.order_id, order_room.room_category_id, order_room.room_id, order_room.person_count, order_room.child_count, order_room.start_date, order_room.end_date, order_room.price, order_room.note, room.name as room_name from order_room left join room on order_room.room_id = room.id where order_room.order_id = ? `;
+      query = `select order_room.id, order_room.order_id, order_room.room_category_id, order_room.room_id, order_room.person_count, order_room.person_price, order_room.child_count, order_room.child_price, order_room.start_date, order_room.days, order_room.end_date, order_room.price, order_room.note, room.name as room_name from order_room left join room on order_room.room_id = room.id where order_room.order_id = ? `;
       order_rooms = await runQuery({
         connection,
         query,
@@ -648,7 +656,6 @@ async function get_order_info(data) {
 
 async function get_report(data) {
   try {
-    console.log(data);
     const connection = await createConnection();
     let query = `select * from orders where ? <= end_date and start_date <= ? `;
     let params = [data.search_info.begindate, data.search_info.enddate];
@@ -671,7 +678,6 @@ async function get_report(data) {
       query += `and orders.status = ? `;
       params.push(data.search_info.order_status);
     }
-    console.log(query);
     const order = await runQuery({
       connection,
       query,
@@ -745,7 +751,6 @@ async function save_user(info) {
     let params = [];
     // update
     if (info.id != null) {
-      console.log(info);
       query = `update users set username = ?, fullname = ?, password = ?, role = ?, is_active = ? where id = ?`;
       params = [
         info.username,
@@ -765,7 +770,6 @@ async function save_user(info) {
         info.role,
         info.is_active ? "Y" : "N"
       ];
-      console.log(query, params);
     }
 
     await runQuery({

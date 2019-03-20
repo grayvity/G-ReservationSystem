@@ -27,7 +27,8 @@
                     <th>Нэр</th>
                     <th>Бүлэг</th>
                     <th>Хүний багтаамж</th>
-                    <th>Үнэ</th>
+                    <th>Үнэ/том хүн/</th>
+                    <th>Үнэ/хүүхэд/</th>
                     <th>Тэмдэглэл</th>
                     <th>Идэвхитэй</th>
                     <th/>
@@ -41,6 +42,7 @@
                     <td>{{info.category_name}}</td>
                     <td>{{info.person_limit}}</td>
                     <td>{{info.price | currency}}</td>
+                    <td>{{info.child_price | currency}}</td>
                     <td>{{info.note}}</td>
                     <td class="min">
                       <i
