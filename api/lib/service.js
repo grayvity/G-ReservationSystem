@@ -259,26 +259,28 @@ async function save_room(info) {
     // update
     if (info.id != null) {
       
-      query = `update room set name = ?, category_id = ?, person_limit = ?, price = ?, child_price = ?, is_active = ?, note = ? where id = ?`;
+      query = `update room set name = ?, category_id = ?, person_limit = ?, price = ?, child_price = ?, kid_price = ?, is_active = ?, note = ? where id = ?`;
       params = [
         info.name,
         info.category_id,
         info.person_limit,
         info.price,
         info.child_price,
+        info.kid_price,
         info.is_active ? "Y" : "N",
         info.note,
         info.id
       ];
       // insert
     } else {
-      query = `insert into room (name, category_id, person_limit, price, child_price, is_active, note) values(?, ?, ?, ?, ?, ?, ?)`;
+      query = `insert into room (name, category_id, person_limit, price, child_price, kid_price, is_active, note) values(?, ?, ?, ?, ?, ?, ?, ?)`;
       params = [
         info.name,
         info.category_id,
         info.person_limit,
         info.price,
         info.child_price,
+        info.kid_price,
         info.is_active ? "Y" : "N",
         info.note
       ];
@@ -485,10 +487,10 @@ async function save_order(info) {
        */
       query = `insert into order_room
       (
-        order_id, room_category_id, room_id, person_count, person_price, child_count, child_price, start_date,
+        order_id, room_category_id, room_id, person_count, person_price, child_count, child_price, kid_count, kid_price, start_date,
         days, end_date, price, note
       )
-      values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
       params = [
         info.id,
         x.room_category_id,
@@ -497,6 +499,8 @@ async function save_order(info) {
         x.person_price,
         x.child_count,
         x.child_price,
+        x.kid_count,
+        x.kid_price,
         moment(x.start_date).format('YYYY-MM-DD'),
         x.days,
         moment(x.end_date).format('YYYY-MM-DD'),
@@ -594,6 +598,8 @@ async function get_order_info(data) {
       person_price: 0,
       child_count: 0,
       child_price: 0,
+      kid_count: 0,
+      kid_price: 0,
       start_date: data.info.order_date,
       days: 1,
       end_date: data.info.order_date,
@@ -615,6 +621,8 @@ async function get_order_info(data) {
       order_rooms[0].person_price = room[0].price;
       order_rooms[0].child_count = 0;
       order_rooms[0].child_price = room[0].child_price;
+      order_rooms[0].kid_count = 0;
+      order_rooms[0].kid_price = room[0].kid_price;
       order_rooms[0].price = room[0].person_limit * room[0].price;
       order.price = order_rooms[0].price;
       order.cash_amount = 0;
@@ -631,7 +639,7 @@ async function get_order_info(data) {
         params
       });
       order = orders[0];
-      query = `select order_room.id, order_room.order_id, order_room.room_category_id, order_room.room_id, order_room.person_count, order_room.person_price, order_room.child_count, order_room.child_price, order_room.start_date, order_room.days, order_room.end_date, order_room.price, order_room.note, room.name as room_name from order_room left join room on order_room.room_id = room.id where order_room.order_id = ? `;
+      query = `select order_room.id, order_room.order_id, order_room.room_category_id, order_room.room_id, order_room.person_count, order_room.person_price, order_room.child_count, order_room.child_price, order_room.kid_count, order_room.kid_price, order_room.start_date, order_room.days, order_room.end_date, order_room.price, order_room.note, room.name as room_name from order_room left join room on order_room.room_id = room.id where order_room.order_id = ? `;
       order_rooms = await runQuery({
         connection,
         query,

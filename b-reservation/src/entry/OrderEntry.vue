@@ -167,7 +167,8 @@
                 <tr>
                   <th class="text-center">Өрөө,гэр #</th>
                   <th class="text-center">Том хүн</th>
-                  <th class="text-center">Хүүхэд</th>
+                  <th class="text-center">Хүүхэд/12+/</th>
+                  <th class="text-center">Хүүхэд/12-/</th>
                   <th class="text-center">Орох огноо</th>
                   <th class="text-center">Хоног / Гарах огноо</th>
                   <th class="text-center">Тайлбар</th>
@@ -188,8 +189,8 @@
                     </select>
                   </td>
                   <td class="pt-3-half">
-                    <div class="row">
-                      <label class="form-control col-md-4" style="border:none;">{{info_room.person_price}} X </label>
+                    <div class="row" style="min-width: 150px;">
+                      <label class="form-control col-md-4" style="border:none; min-width: 80px;">{{info_room.person_price}} X </label>
                       <input :disabled="info.status == 'confirmed'"
                         class="form-control col-md-3"
                         v-model="info_room.person_count"
@@ -197,13 +198,13 @@
                         type="number"
                         min="0"
                         placeholder="Оруулна уу"
+                        style="min-width: 55px;"
                       >
-                      <label class="form-control col-md-4" style="border:none;"> = {{info_room.person_price * info_room.person_count}}</label>
                     </div>
                   </td>
                   <td class="pt-3-half">
-                    <div class="row">
-                      <label class="form-control col-md-4" style="border:none;">{{info_room.child_price}} X </label>
+                    <div class="row"  style="min-width: 150px;">
+                      <label class="form-control col-md-4" style="border:none; min-width: 80px;">{{info_room.child_price}} X </label>
                       <input :disabled="info.status == 'confirmed'"
                         class="form-control col-md-3"
                         v-model="info_room.child_count"
@@ -211,8 +212,22 @@
                         type="number"
                         min="0"
                         placeholder="Оруулна уу"
+                        style="min-width: 55px;"
                       >
-                      <label class="form-control col-md-4" style="border:none;"> = {{info_room.child_price * info_room.child_count}}</label>
+                    </div>
+                  </td>
+                  <td class="pt-3-half">
+                    <div class="row"  style="min-width: 150px;">
+                      <label  class="form-control col-md-4" style="border:none; min-width: 80px;">{{info_room.kid_price}} X </label>
+                      <input :disabled="info.status == 'confirmed'"
+                        class="form-control col-md-3"
+                        v-model="info_room.kid_count"
+                        v-on:input="calc_room_row_price(info_room)"
+                        type="number"
+                        min="0"
+                        placeholder="Оруулна уу"
+                        style="min-width: 55px;"
+                      >
                     </div>
                   </td>
                   <td class="pt-3-half">
@@ -237,8 +252,9 @@
                         type="number"
                         min="0"
                         placeholder=""
+                         style="min-width: 55px;"
                       >
-                      <label class="form-control col-md-7" style="border:none;"> / {{info_room.end_date | moment}}</label>
+                      <label class="form-control col-md-7" style="border:none;">/{{info_room.end_date | moment}}</label>
                     </div>
                   </td>
                   <td class="pt-3-half">
@@ -673,6 +689,8 @@ export default {
         room_info.person_price = lucky[0].price;
         room_info.child_count = 0;
         room_info.child_price = lucky[0].child_price;
+        room_info.kid_count = 0;
+        room_info.kid_price = lucky[0].kid_price;
         room_info.price = lucky[0].price * lucky[0].person_limit * room_info.days;
         room_info.room_category_id = lucky[0].category_id;
       }else{
@@ -680,6 +698,8 @@ export default {
         room_info.person_price = 0;
         room_info.child_count = 0;
         room_info.child_price = 0;
+        room_info.kid_count = 0;
+        room_info.kid_price = 0;
         room_info.price = 0;
         room_info.room_category_id = 0;
         room_info.note = '';
@@ -732,6 +752,8 @@ export default {
               person_price: 0,
               child_count: 0,
               child_price: 0,
+              kid_count: 0,
+              kid_price: 0,
               start_date: moment(),
               days: 1,
               end_date: moment(),
@@ -932,7 +954,7 @@ export default {
       this.order_rooms.splice(this.order_rooms.indexOf(info), 1);
     },
     calc_room_row_price(row){
-      row.price = (row.person_count * row.person_price + row.child_price * row.child_count) * row.days;
+      row.price = (row.person_count * row.person_price + row.child_price * row.child_count + row.kid_price * row.kid_count) * row.days;
     },
     calc_room_row_end_date(row){
       row.end_date = moment(row.start_date).add(row.days - 1, "days").format('YYYY-MM-DD');

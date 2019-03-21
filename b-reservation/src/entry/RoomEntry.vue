@@ -50,9 +50,15 @@
       </div>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text">₮/хүүхэд/</span>
+          <span class="input-group-text">₮/хүүхэд 12+/</span>
         </div>
         <money class="form-control currency" v-model="info.child_price" v-bind="money"></money>
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">₮/хүүхэд 12-/</span>
+        </div>
+        <money class="form-control currency" v-model="info.kid_price" v-bind="money"></money>
       </div>
       <div class="form-check form-check-flat">
         <label class="form-check-label">
@@ -150,6 +156,18 @@ export default {
         !this.info.child_price ||
         this.info.child_price.length == 0 ||
         this.info.child_price <= 0
+      ) {
+        this.$notify({
+          title: "Анхаар",
+          text: "Талбар бүрэн бөглөнө үү.",
+          type: "warn"
+        });
+        return false;
+      }
+      else if (
+        !this.info.kid_price ||
+        this.info.kid_price.length == 0 ||
+        this.info.kid_price <= 0
       ) {
         this.$notify({
           title: "Анхаар",
