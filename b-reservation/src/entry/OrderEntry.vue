@@ -936,7 +936,7 @@ export default {
       row.price = (row.person_count * row.person_price + row.child_price * row.child_count) * row.days;
     },
     calc_room_row_end_date(row){
-      row.end_date = moment(row.start_date).add(row.days - 1, "days");
+      row.end_date = moment(moment(row.start_date).add(row.days - 1, "days"));
       this.calc_room_row_price(row);
     },
     calc_service_row_price(row){
