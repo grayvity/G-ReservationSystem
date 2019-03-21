@@ -445,8 +445,8 @@ async function save_order(info) {
         'canceled',
         info.id,
         x.room_id,
-        moment(x.start_date).format('YYYY-MM-DD HH:mm:ss'),
-        moment(x.end_date).format('YYYY-MM-DD HH:mm:ss'),
+        moment(x.start_date).format('YYYY-MM-DD'),
+        moment(x.end_date).format('YYYY-MM-DD'),
       ];
       order_rooms = await runQuery({
         connection,
@@ -497,9 +497,9 @@ async function save_order(info) {
         x.person_price,
         x.child_count,
         x.child_price,
-        moment(x.start_date).format('YYYY-MM-DD HH:mm:ss'),
+        moment(x.start_date).format('YYYY-MM-DD'),
         x.days,
-        moment(x.end_date).format('YYYY-MM-DD HH:mm:ss'),
+        moment(x.end_date).format('YYYY-MM-DD'),
         x.price,
         x.note
       ];
@@ -555,9 +555,9 @@ async function save_order(info) {
 
       info.card_amount,
       info.cash_amount,
-      moment(info.order_date).format('YYYY-MM-DD HH:mm:ss'),
-      moment(min_date).format('YYYY-MM-DD HH:mm:ss'),
-      moment(max_date).format('YYYY-MM-DD HH:mm:ss'),
+      moment(info.order_date).format('YYYY-MM-DD'),
+      moment(min_date).format('YYYY-MM-DD'),
+      moment(max_date).format('YYYY-MM-DD'),
 
       parseFloat(info.card_amount, 10) + parseFloat(info.cash_amount, 10),
       sum,
