@@ -859,6 +859,7 @@ export default {
         this.info.order_rooms = this.order_rooms.filter(function(room) {
           return room.room_id && parseInt(room.room_id) > 0 && room.days && parseInt(room.days) > 0;
         });
+        console.log(this.info.order_rooms);
         this.info.order_services = this.order_services.filter(function(room) {
           return room.service_id && parseInt(room.service_id) > 0 && room.count && parseInt(room.count) > 0;
         });
