@@ -480,6 +480,9 @@ async function save_order(info) {
       dates.push(x.start_date);
       dates.push(x.end_date);
       prices.push(x.price);
+      console.log(x.start_date);
+      console.log(x.days);
+      console.log(x.end_date);
       /**
        * insert rooms
        */
