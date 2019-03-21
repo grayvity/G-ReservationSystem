@@ -518,10 +518,10 @@ async function save_order(info) {
        */
       query = `insert into order_service
       (
-        order_id, service_id, price, note
+        order_id, service_id, price, count, amount, note
       )
-      values (?, ?, ?, ?)`;
-      params = [info.id, x.service_id, x.price, x.note];
+      values (?, ?, ?, ?, ?, ?)`;
+      params = [info.id, x.service_id, x.price, x.count, x.amount, x.note];
       runQuery({
         connection,
         query,
@@ -637,7 +637,7 @@ async function get_order_info(data) {
         query,
         params
       });
-      query = `select order_service.id, order_service.order_id, order_service.service_id, order_service.price, order_service.note, service.name as service_name from order_service left join service on order_service.service_id = service.id where order_service.order_id = ? `;
+      query = `select order_service.id, order_service.order_id, order_service.service_id, order_service.price, order_service.count, order_service.amount, order_service.note, service.name as service_name from order_service left join service on order_service.service_id = service.id where order_service.order_id = ? `;
       order_services = await runQuery({
         connection,
         query,
@@ -645,7 +645,14 @@ async function get_order_info(data) {
       });
     }
     if (order_services.length == 0) {
-      order_services.push({ id: 0, service_id: -1, price: 0 });
+      order_services.push({ id: 0, service_id: -1, count: 1, price: 0, amount:0 });
+    }else{
+      for (key in order_services) {
+        order_service = order_services[key];
+        if(!order_service.price) order_service.price = 0;
+        if(!order_service.count) order_service.count = 0;
+        if(!order_service.amount) order_service.amount = 0;
+      }
     }
     return { order, order_rooms, order_services };
   } catch (err) {

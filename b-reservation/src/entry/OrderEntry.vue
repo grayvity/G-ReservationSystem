@@ -313,6 +313,8 @@
                 <tr>
                   <th class="text-center">Нэр</th>
                   <th class="text-center">Тайлбар</th>
+                  <th class="text-center">Үнэ</th>
+                  <th class="text-center">Ширхэг</th>
                   <th class="text-center">Дүн</th>
                   <th class="text-center"></th>
                 </tr>
@@ -338,7 +340,20 @@
                     >
                   </td>
                   <td class="pt-3-half">
-                    <money :disabled="info.status == 'confirmed'" class="form-control" v-model="info_service.price" v-bind="money"></money>
+                    {{info_service.price | currency}}
+                  </td>
+                  <td class="pt-3-half">
+                    <input :disabled="info.status == 'confirmed'"
+                        class="form-control"
+                        v-model="info_service.count"
+                        v-on:input="calc_service_row_price(info_service)"
+                        type="number"
+                        min="0"
+                        placeholder="Оруулна уу"
+                      >
+                  </td>
+                  <td class="pt-3-half">
+                    <money :disabled="info.status == 'confirmed'" class="form-control" v-model="info_service.amount" v-bind="money"></money>
                     <!-- <input
                       class="form-control"
                       v-model="info_service.price"
@@ -359,7 +374,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <th colspan="2" class="text-center"></th>
+                  <th colspan="4" class="text-center"></th>
                   <th class="text-center">Нийт: {{service_total_price | currency}}</th>
                   <th class="text-center"></th>
                 </tr>
@@ -428,13 +443,17 @@
                     <td>Нийт: {{ room_total_price | currency }}</td>
                   </tr>
                   <tr class="heading">
-                    <td colspan="3">Үйлчилгээ</td>
+                    <td >Үйлчилгээ</td>
+                    <td>Үнэ</td>
+                    <td>Ширхэг</td>
                     <td>Дүн</td>
                   </tr>
 
                   <tr class="item" v-for="room in order_services" v-bind:key="room.id">
-                    <td colspan="3">{{room.service_name}}</td>
-                    <td>{{room.price | currency}}</td>
+                    <td >{{room.service_name}}</td>
+                    <td >{{room.price | currency}}</td>
+                    <td >{{room.count}}</td>
+                    <td>{{room.amount | currency}}</td>
                   </tr>
                   <tr class="total">
                     <td colspan="3"></td>
@@ -523,17 +542,17 @@ export default {
     },
     service_total_price: function(){
       return this.order_services.reduce(function(service_total_price, item){
-        return service_total_price + (item.price ? parseInt(item.price) : 0); 
+        return service_total_price + (item.amount ? parseInt(item.amount) : 0); 
       },0);
     },
     total_amount:function(){
       return parseInt(this.card_amount) + parseInt(this.cash_amount);
     },
     total_price:function(){
-      return this.room_total_price + this.service_total_price;
+      return (this.room_total_price ? parseInt(this.room_total_price) : 0) + (this.service_total_price ? parseInt(this.service_total_price) : 0);
     },
     diff_price:function(){
-      return this.total_price - this.total_amount;
+      return (this.total_price ? parseInt(this.total_price) : 0) - (this.total_amount ? parseInt(this.total_amount) : 0);
     },
   },
   data() {
@@ -651,12 +670,16 @@ export default {
           return room.id == event.target.value;
         });
         room_info.person_count = lucky[0].person_limit;
+        room_info.person_price = lucky[0].price;
         room_info.child_count = 0;
-        room_info.price = lucky[0].price;
+        room_info.child_price = lucky[0].child_price;
+        room_info.price = lucky[0].price * lucky[0].person_limit * room_info.days;
         room_info.room_category_id = lucky[0].category_id;
       }else{
         room_info.person_count = 0;
+        room_info.person_price = 0;
         room_info.child_count = 0;
+        room_info.child_price = 0;
         room_info.price = 0;
         room_info.room_category_id = 0;
         room_info.note = '';
@@ -668,8 +691,12 @@ export default {
           return service.id == event.target.value;
         });
         service_info.price = lucky[0].price;
+        service_info.count = 1;
+        service_info.amount = lucky[0].price;
       }else{
         service_info.price = 0;
+        service_info.count = 1;
+        service_info.amount = 0;
         service_info.note = '';
       }
     },
@@ -711,7 +738,7 @@ export default {
               price: 0
             }
           ];
-          this.order_services = [{ id:0, service_id: -1, price: 0 }];
+          this.order_services = [{ id:0, service_id: -1, count:1, price: 0, amount:0 }];
           this.info.card_amount = 0;
           this.info.cash_amount = 0;
         }
@@ -808,12 +835,12 @@ export default {
       if(isValidate && info_status == 'confirmed' && this.total_price == 0)
       {
         isValidate = false;
-        validate_msg += '\n - Төлөх дүн 0 үед тооцоо хаах боломжгүй. ';
+        validate_msg += '\n - Нийт төлбөр 0 үед тооцоо хаах боломжгүй. ';
       }
       if(isValidate && info_status == 'confirmed' && this.total_amount < this.total_price)
       {
         isValidate = false;
-        validate_msg += '\n - Төлсөн дүн нь төлөх дүнгээс бага үед тооцоо хаах боломжгүй. ';
+        validate_msg += '\n - Төлөх төлбөр байгаа үед тооцоо хаах боломжгүй. ';
       }
       return [isValidate, validate_msg];
     },
@@ -830,10 +857,10 @@ export default {
           return; 
         }
         this.info.order_rooms = this.order_rooms.filter(function(room) {
-          return room.room_id && parseInt(room.room_id) > 0;
+          return room.room_id && parseInt(room.room_id) > 0 && room.days && parseInt(room.days) > 0;
         });
         this.info.order_services = this.order_services.filter(function(room) {
-          return room.service_id && parseInt(room.service_id) > 0;
+          return room.service_id && parseInt(room.service_id) > 0 && room.count && parseInt(room.count) > 0;
         });
         this.info.status = info_status;
         this.info.card_amount = this.card_amount;
@@ -896,7 +923,7 @@ export default {
       for(var x in this.order_services)
         ids.push(this.order_services[x].id);
       var max_id = ids.length > 0 ? Math.max(...ids) : 0;
-      this.order_services.push({id:max_id + 1, service_id: -1, price:0 });
+      this.order_services.push({id:max_id + 1, service_id: -1, count:1, price:0, amount:0 });
     },
     removeService(info) {
       this.order_services.splice(this.order_services.indexOf(info), 1);
@@ -905,10 +932,14 @@ export default {
       this.order_rooms.splice(this.order_rooms.indexOf(info), 1);
     },
     calc_room_row_price(row){
-      row.price = row.person_count * row.person_price + row.child_price * row.child_count;
+      row.price = (row.person_count * row.person_price + row.child_price * row.child_count) * row.days;
     },
     calc_room_row_end_date(row){
       row.end_date = moment(row.start_date).add(row.days - 1, "days");
+      this.calc_room_row_price(row);
+    },
+    calc_service_row_price(row){
+      row.amount = parseInt(row.price) * parseInt(row.count);
     }
   },
 };
