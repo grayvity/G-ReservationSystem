@@ -115,7 +115,10 @@
       <div class="row">
         <div class="col-md-4">
           <div class="form-group row">
-            
+            <label class="col-sm-3 col-form-label">Нийт хоног</label>
+            <div class="col-sm-9">
+              <label class="form-control">{{ total_order_day }} / {{order_start_date}} >> {{order_end_date}} /</label>
+            </div>
           </div>
         </div>
         <div class="col-md-4">
@@ -409,11 +412,11 @@
                     <h2>Хульж ресорт</h2>
                   </tr>
                   <tr class="information">
-                    <td colspan="4">
+                    <td colspan="5">
                       <table>
                         <tr>
                           <td>
-                            Захиалгын #: {{info.id}}<br> Огноо: {{info.confirmed_date | moment}}
+                            Захиалгын #: {{info.id}}<br> Огноо: {{info.confirmed_date | moment}}<br> Нийт хоног: {{ total_order_day }} <br> {{order_start_date}}  ->  {{order_end_date}} 
                           </td>
 
                           <td>
@@ -425,26 +428,10 @@
                   </tr>
 
                   <tr class="heading">
-                    <td colspan="3">Төлбөрийн хэлбэр</td>
-                    <td>Дүн</td>
-                  </tr>
-
-                  <tr class="item">
-                    <td colspan="3">Банкаар</td>
-                    <td>{{ info.card_amount | currency }}</td>
-                  </tr>
-                  <tr class="item">
-                    <td colspan="3">Бэлнээр</td>
-                    <td>{{ info.cash_amount | currency }}</td>
-                  </tr>
-                  <tr class="total">
-                    <td colspan="3"></td>
-                    <td>Төлсөн нийт дүн : {{ total_amount | currency }}</td>
-                  </tr>
-                  <tr class="heading">
                     <td>Гэр</td>
                     <td>Том хүн</td>
-                    <td>Хүүхэд</td>
+                    <td>Хүүхэд/12+/</td>
+                    <td>Хүүхэд/12-/</td>
                     <td>Дүн</td>
                   </tr>
 
@@ -452,32 +439,54 @@
                     <td>{{room.room_name}}</td>
                     <td>{{room.person_count}}</td>
                     <td>{{room.child_count}}</td>
+                    <td>{{room.kid_count}}</td>
                     <td>{{room.price | currency}}</td>
                   </tr>
                   <tr class="total">
-                    <td colspan="3"></td>
+                    <td colspan="4"></td>
                     <td>Нийт: {{ room_total_price | currency }}</td>
                   </tr>
                   <tr class="heading">
-                    <td >Үйлчилгээ</td>
+                    <td colspan="2">Үйлчилгээ</td>
                     <td>Үнэ</td>
                     <td>Ширхэг</td>
                     <td>Дүн</td>
                   </tr>
 
                   <tr class="item" v-for="room in order_services" v-bind:key="room.id">
-                    <td >{{room.service_name}}</td>
+                    <td colspan="2">{{room.service_name}}</td>
                     <td >{{room.price | currency}}</td>
                     <td >{{room.count}}</td>
                     <td>{{room.amount | currency}}</td>
                   </tr>
                   <tr class="total">
-                    <td colspan="3"></td>
+                    <td colspan="4"></td>
                     <td>Нийт: {{ service_total_price | currency }}</td>
                   </tr>
+                  <tr class="heading">
+                    <td colspan="4">Төлбөрийн хэлбэр</td>
+                    <td>Дүн</td>
+                  </tr>
+
+                  <tr class="item">
+                    <td colspan="4">Банкаар</td>
+                    <td>{{ info.card_amount | currency }}</td>
+                  </tr>
+                  <tr class="item">
+                    <td colspan="4">Бэлнээр</td>
+                    <td>{{ info.cash_amount | currency }}</td>
+                  </tr>
                   <tr class="total">
-                    <td colspan="3"></td>
+                    <td colspan="4"></td>
+                    <td>Төлсөн нийт дүн : {{ total_amount | currency }}</td>
+                  </tr>
+                  <tr class="total">
+                    <td colspan="4"></td>
                     <td>Төлбөрийн нийт дүн: {{ total_price | currency }}</td>
+                  </tr>
+                  <tr v-if="diff_price > 0" class="total">
+                    <td colspan="4"></td>
+                    <td>Төлөх дүн: {{ diff_price | currency }}</td>
                   </tr>
                 </table>
               </div>
@@ -570,6 +579,15 @@ export default {
     diff_price:function(){
       return (this.total_price ? parseInt(this.total_price) : 0) - (this.total_amount ? parseInt(this.total_amount) : 0);
     },
+    order_start_date:function(){
+      return this.order_rooms.reduce((order_start_date, p) => moment(p.start_date) < moment(order_start_date) ? moment(p.start_date) : moment(order_start_date), moment('2900-01-01')).format('YYYY-MM-DD');
+    },
+    order_end_date:function(){
+      return this.order_rooms.reduce((order_end_date, p) => moment(p.end_date) > moment(order_end_date) ? moment(p.end_date) : moment(order_end_date), moment('1900-01-01')).format('YYYY-MM-DD');
+    },
+    total_order_day:function(){
+      return moment(this.order_start_date) <= moment(this.order_end_date) ? (moment(this.order_end_date).diff(moment(this.order_start_date), 'days') + 1) : 0;
+    }
   },
   data() {
     return {
