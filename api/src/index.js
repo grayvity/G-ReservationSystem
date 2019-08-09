@@ -69,10 +69,19 @@ app.get("/api/get-dashboard-data", async (req, res) => {
     let parser = require('xml2json');
     let rp = require('request-promise');
     let forecasts = []
-
+    forecast = {
+      date: moment().locale('mn').format("YYYY-MM-DD"),
+      dayOfWeek: moment().locale('mn').format("ddd"),
+      dayOfWeekLong: moment().locale('mn').format("dddd"),
+      temperatureDay: '',
+      temperatureNight: '',
+      phenoDay: '',
+      phenoIdDay: '',
+      imgClass: ''
+    }
     var constants = require('../lib/constant');
 
-    rp('http://tsag-agaar.gov.mn/forecast_xml')
+    rp('http://tsag-agaa11r.gov.mn/forecast_xml')
       .then(function (htmlString) {
         var json = JSON.parse(parser.toJson(htmlString));
 
@@ -82,7 +91,7 @@ app.get("/api/get-dashboard-data", async (req, res) => {
           function (data) { return data.city == city }
         );
 
-        // console.log(found.data[0].weather);
+        // //console.log(found.data[0].weather);
         found.data.weather.map(x => {
           forecasts.push(
             {
@@ -96,16 +105,15 @@ app.get("/api/get-dashboard-data", async (req, res) => {
               imgClass: constants.weathers[x.phenoIdDay]
             })
         });
-
         res.json({ data, forecasts, todayWeather: forecasts[0] });
       })
       .catch(function (err) {
-        console.log('WEATHER ERROR', err);
+        //console.log('WEATHER ERROR', err);
         res.json({ data, forecasts, todayWeather: {}, error: err.message });
       });
 
   } catch (err) {
-    console.log(err)
+    //console.log(err)
     res.json({ data: [], error: err.message });
   }
 });
@@ -126,18 +134,18 @@ app.post("/api/save-service", async (req, res) => {
     await save_service(req.body);
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
 
 app.post("/api/delete-service", async (req, res) => {
   try {
-    console.log("deleting: ", req.body, req.body.id);
+    //console.log("deleting: ", req.body, req.body.id);
     await delete_service(req.body.id);
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
@@ -162,18 +170,18 @@ app.post("/api/save-room-category", async (req, res) => {
     await save_room_category(req.body);
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
 
 app.post("/api/delete-room-category", async (req, res) => {
   try {
-    console.log("deleting: ", req.body, req.body.id);
+    //console.log("deleting: ", req.body, req.body.id);
     await delete_room_category(req.body.id);
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
@@ -197,18 +205,18 @@ app.post("/api/save-room", async (req, res) => {
     await save_room(req.body);
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
 
 app.post("/api/delete-room", async (req, res) => {
   try {
-    console.log("deleting: ", req.body, req.body.id);
+    //console.log("deleting: ", req.body, req.body.id);
     await delete_room(req.body.id);
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
@@ -221,7 +229,7 @@ app.post("/api/get-room-and-service", async (req, res) => {
     let services = await get_service_list("Y");
     res.json({ order_info, rooms, services });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ order_info: {}, rooms: [], services: [], error: err });
   }
 });
@@ -231,7 +239,7 @@ app.post("/api/save-order", async (req, res) => {
     let order_id = await save_order(req.body);
     res.json({ order_id });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ order_id: null, error:err });
   }
 });
@@ -241,7 +249,7 @@ app.post("/api/get-order-info", async (req, res) => {
     let datas = await get_order_info(req.body);
     res.json({ datas });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
@@ -251,7 +259,7 @@ app.post("/api/get-orders", async (req, res) => {
     let datas = await get_orders(req.body);
     res.json({ datas });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
@@ -261,7 +269,7 @@ app.post("/api/get-filter-data", async (req, res) => {
     let datas = await get_filter_data(req.body);
     res.json({ datas });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
@@ -271,7 +279,7 @@ app.post("/api/get-report", async (req, res) => {
     let datas = await get_report(req.body);
     res.json({ datas });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
@@ -285,7 +293,7 @@ app.get("/api/get-users", async (req, res) => {
     let datas = await get_user_list();
     res.json({ datas });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
@@ -295,18 +303,18 @@ app.post("/api/save-user", async (req, res) => {
     await save_user(req.body);
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });
 
 app.post("/api/delete-user", async (req, res) => {
   try {
-    console.log("deleting: ", req.body, req.body.id);
+    //console.log("deleting: ", req.body, req.body.id);
     await delete_users(req.body.id);
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.json({ success: false, error: err });
   }
 });

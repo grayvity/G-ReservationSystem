@@ -107,7 +107,7 @@ export default {
           text: err.message,
           type: "error"
         });
-        console.log(err);
+        // console.log(err);
       } finally {
         this.$store.dispatch("set_loading_status", false);
       }

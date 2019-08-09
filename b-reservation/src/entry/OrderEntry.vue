@@ -792,7 +792,7 @@ export default {
           text: err,
           type: "error"
         });
-        console.log(err);
+        // console.log(err);
       }
     },
     checkControl(info_status){

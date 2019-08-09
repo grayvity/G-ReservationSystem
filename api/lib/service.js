@@ -131,7 +131,7 @@ async function save_service(info) {
 
 async function delete_service(id) {
   try {
-    console.log("Deleting service");
+    //console.log("Deleting service");
     const connection = await createConnection();
     let query = "";
 
@@ -203,7 +203,7 @@ async function save_room_category(info) {
 
 async function delete_room_category(id) {
   try {
-    console.log("Deleting room_category");
+    //console.log("Deleting room_category");
     const connection = await createConnection();
     let query = "";
 
@@ -252,7 +252,7 @@ async function get_rooms(isActive) {
 
 async function save_room(info) {
   try {
-    console.log("saving room...", info);
+    //console.log("saving room...", info);
     const connection = await createConnection();
     let query = "";
     let params = [];
@@ -299,7 +299,7 @@ async function save_room(info) {
 
 async function delete_room(id) {
   try {
-    console.log("Deleting room");
+    //console.log("Deleting room");
     const connection = await createConnection();
     let query = "";
 
@@ -321,6 +321,7 @@ async function delete_room(id) {
 
 async function get_orders(data) {
   try {
+    console.log(data.search_info);
     begindate = moment(data.search_info.begindate);
     enddate = moment(data.search_info.enddate);
     current_date = moment(data.search_info.begindate);
@@ -338,11 +339,11 @@ async function get_orders(data) {
     }
     const connection = await createConnection();
 
-    let query = `select room.id as roomid, room.name as roomname, order_room.start_date as begindate, order_room.end_date as enddate, orders.status as order_status, orders.cus_name as note, orders.id as orderid  
+    let query = `select room.id as roomid, room.name as roomname, cast(order_room.start_date as char) as begindate, cast(order_room.end_date as char) as enddate, orders.status as order_status, orders.cus_name as note, orders.id as orderid  
     from room
     left join order_room  on order_room.room_id = room.id
     left join orders on order_room.order_id = orders.id and orders.status in ('new', 'confirmed') 
-      and ? < order_room.end_date and order_room.start_date < ? 
+      and ? <= order_room.end_date and order_room.start_date <= ? 
      where 1 = 1 `
       + (data.search_info.order_status == 2 ? `and orders.status in ('new', 'confirmed') ` : data.search_info.order_status == 1 ? `and orders.status not in ('new', 'confirmed') ` : ``)
       + (data.search_info.room_cat_id == 0 ? `` : `and room.category_id = ? `) + `;`;
@@ -421,7 +422,7 @@ async function get_orders(data) {
 
 async function save_order(info) {
   try {
-    console.log("saving order...");
+    //console.log("saving order...");
     const connection = await createConnection();
     let query = "";
     let params = [];
@@ -664,7 +665,7 @@ async function get_order_info(data) {
     }
     return { order, order_rooms, order_services };
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     throw err;
   }
 }
@@ -799,7 +800,7 @@ async function save_user(info) {
 
 async function delete_users(id) {
   try {
-    console.log("Deleting users");
+    //console.log("Deleting users");
     const connection = await createConnection();
     let query = "";
 

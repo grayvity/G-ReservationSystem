@@ -83,7 +83,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-5 grid-margin stretch-card">
+      <div v-if="todayWeather && todayWeather.dayOfWeekLong" class="col-lg-5 grid-margin stretch-card">
         <!--weather card-->
         <div class="card card-weather">
           <div class="card-body">
@@ -196,7 +196,7 @@ export default {
         this.todayWeather = resJson.todayWeather;
 
         if (res.error) {
-          console.log(res.error);
+          // console.log(res.error);
           this.$notify({
             title: "Алдаа",
             text: res.error,

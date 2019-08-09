@@ -181,6 +181,7 @@ export default {
     },
     async get_data() {
       try {
+        console.log(this.search_info)
         const res = await fetch("/api/get-orders", {
           method: "POST",
           body: JSON.stringify({ search_info: this.search_info }),

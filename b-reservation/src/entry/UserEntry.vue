@@ -133,14 +133,14 @@ export default {
         const resJson = await res.json();
 
         if (!resJson.success) {
-          console.log(resJson.error);
+          // console.log(resJson.error);
           this.$notify({
             title: "Алдаа 0",
             text: resJson.error,
             type: "error"
           });
         } else if (res.error) {
-          console.log(res.error);
+          // console.log(res.error);
           this.$notify({
             title: "Алдаа 1",
             text: res.error,
